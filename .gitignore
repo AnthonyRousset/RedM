@@ -4,3 +4,5 @@ client.lua
 fxmanifest.lua
 GITcmd.md
 html/build
+html/build/images
+html/build/index.html

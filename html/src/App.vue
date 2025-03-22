@@ -1,7 +1,9 @@
 <template>
   <GameHud />
+  <AdminMenu v-if="currentMenu === 'admin'" />
   <CharacterMenu v-if="currentMenu === 'character'" />
   <InventoryMenu v-else-if="currentMenu === 'inventory'" />
+  <BankMenu v-else-if="currentMenu === 'bank'" />
 </template>
 
 <style scoped>
@@ -23,6 +25,8 @@
 import { ref, onMounted } from 'vue';
 import CharacterMenu from './menu/CharacterMenu.vue';
 import InventoryMenu from './menu/InventoryMenu.vue';
+import BankMenu from './menu/BankMenu.vue';
+import AdminMenu from './menu/AdminMenu.vue';
 import GameHud from './Hud.vue';
 import { menu } from './stores'; // store pinia ou reactive
 
@@ -48,11 +52,20 @@ onMounted(() => {
         menu.value = 'inventory';
         currentMenu.value = 'inventory';
         break;
+      case 'openAdmin':
+        menu.value = 'admin';
+        currentMenu.value = 'admin';
+        break;
       case 'closeMenu':
         menu.value = null;
         currentMenu.value = null;
         break;
     }
+
+    // test si bank est ouvert
+
+    menu.value = 'admin';
+        currentMenu.value = 'admin';
 
   });
 });

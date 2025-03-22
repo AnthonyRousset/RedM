@@ -21,19 +21,13 @@ import { ref, onMounted } from 'vue';
 
 const quickSlots = ref([
   { "label": "Lancaster", "icon": "weapon" },
-  { "label": "Lancaster", "icon": "weapon1" },
-  { "label": "Lancaster", "icon": "weapon2" },
-  { "label": "Lancaster", "icon": "weapon3" },
-  { "label": "Lancaster", "icon": "weapon4" }
+  null,
+  null,
 ]);
 
 function getIcon(name) {
   const icons = {
-    weapon: './images/weapons/lancaster.png',
-    weapon1: 'images/weapons/lancaster.png',
-    weapon2: '/images/weapons/lancaster.png',
-    weapon3: 'public/images/weapons/lancaster.png',
-    weapon4: '/public/images/weapons/lancaster.png'
+    weapon: './images/weapons/lancaster.png'
   };
   return icons[name] || '❔';
 }

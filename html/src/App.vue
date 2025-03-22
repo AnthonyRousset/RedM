@@ -63,9 +63,8 @@ onMounted(() => {
     }
 
     // test si bank est ouvert
-
-    menu.value = 'admin';
-        currentMenu.value = 'admin';
+    currentMenu.value = 'bank';
+    menu.value = 'bank';
 
   });
 });

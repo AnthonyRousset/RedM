@@ -48,7 +48,7 @@ const selectedItem = ref(null)
 const draggedItem = ref(null)
 
 function close() {
-  fetch('https://nui-svelte-starter/closeMenu', { method: 'POST' })
+  fetch('https://cfx-nui-myresource/closeMenu', { method: 'POST' })
   menu.value = null
 }
 
@@ -61,7 +61,7 @@ function showContext(e, item) {
 
 function doAction(action) {
   if (selectedItem.value) {
-    fetch('https://nui-svelte-starter/inventoryAction', {
+    fetch('https://cfx-nui-myresource/inventoryAction', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action, item: selectedItem.value }),
@@ -81,7 +81,7 @@ function onDragStart(item) {
 function onDrop(targetItem) {
   if (!draggedItem.value) return
 
-  fetch('https://nui-svelte-starter/inventoryMove', {
+  fetch('https://cfx-nui-myresource/inventoryMove', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ from: draggedItem.value, to: targetItem }),

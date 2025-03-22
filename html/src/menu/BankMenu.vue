@@ -40,7 +40,7 @@ onMounted(() => {
 
 const deposit = () => {
     if (amount.value > 0) {
-        fetch('https://nui-svelte-starter/bankAction', {
+        fetch('https://cfx-nui-myresource/bankAction', {
             method: 'POST',
             body: JSON.stringify({ action: 'deposit', amount: amount.value })
         });
@@ -50,7 +50,7 @@ const deposit = () => {
 
 const withdraw = () => {
     if (amount.value > 0) {
-        fetch('https://nui-svelte-starter/bankAction', {
+        fetch('https://cfx-nui-myresource/bankAction', {
             method: 'POST',
             body: JSON.stringify({ action: 'withdraw', amount: amount.value })
         });
@@ -59,7 +59,7 @@ const withdraw = () => {
 };
 
 const close = () => {
-    fetch('https://nui-svelte-starter/closeMenu', {
+    fetch('https://cfx-nui-myresource/closeMenu', {
         method: 'POST'
     });
 };

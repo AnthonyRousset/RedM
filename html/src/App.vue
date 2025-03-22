@@ -1,11 +1,5 @@
 <template>
-  <div v-if="menu === 'coucou'">
-    <!-- TESXT HUD IN GAME -->
-    <div id="hud">
-      COUCOU les loulous
-
-    </div>
-  </div>
+  <GameHud />
   <CharacterMenu v-if="currentMenu === 'character'" />
   <InventoryMenu v-else-if="currentMenu === 'inventory'" />
 </template>
@@ -29,6 +23,7 @@
 import { ref, onMounted } from 'vue';
 import CharacterMenu from './menu/CharacterMenu.vue';
 import InventoryMenu from './menu/InventoryMenu.vue';
+import GameHud from './hud/Hud.vue';
 import { menu } from './stores'; // store pinia ou reactive
 
 // Référence locale à la valeur du menu
@@ -39,13 +34,9 @@ onMounted(() => {
   // Réactif si menu est un ref ou store Pinia
   currentMenu.value = menu.value;
 
-
-
   // Si le store menu est une ref, on peut faire un watch ici si nécessaire
   window.addEventListener('message', (event) => {
     const data = event.data;
-
-    
 
     switch (data.action) {
     //switch ("metabolism:update") {
@@ -62,9 +53,6 @@ onMounted(() => {
         currentMenu.value = null;
         break;
     }
-      
-    menu.value = 'coucou';
-    currentMenu.value = 'coucou';
 
   });
 });

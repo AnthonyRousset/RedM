@@ -19,18 +19,15 @@
     <div class="bars">
       <div class="bar">
         <label>Faim</label>
-        {{ hunger }}
-        <div class="fill" :style="{ width: hunger + '%' }"></div>
+        <div class="fill" :style="{ width: hunger + '%', minWidth: '10px' }"></div>
       </div>
       <div class="bar">
         <label>Soif</label>
-        {{ thirst }}
-        <div class="fill" :style="{ width: thirst + '%' }"></div>
+        <div class="fill" :style="{ width: thirst + '%', minWidth: '10px' }"></div>
       </div>
       <div class="bar">
         <label>Fatigue</label>
-        {{ fatigue }}
-        <div class="fill" :style="{ width: fatigue + '%' }"></div>
+        <div class="fill" :style="{ width: fatigue + '%', minWidth: '10px' }"></div>
       </div>
     </div>
 
@@ -148,21 +145,22 @@ onMounted(() => {
 <style scoped>
 .hud {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 2vw;
+  right: 2vw;
   background: rgba(20, 20, 20, 0.85);
-  padding: 15px;
-  border-radius: 12px;
+  padding: 1.2vw;
+  border-radius: 0.9vw;
   color: white;
   font-family: sans-serif;
-  width: 250px;
-  font-size: 14px;
+  width: 18vw;
+  font-size: 1vw;
+  box-sizing: border-box;
 }
 
 .top {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 0.6vw;
 }
 
 .money {
@@ -175,30 +173,30 @@ onMounted(() => {
 }
 
 .info {
-  margin-bottom: 10px;
-  line-height: 1.2;
+  margin-bottom: 0.8vw;
+  line-height: 1.3;
 }
 
 .bars {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 10px;
+  gap: 0.5vw;
+  margin-bottom: 0.8vw;
 }
 
 .bar {
   background: #2b2b2b;
-  border-radius: 6px;
+  border-radius: 0.4vw;
   overflow: hidden;
-  height: 16px;
+  height: 1.2vw;
   position: relative;
 }
 
 .bar label {
   position: absolute;
-  left: 6px;
-  top: -18px;
-  font-size: 0.75rem;
+  left: 0.4vw;
+  top: -1.1vw;
+  font-size: 0.65vw;
   color: #ccc;
 }
 
@@ -206,43 +204,68 @@ onMounted(() => {
   height: 100%;
   background: #4d5bce;
   transition: width 0.3s;
+  border-radius: 6px;
 }
 
 .horse {
-  margin-bottom: 10px;
+  margin-bottom: 0.8vw;
   font-style: italic;
   color: #ccc;
 }
 
 .buffs {
   display: flex;
-  gap: 6px;
+  gap: 0.4vw;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-bottom: 0.8vw;
 }
 
 .buff {
   background: #e99287;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.75rem;
+  padding: 0.3vw 0.6vw;
+  border-radius: 0.4vw;
+  font-size: 0.7vw;
   color: #000;
 }
 
 .notification {
   background: #43d9ad;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 0.6vw;
+  border-radius: 0.6vw;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 0.8vw;
 }
 
 .log {
-  font-size: 0.75rem;
+  font-size: 0.65vw;
   color: #aaa;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0.15vw;
+}
+
+/* Responsive fallback pour les petits écrans */
+@media screen and (max-width: 1280px) {
+  .hud {
+    width: 30vw;
+    font-size: 1.5vw;
+  }
+
+  .bar {
+    height: 1.8vw;
+  }
+
+  .bar label {
+    font-size: 1vw;
+  }
+
+  .buff {
+    font-size: 1vw;
+  }
+
+  .log {
+    font-size: 1vw;
+  }
 }
 </style>

@@ -26,7 +26,7 @@ const gender = ref('male')
 const submit = () => {
   if (!firstName.value || !lastName.value) return
 
-  fetch('https://cfx-nui-myresource/submitCharacter', {
+  fetch(`https://${GetParentResourceName()}/submitCharacter`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

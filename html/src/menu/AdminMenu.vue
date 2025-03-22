@@ -15,6 +15,7 @@
                         <h2>Position</h2>
                         <p>{{ position }}</p>  
                     </div>
+                    <button class="close" @click="closePosition">✖ Fermer</button> 
                 </div>
                     
 
@@ -64,6 +65,10 @@ const openNpcSelector = () => {
 const closeNpcSelector = () => {
     npcSelectorVisible.value = false
     selectedNpc.value = ""
+}
+
+const closePosition = () => {
+    positionVisible.value = false
 }
 
 const spawnNpc = () => {

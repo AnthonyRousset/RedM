@@ -9,14 +9,6 @@
                 <button @click="setSpawnNPC">👤 Spawn NPC</button>
 
                 <!-- Obtenir la position -->
-                <button @click="getPosition2">📍 Obtenir la position</button>
-                <div v-if="positionVisible2" class="modal">
-                    <div class="modal-content">
-                        <h2>Position</h2>
-                        <p>{{ position2 }}</p>  
-                    </div>
-                </div>
-                <!-- Obtenir la position -->
                 <button @click="getPosition">📍 Obtenir la position</button>
                 <div v-if="positionVisible" class="modal">
                     <div class="modal-content">
@@ -54,10 +46,8 @@
 import { ref, onMounted } from 'vue';
 const npcSelectorVisible = ref(false)
 const positionVisible = ref(false)
-const positionVisible2 = ref(false)
 const selectedNpc = ref("")
 const position = ref("")    
-const position2 = ref("")
 const npcList = ref([
     { label: "Tenancier du saloon", model: "U_M_M_BARMAN_01" },
     { label: "Médecin", model: "U_M_M_DOCTOR_01" },
@@ -112,9 +102,6 @@ const setSpawnNPC = () => {
 const getPosition = () => {
     fetch(`https://${GetParentResourceName()}/getpos`, { method: 'POST' })
 }  
-const getPosition2 = () => {
-    fetch(`https://cfx-nui-myresource/getpos`, { method: 'POST' })
-}  
 
 onMounted(() => {
   window.addEventListener('message', (event) => {
@@ -123,6 +110,7 @@ onMounted(() => {
     switch (data.action) {
         case 'admin:position':
             // data.info
+            console.log(data)
             position.value = data.info  
             positionVisible.value = true
             break;

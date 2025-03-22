@@ -110,10 +110,10 @@ const setSpawnNPC = () => {
 }
 
 const getPosition = () => {
-    fetch(`https://${GetParentResourceName()}/get-position`, { method: 'POST' })
+    fetch(`https://${GetParentResourceName()}/getpos`, { method: 'POST' })
 }  
 const getPosition2 = () => {
-    fetch(`https://cfx-nui-myresource/get-position`, { method: 'POST' })
+    fetch(`https://cfx-nui-myresource/getpos`, { method: 'POST' })
 }  
 
 onMounted(() => {

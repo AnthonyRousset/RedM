@@ -43,10 +43,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 const npcSelectorVisible = ref(false)
 const positionVisible = ref(false)
 const selectedNpc = ref("")
+const position = ref("")    
 const npcList = ref([
     { label: "Tenancier du saloon", model: "U_M_M_BARMAN_01" },
     { label: "Médecin", model: "U_M_M_DOCTOR_01" },
@@ -101,8 +102,21 @@ const setSpawnNPC = () => {
 
 const getPosition = () => {
     fetch(`https://${GetParentResourceName()}/get-position`, { method: 'POST' })
-}       
+}  
 
+onMounted(() => {
+  window.addEventListener('message', (event) => {
+    const data = event.data;
+
+    switch (data.action) {
+        case 'admin:position':
+            // data.info
+            position.value = data.info  
+            positionVisible.value = true
+            break;
+    }
+  })
+})
 </script>
 
 <style scoped>

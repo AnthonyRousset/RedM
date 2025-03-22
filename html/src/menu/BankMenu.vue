@@ -302,4 +302,26 @@ h2 {
         0 4px 12px rgba(0, 0, 0, 0.8),
         0 0 6px #ffb29e;
 }
+
+/*media query*/
+@media (max-width: 2500px) {
+    .bank-menu {
+        width: 100%;
+    }
+    .balance-title {
+        font-size: 1.5rem;
+    }
+    .balance {
+        font-size: 1.5rem;
+    }
+    .form input {
+        font-size: 1.5rem;
+    }
+    .actions {
+        font-size: 1.5rem;
+    }
+    .close {
+        font-size: 1.5rem;
+    }
+}
 </style>

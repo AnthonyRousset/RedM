@@ -19,14 +19,17 @@
     <div class="bars">
       <div class="bar">
         <label>Faim</label>
+        {{ hunger }}
         <div class="fill" :style="{ width: hunger + '%' }"></div>
       </div>
       <div class="bar">
         <label>Soif</label>
+        {{ thirst }}
         <div class="fill" :style="{ width: thirst + '%' }"></div>
       </div>
       <div class="bar">
         <label>Fatigue</label>
+        {{ fatigue }}
         <div class="fill" :style="{ width: fatigue + '%' }"></div>
       </div>
     </div>
@@ -91,7 +94,7 @@ const updateTime = () => {
 onMounted(() => {
   window.addEventListener('message', (event) => {
     console.log(event);
-    
+
     const data = event.data;
 
     console.log(data);
@@ -101,6 +104,7 @@ onMounted(() => {
         hunger.value = data.hunger;
         thirst.value = data.thirst;
         fatigue.value = data.tiredness;
+        console.log(hunger.value, thirst.value, fatigue.value);
         break;
 
       case 'player:update':

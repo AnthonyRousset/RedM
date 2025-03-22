@@ -28,7 +28,11 @@ const quickSlots = ref([
 
 function getIcon(name) {
   const icons = {
+    weapon: './images/weapons/lancaster.png',
+    weapon: 'images/weapons/lancaster.png',
     weapon: '/images/weapons/lancaster.png',
+    weapon: 'public/images/weapons/lancaster.png',
+    weapon: '/public/images/weapons/lancaster.png'
   };
   return icons[name] || '❔';
 }

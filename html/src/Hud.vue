@@ -101,10 +101,9 @@ onMounted(() => {
 
     switch (data.action) {
       case 'metabolism:update':
-        hunger.value = data.hunger;
-        thirst.value = data.thirst;
-        fatigue.value = data.tiredness;
-        console.log(hunger.value, thirst.value, fatigue.value);
+        hunger.value = data.info.hunger;
+        thirst.value = data.info.thirst;
+        fatigue.value = data.info.tiredness;
         break;
 
       case 'player:update':

@@ -23,7 +23,7 @@
 import { ref, onMounted } from 'vue';
 import CharacterMenu from './menu/CharacterMenu.vue';
 import InventoryMenu from './menu/InventoryMenu.vue';
-import GameHud from './hud/Hud.vue';
+import GameHud from './Hud.vue';
 import { menu } from './stores'; // store pinia ou reactive
 
 // Référence locale à la valeur du menu

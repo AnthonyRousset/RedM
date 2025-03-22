@@ -7,8 +7,19 @@
                 <button @click="tpPlayer">🧭 Téléportation</button>
                 <button @click="giveMoney">💰 Donner de l'argent</button>
                 <button @click="setSpawnNPC">👤 Spawn NPC</button>
-                <button @click="openNpcSelector">📍 Placer un PNJ</button>
 
+                <!-- Obtenir la position -->
+                <button @click="getPosition">📍 Obtenir la position</button>
+                <div v-if="positionVisible" class="modal">
+                    <div class="modal-content">
+                        <h2>Position</h2>
+                        <p>{{ position }}</p>
+                    </div>
+                </div>
+                    
+
+                <!-- Placer un PNJ -->
+                <button @click="openNpcSelector">📍 Placer un PNJ</button>
                 <div v-if="npcSelectorVisible" class="modal">
                     <div class="modal-content">
                         <h2>Choisir un PNJ</h2>
@@ -34,6 +45,7 @@
 <script setup>
 import { ref } from 'vue';
 const npcSelectorVisible = ref(false)
+const positionVisible = ref(false)
 const selectedNpc = ref("")
 const npcList = ref([
     { label: "Tenancier du saloon", model: "U_M_M_BARMAN_01" },
@@ -86,6 +98,10 @@ const giveMoney = () => {
 const setSpawnNPC = () => {
     fetch(`https://${GetParentResourceName()}/set-spawn-npc`, { method: 'POST' })
 }
+
+const getPosition = () => {
+    fetch(`https://${GetParentResourceName()}/get-position`, { method: 'POST' })
+}       
 
 </script>
 

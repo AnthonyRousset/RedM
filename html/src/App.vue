@@ -1,9 +1,9 @@
 <template>
   <GameHud />
   <AdminMenu v-if="currentMenu === 'admin'" />
-  <CharacterMenu v-if="currentMenu === 'character'" />
-  <InventoryMenu v-else-if="currentMenu === 'inventory'" />
   <BankMenu v-else-if="currentMenu === 'bank'" />
+  <CharacterMenu v-else-if="currentMenu === 'character'" />
+  <InventoryMenu v-else-if="currentMenu === 'inventory'" />
 </template>
 
 <style scoped>
@@ -44,19 +44,38 @@ onMounted(() => {
 
     switch (data.action) {
     //switch ("metabolism:update") {
-      case 'openCharacter':
+      case 'character:open':
         menu.value = 'character';
         currentMenu.value = 'character';
         break;
+      case 'character:close':
+        menu.value = null;
+        currentMenu.value = null;
+        break;
+
       case 'inventory:open':
         menu.value = 'inventory';
         currentMenu.value = 'inventory';
         break;
-      case 'openAdmin':
+      case 'inventory:close':
+        menu.value = null;
+        currentMenu.value = null;
+        break;
+
+      case 'admin:open':
         menu.value = 'admin';
         currentMenu.value = 'admin';
         break;
-      case 'closeMenu':
+      case 'admin:close':
+        menu.value = null;
+        currentMenu.value = null;
+        break;   
+
+      case 'bank:open':
+        menu.value = 'bank';
+        currentMenu.value = 'bank';
+        break;
+      case 'bank:close':
         menu.value = null;
         currentMenu.value = null;
         break;

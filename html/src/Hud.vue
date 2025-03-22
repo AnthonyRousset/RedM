@@ -90,7 +90,11 @@ const updateTime = () => {
 
 onMounted(() => {
   window.addEventListener('message', (event) => {
+    console.log(event);
+    
     const data = event.data;
+
+    console.log(data);
 
     switch (data.action) {
       case 'metabolism:update':

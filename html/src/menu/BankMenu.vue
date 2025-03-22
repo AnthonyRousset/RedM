@@ -82,7 +82,7 @@ const close = () => {
     font-family: 'Special Elite', serif;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
     background-color: rgba(0, 0, 0, 0.5);
-    background-image: url('./images/bank.png');
+    background-image: url('/images/bank.png');
     /* Parchemin HD */
     background-size: cover;
     background-repeat: no-repeat;

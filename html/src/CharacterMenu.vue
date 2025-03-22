@@ -12,6 +12,7 @@
 
     <button @click="submit">Valider</button>
   </div>
+  
 </template>
 
 <script setup>

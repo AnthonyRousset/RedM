@@ -17,6 +17,19 @@ onMounted(() => {
   // Réactif si menu est un ref ou store Pinia
   currentMenu.value = menu.value;
 
+  console.log("COUCOU");
+  console.log("COUCOU");
+  console.log("COUCOU");
+  console.log("COUCOU");
+  console.log("COUCOU");
+  console.log("COUCOU");
+  console.log("COUCOU");
+  console.log("COUCOU");
+  console.log("COUCOU");
+  console.log("COUCOU");
+  console.log("COUCOU");
+  console.log("COUCOU");
+
   // Si le store menu est une ref, on peut faire un watch ici si nécessaire
   window.addEventListener('message', (event) => {
     const data = event.data;

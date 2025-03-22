@@ -107,8 +107,9 @@ onMounted(() => {
   window.addEventListener('message', (event) => {
     const data = event.data;
 
+    console.log(data)
     switch (data.action) {
-        case 'admin:position':
+        case 'admin:pos':
             // data.info
             console.log(data)
             position.value = data.info  

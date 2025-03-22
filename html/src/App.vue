@@ -44,7 +44,7 @@ onMounted(() => {
         menu.value = 'character';
         currentMenu.value = 'character';
         break;
-      case 'metabolism:update':
+      case 'inventory:open':
         menu.value = 'inventory';
         currentMenu.value = 'inventory';
         break;

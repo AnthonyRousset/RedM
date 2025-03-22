@@ -3,3 +3,4 @@ node_modules/
 client.lua
 fxmanifest.lua
 GITcmd.md
+html/build

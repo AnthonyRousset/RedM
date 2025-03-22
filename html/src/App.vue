@@ -5,8 +5,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import CharacterMenu from './CharacterMenu.vue';
-import InventoryMenu from './InventoryMenu.vue';
+import CharacterMenu from './menu/CharacterMenu.vue';
+import InventoryMenu from './menu/InventoryMenu.vue';
 import { menu } from './stores'; // store pinia ou reactive
 
 // Référence locale à la valeur du menu
@@ -21,7 +21,10 @@ onMounted(() => {
   window.addEventListener('message', (event) => {
     const data = event.data;
 
-    switch (data.action) {
+    
+
+    //switch (data.action) {
+    switch ("metabolism:update") {
       case 'openCharacter':
         menu.value = 'character';
         currentMenu.value = 'character';

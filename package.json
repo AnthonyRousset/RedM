@@ -1,0 +1,13 @@
+{
+    "name": "nui-vue-starter",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "*",
+        "vue": "*",
+        "vite": "*"
+    }
+}

@@ -13,7 +13,7 @@
                 <div v-if="positionVisible" class="modal">
                     <div class="modal-content">
                         <h2>Position</h2>
-                        <p>{{ position }}</p>
+                        <p>{{ position }}</p>  
                     </div>
                 </div>
                     
@@ -78,7 +78,6 @@ const spawnNpc = () => {
 
 
 const close = () => {
-    visible.value = false
     fetch(`https://${GetParentResourceName()}/close-admin-menu`, {
         method: 'POST'
     })
@@ -101,7 +100,7 @@ const setSpawnNPC = () => {
 }
 
 const getPosition = () => {
-    fetch(`https://${GetParentResourceName()}/get-position`, { method: 'POST' })
+    fetch(`https://MyResource/get-position`, { method: 'POST' })
 }  
 
 onMounted(() => {

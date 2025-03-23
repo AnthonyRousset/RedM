@@ -21,7 +21,7 @@ export const useHudStore = defineStore('hud', {
         notification: [] // notifications
     }),
     actions: {
-        setHudData(data) {
+        update(data) {
             this.hunger = data.hunger ?? this.hunger
             this.thirst = data.thirst ?? this.thirst
             this.tiredness = data.tiredness ?? this.tiredness
@@ -33,7 +33,7 @@ export const useHudStore = defineStore('hud', {
             this.city = data.city ?? this.city
             this.shortcuts = data.shortcuts ?? this.shortcuts
             this.notification = data.notification ?? this.notification
-        }   
+        }
     },
     getters: {
         getHunger: (state) => state.hunger,

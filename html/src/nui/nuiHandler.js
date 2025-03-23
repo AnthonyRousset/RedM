@@ -67,12 +67,12 @@ const handlers = {
     hud.update(data)
   },
   'metabolism:update': (data) => {
-    //const metabolism = useMetabolismStore()
-    //metabolism.update(data)
+    const metabolism = useHudStore() 
+    metabolism.update(data)
   },  
   'wallet:balance': (data) => {
-    //const wallet = useWalletStore()
-    //wallet.update(data)
+    const wallet = useHudStore()
+    wallet.update(data)
   },    
   'player:update': (data) => {
     //const player = usePlayerStore()

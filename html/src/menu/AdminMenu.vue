@@ -59,10 +59,8 @@
 <script setup>
 import { sendNui } from '../utils/nui'
 import { useAdminStore } from '../stores/adminStore'
-import { useUiStore } from '../stores/uiStore'
 
 const admin = useAdminStore()
-const ui = useUiStore()
 
 
 const copyCoordsToClipboard = () => {
@@ -120,7 +118,6 @@ const getPosition = async () => {
 }
 
 const close = async () => {
-    ui.closeMenu(); 
     await sendNui('admin-close'); 
 }
 

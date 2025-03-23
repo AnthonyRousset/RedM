@@ -21,11 +21,9 @@
 <script setup>
 import { ref } from 'vue';
 import { sendNui } from '../utils/nui'
-import { useUiStore } from '../stores/uiStore'
 
 const balance = ref(0);
 const amount = ref();
-const uiStore = useUiStore()
 
 const deposit = () => {
     if (amount.value > 0) {
@@ -55,7 +53,6 @@ const withdraw = () => {
 
 const close = () => {
     sendNui('bank-close')
-    uiStore.closeMenu()
 };
 
 </script>

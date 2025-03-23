@@ -17,14 +17,12 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useUiStore } from '../stores/uiStore.js'
 import { useCaracterStore } from '../stores/caracterStore.js'
 import { sendNui } from '../utils/nui'
 
 const firstName = ref('')
 const lastName = ref('')
 const gender = ref('male')
-const uiStore = useUiStore()
 const caracterStore = useCaracterStore()
 
 const submit = () => {
@@ -35,8 +33,6 @@ const submit = () => {
     lastName: lastName.value,
     gender: gender.value
   })
-
-  uiStore.closeMenu()
 }
 </script>
 

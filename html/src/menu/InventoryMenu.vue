@@ -38,7 +38,6 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useUiStore } from '../stores/uiStore.js'
 import { useInventoryStore } from '../stores/inventoryStore.js'
 import { sendNui } from '../utils/nui'
 
@@ -49,11 +48,9 @@ const contextX = ref(0)
 const contextY = ref(0)
 const selectedItem = ref(null)
 const draggedItem = ref(null)
-const uiStore = useUiStore()
 const inventoryStore = useInventoryStore()
 
 function close() {
-  uiStore.closeMenu()
   sendNui('inventory-close')
 }
 

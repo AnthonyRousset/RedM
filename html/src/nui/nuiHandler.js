@@ -11,11 +11,20 @@ const handlers = {
     const ui = useUiStore()
     ui.openMenu('character')
   },
+  'character:close': () => {
+    const ui = useUiStore()
+    ui.closeMenu()
+  },
+
 
   // inventory
   'inventory:open': () => {
     const ui = useUiStore()
     ui.openMenu('inventory')
+  },  
+  'inventory:close': () => {
+    const ui = useUiStore()
+    ui.closeMenu()
   },
   'inventory:update': (data) => {
     const inventory = useInventoryStore()
@@ -28,6 +37,10 @@ const handlers = {
     const ui = useUiStore()
     ui.openMenu('admin')
   },
+  'admin:close': () => {
+    const ui = useUiStore()
+    ui.closeMenu()
+  },  
   'admin:pos': (data) => {
     const admin = useAdminStore()
     admin.position = data.info  
@@ -38,6 +51,10 @@ const handlers = {
   'bank:open': () => {
     const ui = useUiStore()
     ui.openMenu('bank')
+  },
+  'bank:close': () => {
+    const ui = useUiStore()
+    ui.closeMenu()
   },
   'bank:update': (data) => {
     const bank = useBankStore()
@@ -51,33 +68,33 @@ const handlers = {
   },
   'metabolism:update': (data) => {
     //const metabolism = useMetabolismStore()
-    metabolism.update(data)
+    //metabolism.update(data)
   },  
   'wallet:balance': (data) => {
     //const wallet = useWalletStore()
-    wallet.update(data)
+    //wallet.update(data)
   },    
   'player:update': (data) => {
     //const player = usePlayerStore()
-    player.update(data)
+    //player.update(data)
   },  
   'buffs:update': (data) => {
     //const buffs = useBuffsStore()
-    buffs.update(data)
+    //buffs.update(data)
   },  
   'weather:update': (data) => {
     //const weather = useWeatherStore()
-    weather.update(data)
+    //weather.update(data)
   },    
   'location:update': (data) => {
     //const location = useLocationStore()
-    location.update(data)
+    //location.update(data)
   },  
 
   // notify
   'notify:message': (data) => {
     //const notify = useNotifyStore()
-    notify.update(data)
+    //notify.update(data)
   }
 
 }

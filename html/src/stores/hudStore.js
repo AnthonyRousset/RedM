@@ -4,15 +4,15 @@ import { defineStore } from 'pinia'
 
 export const useHudStore = defineStore('hud', {
     state: () => ({
-        name: 'John Doe', // nom du joueur
-        hunger: 25, // faim
-        thirst: 10, // soif
-        tiredness: 33, // fatigue
-        recovery: 5, // récupération
+        name: 'Player', // nom du joueur
+        hunger: 0, // faim
+        thirst: 0, // soif
+        tiredness: 0, // fatigue
+        recovery: 0, // récupération
         drugs:[], // drogues
         sick: [], // maladies
         activeBuffs: [], // buffs actifs
-        money: 100, // dollars sur soi   
+        money: 0, // dollars sur soi   
         zone: 'Valentine', // ville en cours
         weather: 'Soleil', // temps
         temperature: 20, // température
@@ -29,7 +29,7 @@ export const useHudStore = defineStore('hud', {
             this.drugs = data.drugs ?? this.drugs
             this.sick = data.sick ?? this.sick
             this.activeBuffs = data.activeBuffs ?? this.activeBuffs
-            this.money = data.money ?? this.money
+            this.money = data.balance ?? this.money
             this.city = data.city ?? this.city
             this.shortcuts = data.shortcuts ?? this.shortcuts
             this.notification = data.notification ?? this.notification

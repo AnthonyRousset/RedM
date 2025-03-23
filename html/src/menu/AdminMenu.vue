@@ -12,7 +12,7 @@
                         <h2>Position</h2>
                         <p> X {{ admin.position.x }} | Y {{ admin.position.y }} | Z {{ admin.position.z }}</p>
                         <button @click="copyCoordsToClipboard">📋 Copier les coordonnées</button>
-                        <button class="close" @click="closePosition">✖ Fermer</button>
+                        <button class="close" @click="admin.positionVisible = false">✖ Fermer</button>
                     </div>
                 </div>
 
@@ -66,7 +66,7 @@ const ui = useUiStore()
 
 
 const copyCoordsToClipboard = () => {
-    const text = `${position.value.x.toFixed(1)}f, ${position.value.y.toFixed(1)}f, ${position.value.z.toFixed(1)}f`
+    const text = `${admin.position.x.toFixed(1)}f, ${admin.position.y.toFixed(1)}f, ${admin.position.z.toFixed(1)}f`
 
     const textarea = document.createElement('textarea')
     textarea.value = text

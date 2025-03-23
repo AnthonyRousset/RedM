@@ -50,35 +50,35 @@ const handlers = {
     hud.update(data)
   },
   'metabolism:update': (data) => {
-    const metabolism = useMetabolismStore()
+    //const metabolism = useMetabolismStore()
     metabolism.update(data)
   },  
   'wallet:balance': (data) => {
-    const wallet = useWalletStore()
+    //const wallet = useWalletStore()
     wallet.update(data)
   },    
   'player:update': (data) => {
-    const player = usePlayerStore()
+    //const player = usePlayerStore()
     player.update(data)
   },  
   'buffs:update': (data) => {
-    const buffs = useBuffsStore()
+    //const buffs = useBuffsStore()
     buffs.update(data)
   },  
   'weather:update': (data) => {
-    const weather = useWeatherStore()
+    //const weather = useWeatherStore()
     weather.update(data)
   },    
   'location:update': (data) => {
-    const location = useLocationStore()
+    //const location = useLocationStore()
     location.update(data)
   },  
 
   // notify
   'notify:message': (data) => {
-    const notify = useNotifyStore()
+    //const notify = useNotifyStore()
     notify.update(data)
-  },  
+  }
 
 }
 
@@ -94,7 +94,8 @@ export function handleNuiEvent(event) {
 
   if (!event.data || !event.data.action) return
 
-  const handler = handlers[event.data.action]
+  const action = event.data.action;
+  const handler = handlers[action]
 
   if (handler) { 
     handler(data) // appelle la fonction handler avec les données

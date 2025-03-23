@@ -19,6 +19,21 @@
                     </div>
                 </div>
                     
+                <!-- etablisement du PNJ -->
+                <button @click="openLocation">📍 Etablissement du PNJ</button>   
+                <div v-if="locationVisible" class="modal">
+                    <div class="modal-content">
+                        <h2>Etablissement du PNJ</h2>
+                        <select v-model="selectedLocation">
+                            <option disabled value="">-- Sélectionner un établissement --</option>
+                            <option v-for="location in locationList" :key="location.model" :value="location.model">
+                                {{ location.label }}
+                            </option>
+                        </select>
+                        <button @click="setLocation">✅ Valider</button>
+                        <button class="close" @click="closeLocation">❌ Annuler</button>
+                    </div>
+                </div>
 
                 <!-- Placer un PNJ -->
                 <button @click="openNpcSelector">📍 Placer un PNJ</button>
@@ -63,6 +78,18 @@ const npcList = ref([
     { label: "Palefrenier", model: "U_M_M_PALFREY_01" },
     { label: "Vendeur de drogue", model: "U_M_M_DRUGSTORE_01" }
 ])
+const locationList = ref([
+    { label: "Banque", model: "bank" },
+    { label: "Boucherie", model: "butcher" },
+    { label: "Peche", model: "fish" },
+    { label: "Chasse", model: "hunter" },
+    { label: "Drogue", model: "drug" },
+    { label: "Médecin", model: "doctor" },
+    { label: "Tenancier", model: "bar" }
+])
+const locationVisible = ref(false)
+const selectedLocation = ref("")    
+
 
 const copyCoordsToClipboard = () => {
   const text = `${position.value.x.toFixed(1)}f, ${position.value.y.toFixed(1)}f, ${position.value.z.toFixed(1)}f`
@@ -94,10 +121,19 @@ const openNpcSelector = () => {
     npcSelectorVisible.value = true
 }
 
+const openLocation = () => {
+    locationVisible.value = true
+}
+
 const closeNpcSelector = () => {
     npcSelectorVisible.value = false
     selectedNpc.value = ""
 }
+
+const closeLocation = () => {
+    locationVisible.value = false
+    selectedLocation.value = ""
+}   
 
 const closePosition = () => {
     positionVisible.value = false
@@ -113,6 +149,15 @@ const spawnNpc = () => {
     closeNpcSelector()
 }
 
+const setLocation = () => {
+    if (!selectedLocation.value) return
+
+    fetch(`https://${GetParentResourceName()}/admin-setlocation`, {
+        method: 'POST',
+        body: JSON.stringify({ location: selectedLocation.value })
+    })
+    closeLocation()
+}
 
 const close = () => {
     fetch(`https://${GetParentResourceName()}/close-admin-menu`, {
@@ -140,10 +185,8 @@ onMounted(() => {
   window.addEventListener('message', (event) => {
     const data = event.data;
 
-    console.log(data)
     switch (data.action) {
         case 'admin:pos':
-            // data.info
             console.log(data)
             position.value = data.info  
             positionVisible.value = true

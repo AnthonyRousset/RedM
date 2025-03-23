@@ -13,7 +13,10 @@ export const useHudStore = defineStore('hud', {
         sick: [], // maladies
         activeBuffs: [], // buffs actifs
         money: 100, // dollars sur soi   
-        city: 'Los Santos', // ville en cours
+        zone: 'Valentine', // ville en cours
+        weather: 'Soleil', // temps
+        temperature: 20, // température
+        currentTime: '12:00', // heure
         shortcuts: [], // raccourcis 1 a 4
         notification: [] // notifications
     }),

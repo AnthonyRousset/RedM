@@ -15,55 +15,11 @@ const updateTime = () => {
   currentTime.value = `${h}:${m}`;
 };
 
-
 onMounted(() => {
-  /*
-  window.addEventListener('message', (event) => {
-
-    const data = event.data;
-
-    switch (data.action) {
-      case 'metabolism:update':
-        hunger.value = data.info.hunger;
-        thirst.value = data.info.thirst;
-        fatigue.value = data.info.tiredness;
-        break;
-
-      case 'wallet:balance':
-        console.log('wallet:balance', data)
-        money.value = data.info.balance;
-        break;
-
-      case 'player:update':
-        playerName.value = data.name;
-        break;
-
-      case 'location:update':
-        zone.value = data.zone;
-        break;
-
-      case 'weather:update':
-        weather.value = data.weather;
-        temperature.value = data.temperature;
-        break;
-
-      case 'buffs:update':
-        activeBuffs.value = data.buffs;
-        break;
-
-      case 'notify:message':
-        notification.value = data.message;
-        setTimeout(() => {
-          notification.value = '';
-        }, 5000);
-        break;
-    }
-  });
-  */
-
   updateTime();
   setInterval(updateTime, 60000);
 });
+
 </script>
 
 <template>
@@ -76,7 +32,7 @@ onMounted(() => {
 
     <!-- PLAYER INFO -->
     <div class="info">
-      <div class="player-name">{{ hudStore.playerName }}</div>
+      <div class="player-name">{{ hudStore.name }}</div>
       <div class="zone">{{ hudStore.zone }}</div>
       <div class="weather">
         {{ hudStore.temperature }}°C - {{ hudStore.weather }}
@@ -103,6 +59,13 @@ onMounted(() => {
     <div class="buffs">
       <div v-for="buff in hudStore.activeBuffs" :key="buff.id" class="buff">
         {{ buff.label }}
+      </div>
+    </div>
+
+    <!-- MALADIES -->
+    <div class="maladies">
+      <div v-for="maladie in hudStore.sick" :key="maladie.id" class="maladie">
+        {{ maladie.label }}
       </div>
     </div>
 

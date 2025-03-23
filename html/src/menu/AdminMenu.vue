@@ -12,10 +12,12 @@
                 <button @click="getPosition">📍 Obtenir la position</button>
                 <div v-if="positionVisible" class="modal">
                     <div class="modal-content">
+
                         <h2>Position</h2>
-                        <p>{{ position }}</p>  
+                        <p>  X {{ position.x }} | Y {{ position.y }} | Z {{ position.z }}</p>   
+                        <button @click="copyCoordsToClipboard">📋 Copier les coordonnées</button>
+                        <button class="close" @click="closePosition">✖ Fermer</button> 
                     </div>
-                    <button class="close" @click="closePosition">✖ Fermer</button> 
                 </div>
                     
 
@@ -57,6 +59,11 @@ const npcList = ref([
     { label: "Palefrenier", model: "U_M_M_PALFREY_01" },
     { label: "Vendeur de drogue", model: "U_M_M_DRUGSTORE_01" }
 ])
+        
+const copyCoordsToClipboard = () => {
+    const formattedCoords = `${position.value.x.toFixed(1)}f, ${position.value.y.toFixed(1)}f, ${position.value.z.toFixed(1)}f`;
+    navigator.clipboard.writeText(formattedCoords);
+}
 
 const openNpcSelector = () => {
     npcSelectorVisible.value = true

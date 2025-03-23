@@ -27,8 +27,10 @@ import CharacterMenu from './menu/CharacterMenu.vue';
 import InventoryMenu from './menu/InventoryMenu.vue';
 import BankMenu from './menu/BankMenu.vue';
 import AdminMenu from './menu/AdminMenu.vue';
-import GameHud from './Hud.vue';
-import { menu } from './stores'; // store pinia ou reactive
+import GameHud from './Hud.vue';  
+import { useUiStore } from './stores.js';
+
+const uiStore = useUiStore()
 
 // Référence locale à la valeur du menu
 const currentMenu = ref(null);
@@ -36,9 +38,9 @@ const currentMenu = ref(null);
 // Watch du store (si c'est un ref dans ton store)
 onMounted(() => {
   // Réactif si menu est un ref ou store Pinia
-  currentMenu.value = menu.value;  
+  currentMenu.value = uiStore.isMenuOpen;  
 
-  menu.value = 'bank';
+  uiStore.isMenuOpen = 'bank';
   currentMenu.value = 'bank';
 
   // Si le store menu est une ref, on peut faire un watch ici si nécessaire
@@ -48,38 +50,38 @@ onMounted(() => {
     switch (data.action) {
     //switch ("metabolism:update") {
       case 'character:open':
-        menu.value = 'character';
+        uiStore.isMenuOpen = 'character';
         currentMenu.value = 'character';
         break;
       case 'character:close':
-        menu.value = null;
+        uiStore.isMenuOpen = false;
         currentMenu.value = null;
         break;
 
       case 'inventory:open':
-        menu.value = 'inventory';
+        uiStore.isMenuOpen = 'inventory';
         currentMenu.value = 'inventory';
         break;
       case 'inventory:close':
-        menu.value = null;
+        uiStore.isMenuOpen = false;
         currentMenu.value = null;
         break;
 
       case 'admin:open':
-        menu.value = 'admin';
+        uiStore.isMenuOpen = 'admin';
         currentMenu.value = 'admin';
         break;
       case 'admin:close':
-        menu.value = null;
+        uiStore.isMenuOpen = false;
         currentMenu.value = null;
         break;   
 
       case 'bank:open':
-        menu.value = 'bank';
+        uiStore.isMenuOpen = 'bank';
         currentMenu.value = 'bank';
         break;
       case 'bank:close':
-        menu.value = null;
+        uiStore.isMenuOpen = false;
         currentMenu.value = null;
         break;
     }

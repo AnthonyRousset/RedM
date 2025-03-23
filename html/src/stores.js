@@ -1,4 +1,17 @@
-// src/stores.js
-import { ref } from 'vue'
+import { defineStore } from 'pinia'
 
-export const menu = ref(null) // 'character', 'inventory', etc.
+export const useUiStore = defineStore('ui', {
+  state: () => ({
+    isMenuOpen: false,
+    notification: null,
+  }),
+  actions: {
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen
+    },
+    showNotification(message) {
+      this.notification = message
+      setTimeout(() => this.notification = null, 3000)
+    },
+  },
+})

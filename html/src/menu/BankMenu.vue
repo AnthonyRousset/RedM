@@ -1,7 +1,7 @@
 <template>
     <div class="bank-menu">
 
-        <div class="balance-title">Solde</div>
+        <div class="balance-title"> {{ 'Jhon Doe' }} </div>
 
         <div class="balance">{{ balance.toLocaleString() }}</div>
 
@@ -35,6 +35,7 @@ onMounted(() => {
 
 const deposit = () => {
     if (amount.value > 0) {
+    console.log('deposit', amount.value)
         // vérifier si le joueur a assez d'argent sur lui
         if (balance.value < amount.value) {
             console.log('Vous n\'avez pas assez d\'argent');
@@ -50,6 +51,7 @@ const deposit = () => {
 
 const withdraw = () => {
     if (amount.value > 0) {
+    console.log('withdraw', amount.value)
         // vérifier si le joueur a assez d'argent en banque
         if (balance.value < amount.value) {
             console.log('Vous n\'avez pas assez d\'argent');
@@ -68,6 +70,7 @@ const close = () => {
         method: 'POST'
     });
 };
+
 </script>
 
 <style scoped>
@@ -109,9 +112,9 @@ h2 {
 }
 .balance-title {
     position: absolute;
-    top: 189px;
-    left: 182px;
-    font-size: 2.5rem;
+    top: 193px;
+    right: 259px;
+    font-size: 2rem;
 }
 .balance {
     position: absolute;
@@ -143,7 +146,7 @@ h2 {
     background-color: #4b3f0942;
     border-radius: 5px;
     padding: 5px;
-
+    outline: none;
 }
 
 .actions {
@@ -314,12 +317,61 @@ h2 {
         width: 800px;
         height: 580px;
     }
+    .balance-title {
+        font-size: 2.5rem;
+        top: 291px;
+        right: 400px;
+    }
+    .balance {
+        font-size: 2.5rem;
+        top: 293px;
+        right: 164px;
+    }   
+    .form input {
+        font-size: 2.5rem;
+        top: 395px;
+        right: 159px;
+        width: 150px;
+    }
+    .actions {
+        top: 503px;
+        right: 45px;
+    }
+    .actions .btn-western {
+        font-size: 2.5rem;
+        padding: 20px 18px;
+    }
 }
 
 @media (min-width: 3500px) {
     .bank-menu {
         width: 1200px;
         height: 880px;
+        }
+    .balance-title {
+        font-size: 4rem;
+        top: 434px;
+        right: 579px;
+    }
+    .balance {
+        font-size: 4rem;
+        top: 431px;
+        right: 239px;
+    }
+    .form input {
+        font-size: 4rem;
+        top: 577px;
+        right: 239px;
+        width: 230px;
+        height: 75px;
+    }
+    .actions {
+        top: 765px;
+        right: 55px;
+    }
+    .actions .btn-western {
+        font-size: 2rem;
+        padding: 25px 18px;
     }
 }
 </style>

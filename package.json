@@ -8,7 +8,10 @@
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "*",
-        "vue": "*",
-        "vite": "*"
+        "vite": "*",
+        "vue": "*"
+    },
+    "dependencies": {
+        "pinia": "^3.0.1"
     }
 }

@@ -17,11 +17,13 @@
 
 <script setup>
 import { ref } from 'vue'
-import { menu } from '../stores.js' // Assure-toi que c'est une `ref` ou `reactive` importée de `pinia` ou autre
+import { useUiStore } from '../stores.js'
 
 const firstName = ref('')
 const lastName = ref('')
 const gender = ref('male')
+const uiStore = useUiStore()
+
 
 const submit = () => {
   if (!firstName.value || !lastName.value) return

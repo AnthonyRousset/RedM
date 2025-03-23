@@ -5,6 +5,7 @@ import Slots from './components/Slots.vue';
 import { useHudStore } from '../stores/hudStore';
 
 const hudStore = useHudStore();
+console.log('hudStore', hudStore)
  
 // Met à jour l'heure
 const currentTime = ref();

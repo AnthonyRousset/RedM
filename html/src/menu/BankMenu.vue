@@ -27,22 +27,22 @@ const amount = ref(0);
 onMounted(() => {
     window.addEventListener('message', (event) => {
         const data = event.data;
-
-        if (data.action === 'bank:open') {
-            balance.value = data.balance;
-        }
-
-        if (data.action === 'bank:update') {
-            balance.value = data.balance;
+        if (data.action === 'bank:balance') {
+            balance.value = data.info.amount;
         }
     });
 });
 
 const deposit = () => {
     if (amount.value > 0) {
-        fetch(`https://${GetParentResourceName()}/bankAction`, {
+        // vérifier si le joueur a assez d'argent sur lui
+        if (balance.value < amount.value) {
+            console.log('Vous n\'avez pas assez d\'argent');
+            return;
+        }
+        fetch(`https://${GetParentResourceName()}/bank-deposite`, {
             method: 'POST',
-            body: JSON.stringify({ action: 'deposit', amount: amount.value })
+            body: JSON.stringify({ amount: amount.value })
         });
         amount.value = 0;
     }
@@ -50,16 +50,21 @@ const deposit = () => {
 
 const withdraw = () => {
     if (amount.value > 0) {
-        fetch(`https://${GetParentResourceName()}/bankAction`, {
+        // vérifier si le joueur a assez d'argent en banque
+        if (balance.value < amount.value) {
+            console.log('Vous n\'avez pas assez d\'argent');
+            return;
+        }
+        fetch(`https://${GetParentResourceName()}/bank-withdraw`, {
             method: 'POST',
-            body: JSON.stringify({ action: 'withdraw', amount: amount.value })
+            body: JSON.stringify({ amount: amount.value })
         });
         amount.value = 0;
     }
 };
 
 const close = () => {
-        fetch(`https://${GetParentResourceName()}/closeMenu`, {
+    fetch(`https://${GetParentResourceName()}/bank-close`, {
         method: 'POST'
     });
 };

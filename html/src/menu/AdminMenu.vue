@@ -3,9 +3,6 @@
         <div class="admin-menu">
             <h1>Menu Administrateur</h1>
             <div class="button-group">
-                <button @click="healPlayer">💉 Heal Joueur</button>
-                <button @click="tpPlayer">🧭 Téléportation</button>
-                <button @click="giveMoney">💰 Donner de l'argent</button>
                 
                 <!-- Obtenir la position -->
                 <button @click="getPosition">📍 Obtenir la position</button>

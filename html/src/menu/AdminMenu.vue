@@ -6,8 +6,7 @@
                 <button @click="healPlayer">💉 Heal Joueur</button>
                 <button @click="tpPlayer">🧭 Téléportation</button>
                 <button @click="giveMoney">💰 Donner de l'argent</button>
-                <button @click="setSpawnNPC">👤 Spawn NPC</button>
-
+                
                 <!-- Obtenir la position -->
                 <button @click="getPosition">📍 Obtenir la position</button>
                 <div v-if="positionVisible" class="modal">
@@ -107,7 +106,7 @@ const closePosition = () => {
 const spawnNpc = () => {
     if (!selectedNpc.value) return
 
-    fetch(`https://${GetParentResourceName()}/spawn-npc`, {
+    fetch(`https://${GetParentResourceName()}/admin-spawn`, {
         method: 'POST',
         body: JSON.stringify({ model: selectedNpc.value })
     })
@@ -133,12 +132,8 @@ const giveMoney = () => {
     fetch(`https://${GetParentResourceName()}/give-money`, { method: 'POST' })
 }
 
-const setSpawnNPC = () => {
-    fetch(`https://${GetParentResourceName()}/admin:spawn`, { method: 'POST', body: JSON.stringify({ model: selectedNpc.value }) })
-}
-
 const getPosition = () => {
-    fetch(`https://${GetParentResourceName()}/admin:getpos`, { method: 'POST' })
+    fetch(`https://${GetParentResourceName()}/admin-getpos`, { method: 'POST' })
 }  
 
 onMounted(() => {

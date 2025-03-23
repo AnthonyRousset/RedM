@@ -27,7 +27,7 @@ const amount = ref(0);
 onMounted(() => {
     window.addEventListener('message', (event) => {
         const data = event.data;
-        if (data.action === 'bank:balance') {
+        if (data.action === 'bank:update') {
             balance.value = data.info.amount;
         }
     });

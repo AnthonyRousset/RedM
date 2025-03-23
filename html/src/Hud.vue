@@ -31,11 +31,6 @@
       </div>
     </div>
 
-    <!-- HORSE -->
-    <div class="horse" v-if="horseName">
-      🐎 {{ horseName }} ({{ horseDistance }}m)
-    </div>
-
     <!-- BUFFS -->
     <div class="buffs">
       <div v-for="buff in activeBuffs" :key="buff.id" class="buff">
@@ -48,12 +43,6 @@
       {{ notification }}
     </div>
 
-    <!-- LOG -->
-    <div class="log">
-      <div v-for="(line, index) in logs" :key="index" class="log-line">
-        {{ line }}
-      </div>
-    </div>
   </div>
 
   <Slots />
@@ -64,7 +53,7 @@
 import { ref, onMounted } from 'vue';
 import Slots from './hud/Slots.vue';
 
-const money = ref(1250);
+const money = ref(0);
 const hunger = ref(0);
 const thirst = ref(0);
 const fatigue = ref(0);
@@ -73,8 +62,6 @@ const playerName = ref('John Marston');
 const zone = ref('Valentine');
 const weather = ref('Clair');
 const temperature = ref(21);
-const horseName = ref('Tonnerre');
-const horseDistance = ref(25);
 const activeBuffs = ref([]);
 const notification = ref('');
 const logs = ref([]);
@@ -100,9 +87,13 @@ onMounted(() => {
         fatigue.value = data.info.tiredness;
         break;
 
+      case 'wallet:balance':
+        console.log('wallet:balance', data)
+        money.value = data.info.balance;
+        break;
+
       case 'player:update':
         playerName.value = data.name;
-        money.value = data.money;
         break;
 
       case 'location:update':
@@ -114,25 +105,15 @@ onMounted(() => {
         temperature.value = data.temperature;
         break;
 
-      case 'horse:update':
-        horseName.value = data.name;
-        horseDistance.value = data.distance;
-        break;
-
       case 'buffs:update':
         activeBuffs.value = data.buffs;
         break;
 
-      case 'notify':
+      case 'notify:message':
         notification.value = data.message;
         setTimeout(() => {
           notification.value = '';
         }, 5000);
-        break;
-
-      case 'log':
-        logs.value.unshift(data.message);
-        if (logs.value.length > 5) logs.value.pop();
         break;
     }
   });

@@ -54,16 +54,16 @@ const position = ref("")
 const npcList = ref([
     { label: "Tenancier du saloon", model: "U_M_M_BARMAN_01" },
     { label: "Médecin", model: "U_M_M_DOCTOR_01" },
+    { label: "U_M_M_ValDoctor_01", model: "U_M_M_ValDoctor_01" },
     { label: "Pecheur", model: "U_M_M_FISHERMAN_01" },
+    { label: "CS_FISHCOLLECTOR", model: "CS_FISHCOLLECTOR" },
+    { label: "Boucher", model: "U_M_M_BUTCHER_01" },
+    { label: "S_M_M_UNIBUTCHERS_01", model: "S_M_M_UNIBUTCHERS_01" },
     { label: "Chasseur", model: "U_M_M_HUNTER_01" },
+    { label: "U_M_M_UniBountyHunter_01", model: "U_M_M_UniBountyHunter_01" },
     { label: "Palefrenier", model: "U_M_M_PALFREY_01" },
     { label: "Vendeur de drogue", model: "U_M_M_DRUGSTORE_01" }
 ])
-
-const copyCoordsToClipboards = () => {
-    const formattedCoords = `${position.value.x.toFixed(1)}f, ${position.value.y.toFixed(1)}f, ${position.value.z.toFixed(1)}f`;
-    navigator.clipboard.writeText(formattedCoords);
-}
 
 const copyCoordsToClipboard = () => {
   const text = `${position.value.x.toFixed(1)}f, ${position.value.y.toFixed(1)}f, ${position.value.z.toFixed(1)}f`
@@ -134,11 +134,11 @@ const giveMoney = () => {
 }
 
 const setSpawnNPC = () => {
-    fetch(`https://${GetParentResourceName()}/set-spawn-npc`, { method: 'POST' })
+    fetch(`https://${GetParentResourceName()}/admin:spawn`, { method: 'POST', body: JSON.stringify({ model: selectedNpc.value }) })
 }
 
 const getPosition = () => {
-    fetch(`https://${GetParentResourceName()}/getpos`, { method: 'POST' })
+    fetch(`https://${GetParentResourceName()}/admin:getpos`, { method: 'POST' })
 }  
 
 onMounted(() => {

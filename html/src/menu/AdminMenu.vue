@@ -93,7 +93,7 @@ const setNpc = async () => {
     if (!admin.npcSelector) return;
     console.log('PNJ selectionné : ', admin.npcSelector);
 
-    await sendNui('admin-spawn', {
+    sendNui('admin-spawn', {
         model: admin.npcSelector
     });
 
@@ -105,7 +105,7 @@ const setLocation = async () => {
     if (!admin.location) return;
     console.log('lieu selectionné : ', admin.location);
 
-    await sendNui('admin-location', {
+    sendNui('admin-location', {
         location: admin.location
     });
 
@@ -114,11 +114,11 @@ const setLocation = async () => {
 }
 
 const getPosition = async () => {
-    await sendNui('admin-getpos');
+    sendNui('admin-getpos');
 }
 
 const close = async () => {
-    await sendNui('admin-close'); 
+    sendNui('admin-close'); 
 }
 
 /*

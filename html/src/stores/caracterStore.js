@@ -35,6 +35,9 @@ export const useCaracterStore = defineStore('caracter', {
         }
     }),
     actions: {
+        update(data) {
+            console.log('update', data)
+        },
         setName(name) { 
             this.name = name
         },

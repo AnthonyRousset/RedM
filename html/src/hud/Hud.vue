@@ -28,7 +28,7 @@ onMounted(() => {
     <!-- TOP BAR -->
     <div class="top">
       <div class="money">${{ hudStore.money.toLocaleString() }}</div>
-      <div class="clock">{{ hudStore.currentTime }}</div>
+      <div class="clock">{{ currentTime }}</div>
     </div>
 
     <!-- PLAYER INFO -->

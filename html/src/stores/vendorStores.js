@@ -10,7 +10,10 @@ export const useVendorStore = defineStore('vendor', {
         price: 0, // prix du vendeur selectionné
         quantity: 0 // quantité du vendeur selectionné
     }),
-    actions: {  
+    actions: { 
+        update(data) {
+            console.log('update', data)
+        }, 
         setVendors(vendors) {
             this.vendors = vendors
         },

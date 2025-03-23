@@ -7,6 +7,9 @@ export const useCraftStore = defineStore('craft', {
         recipes: []
     }),
     actions: {
+        update(data) {
+            console.log('update', data)
+        },
         setRecipes(recipes) {
             this.recipes = recipes
         }

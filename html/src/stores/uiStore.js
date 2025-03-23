@@ -9,6 +9,9 @@ export const useUiStore = defineStore('ui', {
         open: false
     }),
     actions: {
+        update(data) {
+            console.log('update', data)
+        },
         openMenu(menu) {
             console.log('openMenu', menu)
             this.menu = menu

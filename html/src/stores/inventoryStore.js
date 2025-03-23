@@ -7,6 +7,10 @@ export const useInventoryStore = defineStore('inventory', {
         items: []
     }),
     actions: {
+        update(data) {
+            console.log('update', data)
+            this.items = data.items ?? this.items
+        },
         addItem(item) {
             this.items.push(item)
         },

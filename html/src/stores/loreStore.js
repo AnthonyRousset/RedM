@@ -1,7 +1,7 @@
 // afficher les règles / lois / factions (comme un menu "livret du shérif")
 
 import { defineStore } from 'pinia'
-    
+
 export const useLoreStore = defineStore('lore', {
     state: () => ({
         rules: [],
@@ -9,6 +9,9 @@ export const useLoreStore = defineStore('lore', {
         factions: []
     }),
     actions: {
+        update(data) {
+            console.log('update', data)
+        },
         setRules(rules) {
             this.rules = rules
         },

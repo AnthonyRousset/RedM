@@ -7,6 +7,9 @@ export const useMapStore = defineStore('map', {
         markers: []
     }),
     actions: {
+        update(data) {
+            console.log('update', data)
+        },
         addMarker(marker) {
             this.markers.push(marker)
         }

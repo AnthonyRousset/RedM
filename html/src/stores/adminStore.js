@@ -34,6 +34,9 @@ export const useAdminStore = defineStore('admin', {
         ]
     }),
     actions: {
+        update(data) {
+            console.log('update', data)
+        },
         setPosition(position) {
             this.position = position
         },

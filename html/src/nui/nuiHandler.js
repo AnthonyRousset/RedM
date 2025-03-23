@@ -58,21 +58,21 @@ const handlers = {
   },
   'bank:update': (data) => {
     const bank = useBankStore()
-    bank.update(data)
+    bank.update(data.info)
   },
 
   // hud
   'hud:update': (data) => {
     const hud = useHudStore()
-    hud.update(data)
+    hud.update(data.info)
   },
   'metabolism:update': (data) => {
     const metabolism = useHudStore() 
-    metabolism.update(data)
+    metabolism.update(data.info)
   },  
   'wallet:balance': (data) => {
     const wallet = useHudStore()
-    wallet.update(data)
+    wallet.update(data.info)
   },    
   'player:update': (data) => {
     //const player = usePlayerStore()

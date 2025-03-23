@@ -34,6 +34,8 @@ export const useHudStore = defineStore('hud', {
             this.city = data.city ?? this.city
             this.shortcuts = data.shortcuts ?? this.shortcuts
             this.notification = data.notification ?? this.notification
+            this.currentTime = data.currentTime ?? this.currentTime
+            this.temperature = data.temperature ?? this.temperature
         }
     },
     getters: {

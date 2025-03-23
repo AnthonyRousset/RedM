@@ -97,7 +97,7 @@ export function handleNuiEvent(event) {
   const handler = handlers[event.data.action]
 
   if (handler) { 
-    handlers(data) // appelle la fonction handler avec les données
+    handler(data) // appelle la fonction handler avec les données
   } else {
     console.warn(`[NUI] Aucun handler pour le type: ${action}`)
   }

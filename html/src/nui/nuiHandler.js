@@ -88,6 +88,7 @@ const handlers = {
 
 export function handleNuiEvent(event) {
   //if (event.origin !== 'https://nui-game-internal') return
+  console.log('handleNuiEvent') 
   console.log(event.origin)
 
   if (!event.data || !event.data.type) return

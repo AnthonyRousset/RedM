@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { registerNuiListener } from './nui/nuiListener'
+import { registerNuiListener } from './nui/nuiListener.js'
 
 import App from './App.vue'
 

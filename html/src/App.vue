@@ -38,8 +38,8 @@ onMounted(() => {
   // Réactif si menu est un ref ou store Pinia
   currentMenu.value = menu.value;  
 
-  menu.value = 'admin';
-  currentMenu.value = 'admin';
+  menu.value = 'bank';
+  currentMenu.value = 'bank';
 
   // Si le store menu est une ref, on peut faire un watch ici si nécessaire
   window.addEventListener('message', (event) => {

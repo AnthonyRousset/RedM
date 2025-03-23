@@ -22,7 +22,7 @@
 import { ref, onMounted } from 'vue';
 
 const balance = ref(0);
-const amount = ref(0);
+const amount = ref();
 
 onMounted(() => {
     window.addEventListener('message', (event) => {
@@ -309,24 +309,17 @@ h2 {
 }
 
 /*media query*/
-@media (max-width: 2500px) {
+@media (min-width: 2500px) {
     .bank-menu {
-        width: 100%;
+        width: 800px;
+        height: 580px;
     }
-    .balance-title {
-        font-size: 1.5rem;
-    }
-    .balance {
-        font-size: 1.5rem;
-    }
-    .form input {
-        font-size: 1.5rem;
-    }
-    .actions {
-        font-size: 1.5rem;
-    }
-    .close {
-        font-size: 1.5rem;
+}
+
+@media (min-width: 3500px) {
+    .bank-menu {
+        width: 1200px;
+        height: 880px;
     }
 }
 </style>

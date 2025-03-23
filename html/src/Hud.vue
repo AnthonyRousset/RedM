@@ -64,7 +64,6 @@ const weather = ref('Clair');
 const temperature = ref(21);
 const activeBuffs = ref([]);
 const notification = ref('');
-const logs = ref([]);
 
 
 // Met à jour l'heure
@@ -188,12 +187,6 @@ onMounted(() => {
   border-radius: 6px;
 }
 
-.horse {
-  margin-bottom: 0.8vw;
-  font-style: italic;
-  color: #ccc;
-}
-
 .buffs {
   display: flex;
   gap: 0.4vw;
@@ -218,13 +211,6 @@ onMounted(() => {
   margin-bottom: 0.8vw;
 }
 
-.log {
-  font-size: 0.65vw;
-  color: #aaa;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15vw;
-}
 
 /* Responsive fallback pour les petits écrans */
 @media screen and (max-width: 1280px) {
@@ -245,8 +231,5 @@ onMounted(() => {
     font-size: 1vw;
   }
 
-  .log {
-    font-size: 1vw;
-  }
 }
 </style>

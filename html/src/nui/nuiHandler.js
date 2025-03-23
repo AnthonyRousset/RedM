@@ -90,15 +90,15 @@ export function handleNuiEvent(event) {
   //if (event.origin !== 'https://nui-game-internal') return
   console.log('handleNuiEvent') 
   console.log(event.origin)
+  const data = event.data;
 
-  if (!event.data || !event.data.type) return
+  if (!event.data || !event.data.action) return
 
-  const { type, data } = event.data
-  const handler = handlers[type]
+  const handler = handlers[event.data.action]
 
-  if (handler) {
-    handler(data)
+  if (handler) { 
+    handlers(data) // appelle la fonction handler avec les données
   } else {
-    console.warn(`[NUI] Aucun handler pour le type: ${type}`)
+    console.warn(`[NUI] Aucun handler pour le type: ${action}`)
   }
 }

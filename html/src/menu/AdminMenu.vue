@@ -47,7 +47,7 @@
                             </option>
                         </select>
                         <div class="modal-buttons">
-                            <button @click="spawnNpc">✅ Valider</button>
+                            <button @click="setNpc">✅ Valider</button>
                             <button class="close" @click="closeNpcSelector">❌ Annuler</button>
                         </div>
                     </div>
@@ -63,7 +63,9 @@
 import { ref, onMounted } from 'vue';
 const npcSelectorVisible = ref(false)
 const positionVisible = ref(false)
+const locationVisible = ref(false)
 const selectedNpc = ref("")
+const selectedLocation = ref("")
 const position = ref("")    
 const npcList = ref([
     { label: "Tenancier du saloon", model: "U_M_M_BARMAN_01" },
@@ -87,8 +89,7 @@ const locationList = ref([
     { label: "Médecin", model: "doctor" },
     { label: "Tenancier", model: "bar" }
 ])
-const locationVisible = ref(false)
-const selectedLocation = ref("")    
+
 
 
 const copyCoordsToClipboard = () => {
@@ -120,16 +121,14 @@ const copyCoordsToClipboard = () => {
 const openNpcSelector = () => {
     npcSelectorVisible.value = true
 }
-
-const openLocation = () => {
-    locationVisible.value = true
-}
-
 const closeNpcSelector = () => {
     npcSelectorVisible.value = false
     selectedNpc.value = ""
 }
 
+const openLocation = () => {
+    locationVisible.value = true
+}
 const closeLocation = () => {
     locationVisible.value = false
     selectedLocation.value = ""
@@ -139,8 +138,10 @@ const closePosition = () => {
     positionVisible.value = false
 }
 
-const spawnNpc = () => {
+
+const setNpc = () => {
     if (!selectedNpc.value) return
+    console.log('PNJ selectionné : ', selectedNpc.value)
 
     fetch(`https://${GetParentResourceName()}/admin-spawn`, {
         method: 'POST',
@@ -151,7 +152,7 @@ const spawnNpc = () => {
 
 const setLocation = () => {
     if (!selectedLocation.value) return
-
+    console.log('lieu selectionné : ', selectedLocation.value)
     fetch(`https://${GetParentResourceName()}/admin-location`, {
         method: 'POST',
         body: JSON.stringify({ location: selectedLocation.value })
@@ -159,27 +160,15 @@ const setLocation = () => {
     closeLocation()
 }
 
-const close = () => {
-    fetch(`https://${GetParentResourceName()}/close-admin-menu`, {
-        method: 'POST'
-    })
-}
-
-const healPlayer = () => {
-    fetch(`https://${GetParentResourceName()}/heal`, { method: 'POST' })
-}
-
-const tpPlayer = () => {
-    fetch(`https://${GetParentResourceName()}/tp`, { method: 'POST' })
-}
-
-const giveMoney = () => {
-    fetch(`https://${GetParentResourceName()}/give-money`, { method: 'POST' })
-}
-
 const getPosition = () => {
     fetch(`https://${GetParentResourceName()}/admin-getpos`, { method: 'POST' })
-}  
+} 
+
+const close = () => {
+    fetch(`https://${GetParentResourceName()}/admin-close`, {
+        method: 'POST'
+    })
+} 
 
 onMounted(() => {
   window.addEventListener('message', (event) => {

@@ -22,6 +22,7 @@ export const useHudStore = defineStore('hud', {
     }),
     actions: {
         update(data) {
+            console.log('update', data)
             this.hunger = data.hunger ?? this.hunger
             this.thirst = data.thirst ?? this.thirst
             this.tiredness = data.tiredness ?? this.tiredness

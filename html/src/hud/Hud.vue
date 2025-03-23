@@ -1,3 +1,83 @@
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import Slots from './components/Slots.vue';
+import { useHudStore } from '../stores/hudStore';
+
+const hudStore = useHudStore();
+
+const money = ref(0);
+const hunger = ref(0);
+const thirst = ref(0);
+const fatigue = ref(0);
+const currentTime = ref('');
+const playerName = ref('John Marston');
+const zone = ref('Valentine');
+const weather = ref('Clair');
+const temperature = ref(21);
+const activeBuffs = ref([]);
+const notification = ref('');
+
+
+// Met à jour l'heure
+const updateTime = () => {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2, '0');
+  const m = now.getMinutes().toString().padStart(2, '0');
+  currentTime.value = `${h}:${m}`;
+};
+
+
+onMounted(() => {
+  /*
+  window.addEventListener('message', (event) => {
+
+    const data = event.data;
+
+    switch (data.action) {
+      case 'metabolism:update':
+        hunger.value = data.info.hunger;
+        thirst.value = data.info.thirst;
+        fatigue.value = data.info.tiredness;
+        break;
+
+      case 'wallet:balance':
+        console.log('wallet:balance', data)
+        money.value = data.info.balance;
+        break;
+
+      case 'player:update':
+        playerName.value = data.name;
+        break;
+
+      case 'location:update':
+        zone.value = data.zone;
+        break;
+
+      case 'weather:update':
+        weather.value = data.weather;
+        temperature.value = data.temperature;
+        break;
+
+      case 'buffs:update':
+        activeBuffs.value = data.buffs;
+        break;
+
+      case 'notify:message':
+        notification.value = data.message;
+        setTimeout(() => {
+          notification.value = '';
+        }, 5000);
+        break;
+    }
+  });
+  */
+
+  updateTime();
+  setInterval(updateTime, 60000);
+});
+</script>
+
 <template>
   <div class="hud">
     <!-- TOP BAR -->
@@ -49,78 +129,7 @@
 
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
-import Slots from './hud/Slots.vue';
 
-const money = ref(0);
-const hunger = ref(0);
-const thirst = ref(0);
-const fatigue = ref(0);
-const currentTime = ref('');
-const playerName = ref('John Marston');
-const zone = ref('Valentine');
-const weather = ref('Clair');
-const temperature = ref(21);
-const activeBuffs = ref([]);
-const notification = ref('');
-
-
-// Met à jour l'heure
-const updateTime = () => {
-  const now = new Date();
-  const h = now.getHours().toString().padStart(2, '0');
-  const m = now.getMinutes().toString().padStart(2, '0');
-  currentTime.value = `${h}:${m}`;
-};
-
-onMounted(() => {
-  window.addEventListener('message', (event) => {
-
-    const data = event.data;
-
-    switch (data.action) {
-      case 'metabolism:update':
-        hunger.value = data.info.hunger;
-        thirst.value = data.info.thirst;
-        fatigue.value = data.info.tiredness;
-        break;
-
-      case 'wallet:balance':
-        console.log('wallet:balance', data)
-        money.value = data.info.balance;
-        break;
-
-      case 'player:update':
-        playerName.value = data.name;
-        break;
-
-      case 'location:update':
-        zone.value = data.zone;
-        break;
-
-      case 'weather:update':
-        weather.value = data.weather;
-        temperature.value = data.temperature;
-        break;
-
-      case 'buffs:update':
-        activeBuffs.value = data.buffs;
-        break;
-
-      case 'notify:message':
-        notification.value = data.message;
-        setTimeout(() => {
-          notification.value = '';
-        }, 5000);
-        break;
-    }
-  });
-
-  updateTime();
-  setInterval(updateTime, 60000);
-});
-</script>
 
 <style scoped>
 .hud {

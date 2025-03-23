@@ -17,13 +17,14 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useUiStore } from '../stores.js'
+import { useUiStore } from '../stores/uiStore.js'
+import { useCaracterStore } from '../stores/caracterStore.js'
 
 const firstName = ref('')
 const lastName = ref('')
 const gender = ref('male')
 const uiStore = useUiStore()
-
+const caracterStore = useCaracterStore()
 
 const submit = () => {
   if (!firstName.value || !lastName.value) return
@@ -38,7 +39,7 @@ const submit = () => {
     })
   })
 
-  menu.value = null // Pour fermer le menu si c’est une `ref`, sinon adapte selon ta store
+  uiStore.closeMenu()
 }
 </script>
 

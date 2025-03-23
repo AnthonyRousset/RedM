@@ -1,9 +1,21 @@
+
+<script setup>
+import CharacterMenu from './menu/CharacterMenu.vue';
+import InventoryMenu from './menu/InventoryMenu.vue';
+import BankMenu from './menu/BankMenu.vue';
+import AdminMenu from './menu/AdminMenu.vue';
+import GameHud from './hud/Hud.vue';  
+import { useUiStore } from './stores/uiStore.js';
+const uiStore = useUiStore()
+
+</script>
+
 <template>
   <GameHud />
-  <AdminMenu v-if="currentMenu === 'admin'" />
-  <BankMenu v-else-if="currentMenu === 'bank'" />
-  <CharacterMenu v-else-if="currentMenu === 'character'" />
-  <InventoryMenu v-else-if="currentMenu === 'inventory'" />
+  <AdminMenu v-if="uiStore.menu === 'admin'" />
+  <BankMenu v-else-if="uiStore.menu === 'bank'" />
+  <CharacterMenu v-else-if="uiStore.menu === 'character'" />
+  <InventoryMenu v-else-if="uiStore.menu === 'inventory'" />
 </template>
 
 <style scoped>
@@ -20,72 +32,3 @@
   border-radius: 5px;
 }
 </style>
-
-<script setup>
-import { ref, onMounted } from 'vue';
-import CharacterMenu from './menu/CharacterMenu.vue';
-import InventoryMenu from './menu/InventoryMenu.vue';
-import BankMenu from './menu/BankMenu.vue';
-import AdminMenu from './menu/AdminMenu.vue';
-import GameHud from './Hud.vue';  
-import { useUiStore } from './stores.js';
-
-const uiStore = useUiStore()
-
-// Référence locale à la valeur du menu
-const currentMenu = ref(null);
-
-// Watch du store (si c'est un ref dans ton store)
-onMounted(() => {
-  // Réactif si menu est un ref ou store Pinia
-  currentMenu.value = uiStore.isMenuOpen;  
-
-  uiStore.isMenuOpen = 'bank';
-  currentMenu.value = 'bank';
-
-  // Si le store menu est une ref, on peut faire un watch ici si nécessaire
-  window.addEventListener('message', (event) => {
-    const data = event.data;
-
-    switch (data.action) {
-    //switch ("metabolism:update") {
-      case 'character:open':
-        uiStore.isMenuOpen = 'character';
-        currentMenu.value = 'character';
-        break;
-      case 'character:close':
-        uiStore.isMenuOpen = false;
-        currentMenu.value = null;
-        break;
-
-      case 'inventory:open':
-        uiStore.isMenuOpen = 'inventory';
-        currentMenu.value = 'inventory';
-        break;
-      case 'inventory:close':
-        uiStore.isMenuOpen = false;
-        currentMenu.value = null;
-        break;
-
-      case 'admin:open':
-        uiStore.isMenuOpen = 'admin';
-        currentMenu.value = 'admin';
-        break;
-      case 'admin:close':
-        uiStore.isMenuOpen = false;
-        currentMenu.value = null;
-        break;   
-
-      case 'bank:open':
-        uiStore.isMenuOpen = 'bank';
-        currentMenu.value = 'bank';
-        break;
-      case 'bank:close':
-        uiStore.isMenuOpen = false;
-        currentMenu.value = null;
-        break;
-    }
-
-  });
-});
-</script>

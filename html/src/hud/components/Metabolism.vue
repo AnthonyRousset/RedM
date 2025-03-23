@@ -38,7 +38,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { menu } from '../stores.js'
+import { menu } from '../../stores/hudStore.js'
 
 const slots = ref(Array(20).fill(null))
 const contextVisible = ref(false)

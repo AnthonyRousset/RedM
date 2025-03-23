@@ -68,6 +68,8 @@ const withdraw = () => {
 const close = () => {
     fetch(`https://${GetParentResourceName()}/bank-close`, {
         method: 'POST'
+    }).then(() => {
+        window.location.reload();
     });
 };
 

@@ -38,7 +38,8 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useUiStore } from '../stores.js'
+import { useUiStore } from '../stores/uiStore.js'
+import { useInventoryStore } from '../stores/inventoryStore.js'
 
 const slots = ref(Array(20).fill(null))
 const contextVisible = ref(false)
@@ -47,10 +48,11 @@ const contextY = ref(0)
 const selectedItem = ref(null)
 const draggedItem = ref(null)
 const uiStore = useUiStore()
+const inventoryStore = useInventoryStore()
 
 function close() {
   fetch(`https://${GetParentResourceName()}/closeMenu`, { method: 'POST' })
-  uiStore.isMenuOpen = false
+  uiStore.closeMenu()
 }
 
 function showContext(e, item) {

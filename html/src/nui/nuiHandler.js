@@ -24,6 +24,7 @@ const handlers = {
 
   // admin
   'admin:open': () => {
+    console.log('admin:open')
     const ui = useUiStore()
     ui.openMenu('admin')
   },

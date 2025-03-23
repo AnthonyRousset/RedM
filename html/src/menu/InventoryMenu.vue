@@ -84,28 +84,6 @@ function onDrop(targetItem) {
   draggedItem.value = null
 }
 
-function handleMessage(e) {
-  if (e.data.action === 'inventory:setData') {
-    const items = e.data.items
-    slots.value = Array(20).fill(null)
-
-    items.forEach(item => {
-      if (item.slot >= 0 && item.slot < slots.value.length) {
-        slots.value[item.slot] = item
-      }
-    })
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('message', handleMessage)
-  window.addEventListener('click', closeContext)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('message', handleMessage)
-  window.removeEventListener('click', closeContext)
-})
 </script>
 
 <style scoped>

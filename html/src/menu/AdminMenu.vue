@@ -121,21 +121,7 @@ const close = async () => {
     sendNui('admin-close'); 
 }
 
-/*
-onMounted(() => {
-  window.addEventListener('message', (event) => {
-    const data = event.data;
 
-    switch (data.action) {
-        case 'admin:pos':
-            console.log(data)
-            position.value = data.info  
-            positionVisible.value = true
-            break;
-    }
-  })
-})
-*/
 </script>
 
 <style scoped>

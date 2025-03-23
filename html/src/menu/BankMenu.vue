@@ -3,7 +3,7 @@
 
         <div class="balance-title"> {{ 'Jhon Doe' }} </div>
 
-        <div class="balance">{{ bankStore.balance.toLocaleString() }}</div>
+        <div class="balance">{{ balance.toLocaleString() }}</div>
 
         <div class="form">
             <input type="text" v-model.number="amount" placeholder="0" maxlength="6" />
@@ -21,6 +21,7 @@
 <script setup>
 import { ref } from 'vue';
 import { sendNui } from '../utils/nui'
+
 
 const balance = ref(0);
 const amount = ref();

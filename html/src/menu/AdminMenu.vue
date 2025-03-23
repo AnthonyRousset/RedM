@@ -59,11 +59,37 @@ const npcList = ref([
     { label: "Palefrenier", model: "U_M_M_PALFREY_01" },
     { label: "Vendeur de drogue", model: "U_M_M_DRUGSTORE_01" }
 ])
-        
-const copyCoordsToClipboard = () => {
+
+const copyCoordsToClipboards = () => {
     const formattedCoords = `${position.value.x.toFixed(1)}f, ${position.value.y.toFixed(1)}f, ${position.value.z.toFixed(1)}f`;
     navigator.clipboard.writeText(formattedCoords);
 }
+
+const copyCoordsToClipboard = () => {
+  const text = `${position.value.x.toFixed(1)}f, ${position.value.y.toFixed(1)}f, ${position.value.z.toFixed(1)}f`
+
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.setAttribute('readonly', '')
+  textarea.style.position = 'absolute'
+  textarea.style.left = '-9999px'
+  document.body.appendChild(textarea)
+  textarea.select()
+
+  try {
+    const success = document.execCommand('copy')
+    if (success) {
+      console.log('Coordonnées copiées !')
+    } else {
+      console.warn('Échec de la copie')
+    }
+  } catch (err) {
+    console.error('Erreur lors de la copie :', err)
+  }
+
+  document.body.removeChild(textarea)
+}
+
 
 const openNpcSelector = () => {
     npcSelectorVisible.value = true

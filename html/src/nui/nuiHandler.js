@@ -104,7 +104,7 @@ const handlers = {
 
 
 export function handleNuiEvent(event) {
-  //if (event.origin !== 'https://nui-game-internal') return
+  //if (event.origin !== 'https://nui-game-internal') return // sécurité pour ne pas accepter les messages de nui venant d'un autre site (ex : https://www.google.com) 
   console.log('handleNuiEvent') 
 
   const data = event.data;

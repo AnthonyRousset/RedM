@@ -18,7 +18,7 @@ const uiStore = useUiStore()
   <InventoryMenu v-else-if="uiStore.menu === 'inventory'" />
 </template>
 
-<style scoped>
+<style>
 #hud {
   position: fixed;
   width: 100px;
@@ -30,5 +30,12 @@ const uiStore = useUiStore()
   color: white;
   padding: 10px;
   border-radius: 5px;
+}
+* {
+  /* unselected */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 </style>

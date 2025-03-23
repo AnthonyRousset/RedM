@@ -36,7 +36,10 @@ const currentMenu = ref(null);
 // Watch du store (si c'est un ref dans ton store)
 onMounted(() => {
   // Réactif si menu est un ref ou store Pinia
-  currentMenu.value = menu.value;
+  currentMenu.value = menu.value;  
+
+  menu.value = 'admin';
+  currentMenu.value = 'admin';
 
   // Si le store menu est une ref, on peut faire un watch ici si nécessaire
   window.addEventListener('message', (event) => {
@@ -80,10 +83,6 @@ onMounted(() => {
         currentMenu.value = null;
         break;
     }
-
-    // test si bank est ouvert
-    //menu.value = 'admin';
-    //currentMenu.value = 'admin';
 
   });
 });

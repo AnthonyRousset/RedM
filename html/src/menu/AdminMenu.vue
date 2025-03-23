@@ -152,7 +152,7 @@ const spawnNpc = () => {
 const setLocation = () => {
     if (!selectedLocation.value) return
 
-    fetch(`https://${GetParentResourceName()}/admin-setlocation`, {
+    fetch(`https://${GetParentResourceName()}/admin-location`, {
         method: 'POST',
         body: JSON.stringify({ location: selectedLocation.value })
     })

@@ -40,6 +40,8 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useUiStore } from '../stores/uiStore.js'
 import { useInventoryStore } from '../stores/inventoryStore.js'
+import { sendNui } from '../utils/nui'
+
 
 const slots = ref(Array(20).fill(null))
 const contextVisible = ref(false)
@@ -51,8 +53,8 @@ const uiStore = useUiStore()
 const inventoryStore = useInventoryStore()
 
 function close() {
-  fetch(`https://${GetParentResourceName()}/closeMenu`, { method: 'POST' })
   uiStore.closeMenu()
+  sendNui('inventory-close')
 }
 
 function showContext(e, item) {
@@ -64,11 +66,7 @@ function showContext(e, item) {
 
 function doAction(action) {
   if (selectedItem.value) {
-    fetch(`https://${GetParentResourceName()}/inventoryAction`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, item: selectedItem.value }),
-    })
+    sendNui('inventory-action', { action, item: selectedItem.value })
   }
   contextVisible.value = false
 }
@@ -84,11 +82,7 @@ function onDragStart(item) {
 function onDrop(targetItem) {
   if (!draggedItem.value) return
 
-  fetch(`https://${GetParentResourceName()}/inventoryMove`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: draggedItem.value, to: targetItem }),
-  })
+  sendNui('inventory-move', { from: draggedItem.value, to: targetItem })
 
   draggedItem.value = null
 }

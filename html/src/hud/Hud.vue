@@ -5,21 +5,9 @@ import Slots from './components/Slots.vue';
 import { useHudStore } from '../stores/hudStore';
 
 const hudStore = useHudStore();
-
-const money = ref(0);
-const hunger = ref(0);
-const thirst = ref(0);
-const fatigue = ref(0);
-const currentTime = ref('');
-const playerName = ref('John Marston');
-const zone = ref('Valentine');
-const weather = ref('Clair');
-const temperature = ref(21);
-const activeBuffs = ref([]);
-const notification = ref('');
-
-
+ 
 // Met à jour l'heure
+const currentTime = ref();
 const updateTime = () => {
   const now = new Date();
   const h = now.getHours().toString().padStart(2, '0');
@@ -82,16 +70,16 @@ onMounted(() => {
   <div class="hud">
     <!-- TOP BAR -->
     <div class="top">
-      <div class="money">${{ money.toLocaleString() }}</div>
-      <div class="clock">{{ currentTime }}</div>
+      <div class="money">${{ hudStore.money.toLocaleString() }}</div>
+      <div class="clock">{{ hudStore.currentTime }}</div>
     </div>
 
     <!-- PLAYER INFO -->
     <div class="info">
-      <div class="player-name">{{ playerName }}</div>
-      <div class="zone">{{ zone }}</div>
+      <div class="player-name">{{ hudStore.playerName }}</div>
+      <div class="zone">{{ hudStore.zone }}</div>
       <div class="weather">
-        {{ temperature }}°C - {{ weather }}
+        {{ hudStore.temperature }}°C - {{ hudStore.weather }}
       </div>
     </div>
 
@@ -99,28 +87,28 @@ onMounted(() => {
     <div class="bars">
       <div class="bar">
         <label>Faim</label>
-        <div class="fill" :style="{ width: hunger + '%', minWidth: '10px' }"></div>
+        <div class="fill" :style="{ width: hudStore.hunger + '%', minWidth: '10px' }"></div>
       </div>
       <div class="bar">
         <label>Soif</label>
-        <div class="fill" :style="{ width: thirst + '%', minWidth: '10px' }"></div>
+        <div class="fill" :style="{ width: hudStore.thirst + '%', minWidth: '10px' }"></div>
       </div>
       <div class="bar">
         <label>Fatigue</label>
-        <div class="fill" :style="{ width: fatigue + '%', minWidth: '10px' }"></div>
+        <div class="fill" :style="{ width: hudStore.tiredness + '%', minWidth: '10px' }"></div>
       </div>
     </div>
 
     <!-- BUFFS -->
     <div class="buffs">
-      <div v-for="buff in activeBuffs" :key="buff.id" class="buff">
+      <div v-for="buff in hudStore.activeBuffs" :key="buff.id" class="buff">
         {{ buff.label }}
       </div>
     </div>
 
     <!-- NOTIFICATION -->
-    <div class="notification" v-if="notification">
-      {{ notification }}
+    <div class="notification" v-if="hudStore.notification">
+      {{ hudStore.notification }}
     </div>
 
   </div>

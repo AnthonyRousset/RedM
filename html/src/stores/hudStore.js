@@ -4,27 +4,42 @@ import { defineStore } from 'pinia'
 
 export const useHudStore = defineStore('hud', {
     state: () => ({
-        health: 0,
-        thirst: 0,
-        hunger: 0,
-        money: 0,
-        city: '',
-        shortcuts: []   
+        name: 'John Doe', // nom du joueur
+        hunger: 25, // faim
+        thirst: 10, // soif
+        tiredness: 33, // fatigue
+        recovery: 5, // récupération
+        drugs:[], // drogues
+        sick: [], // maladies
+        activeBuffs: [], // buffs actifs
+        money: 100, // dollars sur soi   
+        city: 'Los Santos', // ville en cours
+        shortcuts: [], // raccourcis 1 a 4
+        notification: [] // notifications
     }),
     actions: {
         setHudData(data) {
-            this.health = data.health ?? this.health
-            this.thirst = data.thirst ?? this.thirst
             this.hunger = data.hunger ?? this.hunger
+            this.thirst = data.thirst ?? this.thirst
+            this.tiredness = data.tiredness ?? this.tiredness
+            this.recovery = data.recovery ?? this.recovery
+            this.drugs = data.drugs ?? this.drugs
+            this.sick = data.sick ?? this.sick
+            this.activeBuffs = data.activeBuffs ?? this.activeBuffs
             this.money = data.money ?? this.money
             this.city = data.city ?? this.city
             this.shortcuts = data.shortcuts ?? this.shortcuts
+            this.notification = data.notification ?? this.notification
         }   
     },
     getters: {
-        getHealth: (state) => state.health,
-        getThirst: (state) => state.thirst,
         getHunger: (state) => state.hunger,
+        getThirst: (state) => state.thirst,
+        getTiredness: (state) => state.tiredness,
+        getRecovery: (state) => state.recovery,
+        getDrugs: (state) => state.drugs,
+        getSick: (state) => state.sick,
+        getActiveBuffs: (state) => state.activeBuffs,
         getMoney: (state) => state.money,
         getCity: (state) => state.city,
         getShortcuts: (state) => state.shortcuts    

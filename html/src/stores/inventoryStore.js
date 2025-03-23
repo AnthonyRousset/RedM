@@ -18,7 +18,16 @@ export const useInventoryStore = defineStore('inventory', {
             if (index !== -1) {
                 this.items[index].quantity = quantity
             }
-        }
+        },
+        setInventory(items) {
+            this.items = Array(20).fill(null)
+        
+            items.forEach(item => {
+              if (item.slot >= 0 && item.slot < this.items.length) {
+                this.items[item.slot] = item
+              }
+            })
+        },  
     },
     getters: {
         getItemQuantity(state) {

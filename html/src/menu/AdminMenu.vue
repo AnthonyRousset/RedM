@@ -59,8 +59,11 @@
 <script setup>
 import { sendNui } from '../utils/nui'
 import { useAdminStore } from '../stores/adminStore'
+import { useUiStore } from '../stores/uiStore'
 
 const admin = useAdminStore()
+const ui = useUiStore()
+
 
 const copyCoordsToClipboard = () => {
     const text = `${position.value.x.toFixed(1)}f, ${position.value.y.toFixed(1)}f, ${position.value.z.toFixed(1)}f`
@@ -117,8 +120,10 @@ const getPosition = async () => {
 }
 
 const close = async () => {
-    await sendNui('admin-close');
+    ui.closeMenu(); 
+    await sendNui('admin-close'); 
 }
+
 /*
 onMounted(() => {
   window.addEventListener('message', (event) => {

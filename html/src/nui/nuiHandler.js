@@ -11,33 +11,21 @@ const handlers = {
     const ui = useUiStore()
     ui.openMenu('character')
   },
-  'character:close': () => {
-    const ui = useUiStore()
-    ui.closeMenu()
-  },
 
   // inventory
   'inventory:open': () => {
     const ui = useUiStore()
     ui.openMenu('inventory')
   },
-  'inventory:close': () => {
-    const ui = useUiStore()
-    ui.closeMenu()
-  },
   'inventory:update': (data) => {
     const inventory = useInventoryStore()
-    inventory.update(data)
+    inventory.setInventory(data)
   },
 
   // admin
   'admin:open': () => {
     const ui = useUiStore()
     ui.openMenu('admin')
-  },
-  'admin:close': () => {
-    const ui = useUiStore()
-    ui.closeMenu()
   },
   'admin:pos': (data) => {
     const admin = useAdminStore()
@@ -50,9 +38,9 @@ const handlers = {
     const ui = useUiStore()
     ui.openMenu('bank')
   },
-  'bank:close': () => {
-    const ui = useUiStore()
-    ui.closeMenu()
+  'bank:update': (data) => {
+    const bank = useBankStore()
+    bank.update(data)
   },
 
   // hud

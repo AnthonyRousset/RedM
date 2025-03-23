@@ -3,7 +3,7 @@
 
         <div class="balance-title"> {{ 'Jhon Doe' }} </div>
 
-        <div class="balance">{{ balance.toLocaleString() }}</div>
+        <div class="balance">{{ bankStore.balance.toLocaleString() }}</div>
 
         <div class="form">
             <input type="text" v-model.number="amount" placeholder="0" maxlength="6" />
@@ -19,19 +19,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
+import { sendNui } from '../utils/nui'
+import { useUiStore } from '../stores/uiStore'
 
 const balance = ref(0);
 const amount = ref();
-
-onMounted(() => {
-    window.addEventListener('message', (event) => {
-        const data = event.data;
-        if (data.action === 'bank:update') {
-            balance.value = data.info.amount;
-        }
-    });
-});
+const uiStore = useUiStore()
 
 const deposit = () => {
     if (amount.value > 0) {
@@ -41,10 +35,7 @@ const deposit = () => {
             console.log('Vous n\'avez pas assez d\'argent');
             return;
         }
-        fetch(`https://${GetParentResourceName()}/bank-deposite`, {
-            method: 'POST',
-            body: JSON.stringify({ amount: amount.value })
-        });
+        sendNui('bank-deposite', { amount: amount.value })
         amount.value = 0;
     }
 };
@@ -57,20 +48,14 @@ const withdraw = () => {
             console.log('Vous n\'avez pas assez d\'argent');
             return;
         }
-        fetch(`https://${GetParentResourceName()}/bank-withdraw`, {
-            method: 'POST',
-            body: JSON.stringify({ amount: amount.value })
-        });
+        sendNui('bank-withdraw', { amount: amount.value })
         amount.value = 0;
     }
 };
 
 const close = () => {
-    fetch(`https://${GetParentResourceName()}/bank-close`, {
-        method: 'POST'
-    }).then(() => {
-        window.location.reload();
-    });
+    sendNui('bank-close')
+    uiStore.closeMenu()
 };
 
 </script>

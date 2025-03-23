@@ -19,6 +19,7 @@
 import { ref } from 'vue'
 import { useUiStore } from '../stores/uiStore.js'
 import { useCaracterStore } from '../stores/caracterStore.js'
+import { sendNui } from '../utils/nui'
 
 const firstName = ref('')
 const lastName = ref('')
@@ -29,14 +30,10 @@ const caracterStore = useCaracterStore()
 const submit = () => {
   if (!firstName.value || !lastName.value) return
 
-  fetch(`https://${GetParentResourceName()}/submitCharacter`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      firstName: firstName.value,
-      lastName: lastName.value,
-      gender: gender.value
-    })
+  sendNui('character-submit', {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    gender: gender.value
   })
 
   uiStore.closeMenu()

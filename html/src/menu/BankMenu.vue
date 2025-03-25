@@ -51,10 +51,13 @@ const handleKeyDown = (event) => {
 
 
 const updateAmount = () => {
+    console.log('updateAmount', editableSpan.value.innerText)
     const content = editableSpan.value.innerText.trim();
     showPlaceholder.value = content === '';
     if (content !== 0) {
+        console.log('content', content)
         dollarForm.value = content;
+        console.log('dollarForm', dollarForm.value)
     }
 }
 
@@ -67,10 +70,10 @@ const deposit = () => {
             console.log('Vous n\'avez pas assez d\'argent sur vous');
             return;
         }        
+        sendNui('bank-deposite', { id: bankStore.id, amount: dollarForm.value })
         dollarForm.value = '';  
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
-        sendNui('bank-deposite', { id: bankStore.currentBank, amount: dollarForm.value })
 
     }
 };
@@ -84,10 +87,10 @@ const withdraw = () => {
             console.log('Vous n\'avez pas assez d\'argent en banque');
             return;
         }        
+        sendNui('bank-withdraw', { id: bankStore.id, amount: dollarForm.value })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
-        sendNui('bank-withdraw', { id: bankStore.currentBank, amount: dollarForm.value })
 
     }
 };
@@ -108,7 +111,7 @@ const createBank = () => {
         return;
     }   
 
-    sendNui('bank-createAccount', { id: bankStore.currentBank })
+    sendNui('bank-createAccount', { id: bankStore.id })
 }   
 
 

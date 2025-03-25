@@ -13,6 +13,8 @@ const balance = ref(0);
 const dollarForm = ref();
 const showPlaceholder = ref(true);
 const editableSpan = ref(null);
+const playerMessage = ref('');
+const bankMessage = ref('');
 
 const handleKeyDown = (event) => {
     const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
@@ -58,15 +60,20 @@ const updateAmount = () => {
         dollarForm.value = content;
         console.log('dollarForm', dollarForm.value)
     }
+    playerMessage.value = '';
+    bankMessage.value = '';
 }
 
 const deposit = () => {
+    playerMessage.value = '';
+    bankMessage.value = '';
     console.log('deposit', dollarForm.value)
     if (dollarForm.value > 0) {
         console.log('playerStore.wallet', playerStore.wallet)
         // vérifier si le joueur a assez d'argent sur lui
         if (playerStore.wallet < dollarForm.value * 100) {
             console.log('Vous n\'avez pas assez d\'argent sur vous');
+            playerMessage.value = 'Mince! Je n\'ai pas assez d\'argent sur moi ...';
             return;
         }
         sendNui('bank-deposit', { id: bankStore.id, amount: dollarForm.value })
@@ -77,12 +84,15 @@ const deposit = () => {
 };
 
 const withdraw = () => {
+    playerMessage.value = '';
+    bankMessage.value = '';
     console.log('withdraw', dollarForm.value)
     if (dollarForm.value > 0) {
         console.log('bankStore.getBalance', bankStore.getBalance)
         // vérifier si le joueur a assez d'argent en banque
         if (bankStore.getBalance < dollarForm.value) {
             console.log('Vous n\'avez pas assez d\'argent en banque');
+            bankMessage.value = 'Je suis désolé mais vous n\'avez pas assez d\'argent sur votre compte!'; 
             return;
         }
         sendNui('bank-withdraw', { id: bankStore.id, amount: dollarForm.value })
@@ -100,11 +110,13 @@ const close = () => {
 const createBank = () => {
     if (bankStore.getBankAccountIsCreated) {
         console.log('Vous avez déjà un compte bancaire')
+        bankMessage.value = 'Mais vous avez déjà un compte bancaire !';
         return;
     }
 
     if (playerStore.getWallet < 10) {
         console.log('Vous n\'avez pas assez d\'argent sur vous')
+        bankMessage.value = 'Navré mais vous n\'avez pas assez d\'argent sur vous !';
         return;
     }
 
@@ -129,11 +141,17 @@ const createBank = () => {
         <div class="balance">{{ balance.toLocaleString() }}</div>
 
         <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
+        
+
+            <div class="bank-message bubble-conversation player"  :class="{ active: playerMessage }"> <span> {{ playerMessage }} </span> </div>
+
+            <div class="bank-message bubble-conversation bank"  :class="{ active: bankMessage }"> <span> {{ bankMessage }} </span> </div>
+
 
         <div class="form">
             <div class="fake-input">
                 <span contenteditable="true" @keydown="handleKeyDown" @input="updateAmount" @blur="updateAmount"
-                    ref="editableSpan"></span>
+                    ref="editableSpan" :class="{ error: playerMessage || bankMessage }"></span>
                 <div v-if="showPlaceholder" class="placeholder">0</div>
             </div>
         </div>
@@ -240,6 +258,58 @@ h2 {
     font-size: 2rem;
 }
 
+.bank-message {
+    position: absolute;
+    top: 193px;
+    right: 259px;
+    font-size: 2rem;
+}
+.bank-message {
+    position: absolute;
+    font-size: 1rem;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: opacity 0.5s ease;
+    opacity: 0;
+}
+.bank-message.bubble-conversation.bank.active,
+.bank-message.bubble-conversation.player.active {
+    opacity: 1 !important;
+}
+
+
+.bank-message.bubble-conversation.player {
+    right: 585px;
+    width: 271px;
+    height: 203px;
+    top: 181px;
+    background-image: url('/images/bubble-think.png');
+}
+.bank-message.bubble-conversation.player span {
+    font-size: 1rem;
+    padding: 57px 70px 0 55px;
+    display: inline-block;
+    text-align: center;
+}
+
+.bank-message.bubble-conversation.bank {
+    left: 575px;
+    width: 271px;
+    height: 203px;
+    top: -43px;
+    background-image: url('/images/bubble-message.png');
+}
+.bank-message.bubble-conversation.bank span {
+    font-size: 1rem;
+    padding: 45px 83px 0 43px;
+    display: inline-block;
+    text-align: center;
+}
+
+
+
+
 .balance {
     position: absolute;
     top: 192px;
@@ -294,6 +364,10 @@ h2 {
     outline: none;
     z-index: 1;
     position: relative;
+}
+
+.fake-input span.error {
+    color: rgb(150, 17, 17);
 }
 
 .fake-input span:after {

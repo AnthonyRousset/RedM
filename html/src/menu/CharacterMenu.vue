@@ -19,11 +19,13 @@
 import { ref } from 'vue'
 import { useCaracterStore } from '../stores/caracterStore.js'
 import { sendNui } from '../utils/nui'
+import { useUiStore } from '../stores/uiStore'
 
 const firstName = ref('')
 const lastName = ref('')
 const gender = ref('male')
 const caracterStore = useCaracterStore()
+const ui = useUiStore()
 
 const submit = () => {
   if (!firstName.value || !lastName.value) return
@@ -33,6 +35,8 @@ const submit = () => {
     lastName: lastName.value,
     gender: gender.value
   })
+
+  ui.closeMenu()
 }
 </script>
 

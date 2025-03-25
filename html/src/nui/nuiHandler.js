@@ -1,11 +1,12 @@
 import { useUiStore } from '../stores/uiStore' // est le store qui gère le menu (ex : menu ouvert ou fermé )
 import { useCaracterStore } from '../stores/caracterStore' // est le store qui gère le personnage (ex : nom, vie, force, etc.)
 import { useHudStore } from '../stores/hudStore' // est le store qui gère le hud (ex : barre de vie, barre de soif, barre de faim, etc.) 
-import { useInventoryStore } from '../stores/inventoryStore' // est le store qui gère l'inventaire (ex : inventaire ouvert ou fermé )
+import { usePlayerStore } from '../stores/playerStore' // est le store qui gère le joueur (ex : nom, vie, force, etc.)
 import { useAdminStore } from '../stores/adminStore' // est le store qui gère les actions admin (ex : spawn, location, etc.)
-
+import { useBankStore } from '../stores/bankStore' // est le store qui gère les actions bancaires (ex : dépot, retrait, coffre, assurance, etc.)  
 
 const handlers = {
+
   // character
   'character:open': () => {
     const ui = useUiStore()
@@ -27,7 +28,7 @@ const handlers = {
     ui.closeMenu()
   },
   'inventory:update': (data) => {
-    const inventory = useInventoryStore()
+    const inventory = usePlayerStore()
     inventory.setInventory(data)
   },
 
@@ -52,13 +53,13 @@ const handlers = {
     const ui = useUiStore()
     ui.openMenu('bank')
   },
-  'bank:close': () => {
-    const ui = useUiStore()
-    ui.closeMenu()
-  },
-  'bank:update': (data) => {
+  'bank:info': (data) => {
     const bank = useBankStore()
     bank.update(data.info)
+  },
+  'bank:createSuccess': (data) => {
+    const bank = useBankStore()
+    bank.createSuccess(data.info)
   },
 
   // hud

@@ -38,9 +38,11 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useInventoryStore } from '../stores/inventoryStore.js'
+import { usePlayerStore } from '../stores/playerStore.js'
 import { sendNui } from '../utils/nui'
+import { useUiStore } from '../stores/uiStore'
 
+const ui = useUiStore()
 
 const slots = ref(Array(20).fill(null))
 const contextVisible = ref(false)
@@ -48,10 +50,11 @@ const contextX = ref(0)
 const contextY = ref(0)
 const selectedItem = ref(null)
 const draggedItem = ref(null)
-const inventoryStore = useInventoryStore()
+const playerStore = usePlayerStore()
 
 function close() {
-  sendNui('inventory-close')
+  sendNui('ui-close')
+  ui.closeMenu()
 }
 
 function showContext(e, item) {
@@ -63,7 +66,7 @@ function showContext(e, item) {
 
 function doAction(action) {
   if (selectedItem.value) {
-    sendNui('inventory-action', { action, item: selectedItem.value })
+    sendNui('player-action', { action, item: selectedItem.value })
   }
   contextVisible.value = false
 }
@@ -79,7 +82,7 @@ function onDragStart(item) {
 function onDrop(targetItem) {
   if (!draggedItem.value) return
 
-  sendNui('inventory-move', { from: draggedItem.value, to: targetItem })
+  sendNui('player-move', { from: draggedItem.value, to: targetItem })
 
   draggedItem.value = null
 }

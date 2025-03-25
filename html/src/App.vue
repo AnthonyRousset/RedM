@@ -16,9 +16,25 @@ const uiStore = useUiStore()
   <BankMenu v-else-if="uiStore.menu === 'bank'" />
   <CharacterMenu v-else-if="uiStore.menu === 'character'" />
   <InventoryMenu v-else-if="uiStore.menu === 'inventory'" />
+  <div class="open-bank">
+    <button @click="uiStore.openMenu('bank')">Open Bank</button>
+    <button @click="uiStore.openMenu('character')">Open Character</button>
+    <button @click="uiStore.openMenu('inventory')">Open Inventory</button>
+    <button @click="uiStore.openMenu('admin')">Open Admin</button>
+  </div>
 </template>
 
 <style>
+.open-bank {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+} 
+
 #hud {
   position: fixed;
   width: 100px;

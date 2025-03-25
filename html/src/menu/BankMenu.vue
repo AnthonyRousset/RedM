@@ -6,7 +6,11 @@
         <div class="balance">{{ balance.toLocaleString() }}</div>
 
         <div class="form">
-            <input type="text" v-model.number="amount" placeholder="0" maxlength="6" />
+            <div class="fake-input">
+                <span contenteditable="true" @keydown="handleKeyDown" @input="updateAmount" @blur="updateAmount"
+                    ref="editableSpan"></span>
+                <div v-if="showPlaceholder" class="placeholder">0</div>
+            </div>
         </div>
 
         <div class="actions">
@@ -19,41 +23,101 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { sendNui } from '../utils/nui'
+import { useUiStore } from '../stores/uiStore'
+import { usePlayerStore } from '../stores/playerStore'
+import { useBankStore } from '../stores/bankStore'
 
+const playerStore = usePlayerStore()
+const bankStore = useBankStore()
+const ui = useUiStore()
 
 const balance = ref(0);
-const amount = ref();
+const dollarForm = ref();
+const showPlaceholder = ref(true);
+const editableSpan = ref(null);
+
+const handleKeyDown = (event) => {
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+    const ctrlKeys = ['a', 'c', 'v', 'x'];
+
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        deposit();
+    }
+
+    if (
+        allowedKeys.includes(event.key) ||
+        (event.ctrlKey && ctrlKeys.includes(event.key.toLowerCase()))
+    ) {
+        return; // Permettre touches de contrôle et navigation
+    }
+
+    // Autoriser seulement chiffres
+    if (!/^[0-9]$/.test(event.key)) {
+        event.preventDefault();
+        return;
+    }
+
+    const selection = window.getSelection();
+    const cursorPosition = selection.anchorOffset;
+    const currentText = event.target.innerText;
+    const beforeCursor = currentText.slice(0, cursorPosition);
+    const afterCursor = currentText.slice(cursorPosition);
+    const nextText = beforeCursor + event.key + afterCursor;
+
+    if (/^0\d+/.test(nextText) || nextText.length > 6) {
+        event.preventDefault();
+    }
+};
+
+
+const updateAmount = () => {
+    const content = editableSpan.value.innerText.trim();
+    showPlaceholder.value = content === '';
+    if (content !== 0) {
+        dollarForm.value = content;
+    }
+}
 
 const deposit = () => {
-    if (amount.value > 0) {
-    console.log('deposit', amount.value)
+    console.log('deposit', dollarForm.value)
+    if (dollarForm.value > 0) {
+        console.log('playerStore.wallet', playerStore.wallet)
         // vérifier si le joueur a assez d'argent sur lui
-        if (balance.value < amount.value) {
-            console.log('Vous n\'avez pas assez d\'argent');
+        if (playerStore.wallet < dollarForm.value * 100) {
+            console.log('Vous n\'avez pas assez d\'argent sur vous');
             return;
-        }
-        sendNui('bank-deposite', { amount: amount.value })
-        amount.value = 0;
+        }        
+        dollarForm.value = '';  
+        editableSpan.value.innerText = '';
+        showPlaceholder.value = true;
+        sendNui('bank-deposite', { id: bankStore.currentBank, amount: dollarForm.value })
+
     }
 };
 
 const withdraw = () => {
-    if (amount.value > 0) {
-    console.log('withdraw', amount.value)
+    console.log('withdraw', dollarForm.value)
+    if (dollarForm.value > 0) {
+        console.log('bankStore.getBalance', bankStore.getBalance)
         // vérifier si le joueur a assez d'argent en banque
-        if (balance.value < amount.value) {
-            console.log('Vous n\'avez pas assez d\'argent');
+        if (bankStore.getBalance < dollarForm.value) {
+            console.log('Vous n\'avez pas assez d\'argent en banque');
             return;
-        }
-        sendNui('bank-withdraw', { amount: amount.value })
-        amount.value = 0;
+        }        
+        dollarForm.value = '';
+        editableSpan.value.innerText = '';
+        showPlaceholder.value = true;
+        sendNui('bank-withdraw', { id: bankStore.currentBank, amount: dollarForm.value })
+
     }
 };
 
 const close = () => {
-    sendNui('bank-close')
+    sendNui('ui-close')
+    ui.closeMenu()
 };
 
 </script>
@@ -95,12 +159,14 @@ h2 {
     border-bottom: 2px dashed #a8854d;
     padding-bottom: 5px;
 }
+
 .balance-title {
     position: absolute;
     top: 193px;
     right: 259px;
     font-size: 2rem;
 }
+
 .balance {
     position: absolute;
     top: 192px;
@@ -116,28 +182,56 @@ h2 {
     align-items: center;
 }
 
-.form input {
-    border: none;
-    background: none;
+
+.fake-input {
     font-weight: bold;
     font-size: 2rem;
     position: absolute;
-    top: 257px;
-    right: 106px;
-    width: 110px;
+    top: 255px;
+    right: 101px;
+    width: 120px;
+    height: 35px;
     font-family: 'Special Elite', serif;
-    color: #634a05;
-    text-align: right; 
-    background-color: #4b3f0942;
+    color: #2c4873;
+    text-align: right;
     border-radius: 5px;
     padding: 5px;
     outline: none;
+    cursor: pointer;
 }
+
+.fake-input span {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+    outline: none;    
+    z-index: 1;
+    position: relative;
+}
+
+.fake-input span:after {
+    content: '';
+    box-shadow: 0px 1px 35px 6px #000000;
+    width: 100%;
+    height: 0px;
+    display: none;
+}
+
+.fake-input .placeholder {
+    color: #666666a3;
+    position: absolute;
+    top: 6px;
+    right: 5px;
+}
+
 
 .actions {
     display: flex;
     gap: 10px;
-    
+
     width: 90%;
     position: absolute;
     top: 335px;
@@ -169,28 +263,8 @@ h2 {
   }
   */
 
-.history {
-    margin-top: 20px;
-}
 
-.history h3 {
-    font-size: 1.2rem;
-    border-bottom: 1px solid #a8854d;
-    margin-bottom: 6px;
-}
 
-.history ul {
-    list-style: none;
-    padding: 0;
-    max-height: 120px;
-    overflow-y: auto;
-    font-size: 0.9rem;
-}
-
-.history li {
-    padding: 4px 0;
-    border-bottom: 1px dashed #3a2a18;
-}
 
 .close {
     background: #6d1f1f;
@@ -204,7 +278,7 @@ h2 {
     top: -20px;
     right: -20px;
     width: 50px;
-    height: 50px;   
+    height: 50px;
     border-radius: 50px;
     border: none;
     font-size: 1.5rem;
@@ -302,26 +376,36 @@ h2 {
         width: 800px;
         height: 580px;
     }
+
     .balance-title {
         font-size: 2.5rem;
         top: 291px;
         right: 400px;
     }
+
     .balance {
         font-size: 2.5rem;
         top: 293px;
         right: 164px;
-    }   
-    .form input {
+    }
+
+    .fake-input {
         font-size: 2.5rem;
         top: 395px;
         right: 159px;
         width: 150px;
     }
+    .fake-input .placeholder {
+        font-size: 2.5rem;
+        top: 2px;
+        right: 5px;
+    }
+
     .actions {
         top: 503px;
         right: 45px;
     }
+
     .actions .btn-western {
         font-size: 2.5rem;
         padding: 20px 18px;
@@ -332,28 +416,39 @@ h2 {
     .bank-menu {
         width: 1200px;
         height: 880px;
-        }
+    }
+
     .balance-title {
         font-size: 4rem;
         top: 434px;
         right: 579px;
     }
+
     .balance {
         font-size: 4rem;
         top: 431px;
         right: 239px;
     }
-    .form input {
+
+    .fake-input {
         font-size: 4rem;
         top: 577px;
         right: 239px;
         width: 230px;
         height: 75px;
+    }   
+    .fake-input .placeholder {
+        font-size: 4rem;
+        top: 10px;
+        right: 5px;
     }
+
+
     .actions {
         top: 765px;
         right: 55px;
     }
+
     .actions .btn-western {
         font-size: 2rem;
         padding: 25px 18px;

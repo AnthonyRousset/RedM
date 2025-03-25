@@ -3,9 +3,12 @@
 import { ref, onMounted } from 'vue';
 import Slots from './components/Slots.vue';
 import { useHudStore } from '../stores/hudStore';
+import { usePlayerStore } from '../stores/playerStore';
 
 const hudStore = useHudStore();
+const playerStore = usePlayerStore(); 
 console.log('hudStore', hudStore)
+console.log('playerStore', playerStore)
  
 // Met à jour l'heure
 const currentTime = ref();
@@ -27,13 +30,13 @@ onMounted(() => {
   <div class="hud">
     <!-- TOP BAR -->
     <div class="top">
-      <div class="money">${{ hudStore.money.toLocaleString() }}</div>
+      <div class="money">${{ playerStore.getWallet }}</div>
       <div class="clock">{{ currentTime }}</div>
     </div>
 
     <!-- PLAYER INFO -->
     <div class="info">
-      <div class="player-name">{{ hudStore.name }}</div>
+      <div class="player-name">{{ playerStore.name }}</div>
       <div class="zone">{{ hudStore.zone }}</div>
       <div class="weather">
         {{ hudStore.temperature }}°C - {{ hudStore.weather }}
@@ -44,28 +47,28 @@ onMounted(() => {
     <div class="bars">
       <div class="bar">
         <label>Faim</label>
-        <div class="fill" :style="{ width: hudStore.hunger + '%', minWidth: '10px' }"></div>
+        <div class="fill" :style="{ width: playerStore.hunger + '%', minWidth: '10px' }"></div>
       </div>
       <div class="bar">
         <label>Soif</label>
-        <div class="fill" :style="{ width: hudStore.thirst + '%', minWidth: '10px' }"></div>
+        <div class="fill" :style="{ width: playerStore.thirst + '%', minWidth: '10px' }"></div>
       </div>
       <div class="bar">
         <label>Fatigue</label>
-        <div class="fill" :style="{ width: hudStore.tiredness + '%', minWidth: '10px' }"></div>
+        <div class="fill" :style="{ width: playerStore.tiredness + '%', minWidth: '10px' }"></div>
       </div>
     </div>
 
     <!-- BUFFS -->
     <div class="buffs">
-      <div v-for="buff in hudStore.activeBuffs" :key="buff.id" class="buff">
+      <div v-for="buff in playerStore.activeBuffs" :key="buff.id" class="buff">
         {{ buff.label }}
       </div>
     </div>
 
     <!-- MALADIES -->
     <div class="maladies">
-      <div v-for="maladie in hudStore.sick" :key="maladie.id" class="maladie">
+      <div v-for="maladie in playerStore.sick" :key="maladie.id" class="maladie">
         {{ maladie.label }}
       </div>
     </div>

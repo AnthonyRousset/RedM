@@ -4,16 +4,7 @@ import { defineStore } from 'pinia'
 
 export const useHudStore = defineStore('hud', {
     state: () => ({
-        name: 'Player', // nom du joueur
-        hunger: 0, // faim
-        thirst: 0, // soif
-        tiredness: 0, // fatigue
-        recovery: 0, // récupération
-        drugs:[], // drogues
-        sick: [], // maladies
-        activeBuffs: [], // buffs actifs
-        money: 0, // dollars sur soi   
-        zone: 'Valentine', // ville en cours
+        zone: 'Valentine', // zone en cours
         weather: 'Soleil', // temps
         temperature: 20, // température
         currentTime: '12:00', // heure
@@ -23,31 +14,20 @@ export const useHudStore = defineStore('hud', {
     actions: {
         update(data) {
             console.log('update', data)
-            this.hunger = data.hunger ?? this.hunger
-            this.thirst = data.thirst ?? this.thirst
-            this.tiredness = data.tiredness ?? this.tiredness
-            this.recovery = data.recovery ?? this.recovery
-            this.drugs = data.drugs ?? this.drugs
-            this.sick = data.sick ?? this.sick
-            this.activeBuffs = data.activeBuffs ?? this.activeBuffs
-            this.money = data.balance ?? this.money
-            this.city = data.city ?? this.city
+            this.zone = data.zone ?? this.zone
+            this.weather = data.weather ?? this.weather
+            this.temperature = data.temperature ?? this.temperature
+            this.currentTime = data.currentTime ?? this.currentTime
             this.shortcuts = data.shortcuts ?? this.shortcuts
             this.notification = data.notification ?? this.notification
-            this.currentTime = data.currentTime ?? this.currentTime
-            this.temperature = data.temperature ?? this.temperature
         }
     },
     getters: {
-        getHunger: (state) => state.hunger,
-        getThirst: (state) => state.thirst,
-        getTiredness: (state) => state.tiredness,
-        getRecovery: (state) => state.recovery,
-        getDrugs: (state) => state.drugs,
-        getSick: (state) => state.sick,
-        getActiveBuffs: (state) => state.activeBuffs,
-        getMoney: (state) => state.money,
-        getCity: (state) => state.city,
-        getShortcuts: (state) => state.shortcuts    
+        getZone: (state) => state.zone,
+        getWeather: (state) => state.weather,
+        getTemperature: (state) => state.temperature,
+        getCurrentTime: (state) => state.currentTime,
+        getShortcuts: (state) => state.shortcuts,
+        getNotification: (state) => state.notification
     },
 })

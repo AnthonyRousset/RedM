@@ -6,7 +6,7 @@ import { defineStore } from 'pinia'
 export const useBankStore = defineStore('bank', {
     state: () => ({
         id: 0,
-        exist: false,
+        exist: true,
         account: 0,
         stock: [],
         insurance: {
@@ -32,9 +32,9 @@ export const useBankStore = defineStore('bank', {
             this.id = data.id
             this.exist = data.exist
             this.account = data.account
-            this.stock = data.stock
-            this.insurance = data.insurance
-
+            //this.stock = data.stock
+            //this.insurance = data.insurance
+            /*
             if (this.banks.length === 0) {
                 this.banks.push(data)
             } else {
@@ -43,35 +43,30 @@ export const useBankStore = defineStore('bank', {
                 } else {
                     this.banks.push(data)
                 }
-            }
+            }*/
         },
         createSuccess(data) {
-            const bank = {  
+            if (this.id === data.id) {
+                this.exist = true
+            }
+
+            /*const bank = {  
                 id: data.id,
                 name: "Banque",
                 account: 0,
                 stock: data.stock   
             }
-            this.banks.push(bank)
-        },
-        updateInsurance(data) {
-            this.insurance = data.insurance
-        },
-        updateStock(data) { 
-            this.stock = data.stock
-        },
-        updateBalance(data) {
-            this.account = data.account
+            this.banks.push(bank)*/
         }
     },
     getters: {
         getBankAccountIsCreated(state) {
-            console.log(state.currentBank)
-            console.log(state.banks.find(bank => bank.id === state.currentBank))
-            return state.banks.find(bank => bank.id === state.currentBank)
+            return state.exist
+            //return state.banks.find(bank => bank.id === state.currentBank)
         },
         getBalance(state) {
-            return state.banks.find(bank => bank.id === state.currentBank).account
+            return state.account
+            //return state.banks.find(bank => bank.id === state.currentBank).account
         }
     }
 })  

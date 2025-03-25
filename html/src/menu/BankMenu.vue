@@ -1,4 +1,3 @@
-
 <script setup>
 import { ref } from 'vue';
 import { sendNui } from '../utils/nui'
@@ -69,12 +68,11 @@ const deposit = () => {
         if (playerStore.wallet < dollarForm.value * 100) {
             console.log('Vous n\'avez pas assez d\'argent sur vous');
             return;
-        }        
+        }
         sendNui('bank-deposite', { id: bankStore.id, amount: dollarForm.value })
-        dollarForm.value = '';  
+        dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
-
     }
 };
 
@@ -86,12 +84,11 @@ const withdraw = () => {
         if (bankStore.getBalance < dollarForm.value) {
             console.log('Vous n\'avez pas assez d\'argent en banque');
             return;
-        }        
+        }
         sendNui('bank-withdraw', { id: bankStore.id, amount: dollarForm.value })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
-
     }
 };
 
@@ -109,17 +106,17 @@ const createBank = () => {
     if (playerStore.getWallet < 10) {
         console.log('Vous n\'avez pas assez d\'argent sur vous')
         return;
-    }   
+    }
 
     sendNui('bank-createAccount', { id: bankStore.id })
-}   
+}
 
 
 </script>
 
 <template>
     <div class="bank-account" v-if="!bankStore.getBankAccountIsCreated">
-        <!-- Voulez vous ouvrir une banque ? -->   
+        <!-- Voulez vous ouvrir une banque ? -->
         <div class="bank-title"> Voulez vous ouvrir une banque pour <span>10$</span> ? </div>
 
         <div class="form">
@@ -130,6 +127,8 @@ const createBank = () => {
         <div class="balance-title"> {{ 'Jhon Doe' }} </div>
 
         <div class="balance">{{ balance.toLocaleString() }}</div>
+
+        <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
 
         <div class="form">
             <div class="fake-input">
@@ -162,7 +161,7 @@ const createBank = () => {
     height: 360px;
     padding: 30px;
     border-radius: 5px;
-    color: #442c1a;
+    color: #805f07;
     font-family: 'Special Elite', serif;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
     background-color: rgba(0, 0, 0, 0.5);
@@ -204,6 +203,7 @@ const createBank = () => {
     font-size: 2rem;
     font-weight: bold;
 }
+
 .bank-title span {
     color: #a8854d;
 }
@@ -221,7 +221,7 @@ const createBank = () => {
 .bank-price:active {
     color: #a8854d;
     background: #a8854d;
-}   
+}
 
 
 h2 {
@@ -246,7 +246,18 @@ h2 {
     right: 106px;
     font-size: 2rem;
     font-weight: bold;
-    color: #634a05;
+    color: #805f07;
+}
+
+.balance-amount {
+    position: absolute;
+    top: 255px;
+    left: 25px;
+    width: 275px;
+    height: 35px;
+    font-size: 1.4em;
+    text-align: end;
+    color: black;
 }
 
 .form {
@@ -280,7 +291,7 @@ h2 {
     align-items: center;
     justify-content: flex-end;
     cursor: pointer;
-    outline: none;    
+    outline: none;
     z-index: 1;
     position: relative;
 }
@@ -456,6 +467,13 @@ h2 {
         right: 400px;
     }
 
+    .balance-amount {
+        font-size: 2.1rem;
+        top: 391px;
+        right: 164px;
+        width: 436px;
+    }
+
     .balance {
         font-size: 2.5rem;
         top: 293px;
@@ -468,6 +486,7 @@ h2 {
         right: 159px;
         width: 150px;
     }
+
     .fake-input .placeholder {
         font-size: 2.5rem;
         top: 2px;
@@ -499,7 +518,7 @@ h2 {
     .bank-price {
         font-size: 3rem;
         top: 420px;
-    }       
+    }
 
 
 }
@@ -516,6 +535,13 @@ h2 {
         right: 579px;
     }
 
+    .balance-amount {
+        font-size: 3.1rem;
+        top: 573px;
+        right: 210px;
+        width: 653px;
+    }
+
     .balance {
         font-size: 4rem;
         top: 431px;
@@ -528,7 +554,8 @@ h2 {
         right: 239px;
         width: 230px;
         height: 75px;
-    }   
+    }
+
     .fake-input .placeholder {
         font-size: 4rem;
         top: 10px;
@@ -556,12 +583,12 @@ h2 {
         top: 400px;
         right: 250px;
         left: 250px;
-    }   
+    }
 
     .bank-price {
         font-size: 4rem;
         top: 620px;
-    }       
+    }
 
 }
 </style>

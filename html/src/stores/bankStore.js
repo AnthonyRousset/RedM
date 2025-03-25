@@ -6,7 +6,7 @@ import { defineStore } from 'pinia'
 export const useBankStore = defineStore('bank', {
     state: () => ({
         id: 0,
-        exist: true,
+        exist: false,
         account: 0,
         stock: [],
         insurance: {

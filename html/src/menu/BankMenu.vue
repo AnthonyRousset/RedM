@@ -1,26 +1,3 @@
-<template>
-    <div class="bank-menu">
-
-        <div class="balance-title"> {{ 'Jhon Doe' }} </div>
-
-        <div class="balance">{{ balance.toLocaleString() }}</div>
-
-        <div class="form">
-            <div class="fake-input">
-                <span contenteditable="true" @keydown="handleKeyDown" @input="updateAmount" @blur="updateAmount"
-                    ref="editableSpan"></span>
-                <div v-if="showPlaceholder" class="placeholder">0</div>
-            </div>
-        </div>
-
-        <div class="actions">
-            <button class="btn-western deposit" @click="deposit">Déposer</button>
-            <button class="btn-western withdraw" @click="withdraw">Retirer</button>
-        </div>
-
-        <button class="close" @click="close">X</button>
-    </div>
-</template>
 
 <script setup>
 import { ref } from 'vue';
@@ -120,7 +97,54 @@ const close = () => {
     ui.closeMenu()
 };
 
+const createBank = () => {
+    if (bankStore.getBankAccountIsCreated) {
+        console.log('Vous avez déjà un compte bancaire')
+        return;
+    }
+
+    if (playerStore.getWallet < 10) {
+        console.log('Vous n\'avez pas assez d\'argent sur vous')
+        return;
+    }   
+
+    sendNui('bank-createAccount', { id: bankStore.currentBank })
+}   
+
+
 </script>
+
+<template>
+    <div class="bank-account" v-if="!bankStore.getBankAccountIsCreated">
+        <!-- Voulez vous ouvrir une banque ? -->   
+        <div class="bank-title"> Voulez vous ouvrir une banque pour <span>10$</span> ? </div>
+
+        <div class="form">
+            <button class="btn-western bank-price" @click="createBank">Ouvrir un compte</button>
+        </div>
+    </div>
+    <div class="bank-menu" v-else>
+        <div class="balance-title"> {{ 'Jhon Doe' }} </div>
+
+        <div class="balance">{{ balance.toLocaleString() }}</div>
+
+        <div class="form">
+            <div class="fake-input">
+                <span contenteditable="true" @keydown="handleKeyDown" @input="updateAmount" @blur="updateAmount"
+                    ref="editableSpan"></span>
+                <div v-if="showPlaceholder" class="placeholder">0</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-western deposit" @click="deposit">Déposer</button>
+            <button class="btn-western withdraw" @click="withdraw">Retirer</button>
+        </div>
+
+        <button class="close" @click="close">X</button>
+    </div>
+</template>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
@@ -150,6 +174,52 @@ const close = () => {
     opacity: 0;
     transform: translateX(-50%) scale(0.5);
 }
+
+.bank-account {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 360px;
+    padding: 30px;
+    border-radius: 5px;
+    color: #442c1a;
+    font-family: 'Special Elite', serif;
+    background-image: url('/images/bank-empty.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.bank-title {
+    position: absolute;
+    top: 193px;
+    right: 50px;
+    left: 50px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+}
+.bank-title span {
+    color: #a8854d;
+}
+
+.bank-price {
+    position: absolute;
+    top: 265px;
+    font-size: 2rem;
+}
+
+.bank-price:hover {
+    color: #a8854d;
+}
+
+.bank-price:active {
+    color: #a8854d;
+    background: #a8854d;
+}   
+
 
 h2 {
     text-align: center;
@@ -410,6 +480,25 @@ h2 {
         font-size: 2.5rem;
         padding: 20px 18px;
     }
+
+    .bank-account {
+        width: 800px;
+        height: 580px;
+    }
+
+    .bank-title {
+        font-size: 3rem;
+        top: 270px;
+        right: 150px;
+        left: 150px;
+    }
+
+    .bank-price {
+        font-size: 3rem;
+        top: 420px;
+    }       
+
+
 }
 
 @media (min-width: 3500px) {
@@ -453,5 +542,23 @@ h2 {
         font-size: 2rem;
         padding: 25px 18px;
     }
+
+    .bank-account {
+        width: 1200px;
+        height: 880px;
+    }
+
+    .bank-title {
+        font-size: 4rem;
+        top: 400px;
+        right: 250px;
+        left: 250px;
+    }   
+
+    .bank-price {
+        font-size: 4rem;
+        top: 620px;
+    }       
+
 }
 </style>

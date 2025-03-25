@@ -5,7 +5,7 @@ import { defineStore } from 'pinia'
 export const usePlayerStore = defineStore('player', {
     state: () => ({
         name: 'Player', // nom du joueur
-        wallet: 10999, // cents sur soi (100 = 1$)
+        wallet: 999, // cents sur soi (100 = 1$)
         hunger: 0, // faim
         thirst: 0, // soif
         tiredness: 0, // fatigue

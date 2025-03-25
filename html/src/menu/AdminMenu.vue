@@ -6,46 +6,32 @@
 
                 <!-- Obtenir la position -->
                 <button @click="getPosition">📍 Obtenir la position</button>
-                <div v-if="admin.positionVisible" class="modal">
+                <div v-if="adminStore.positionVisible" class="modal">
                     <div class="modal-content">
 
                         <h2>Position</h2>
-                        <p> X {{ admin.position.x }} | Y {{ admin.position.y }} | Z {{ admin.position.z }}</p>
+                        <p> X {{ adminStore.position.x }} | Y {{ adminStore.position.y }} | Z {{ adminStore.position.z }}</p>
                         <button @click="copyCoordsToClipboard">📋 Copier les coordonnées</button>
-                        <button class="close" @click="admin.positionVisible = false">✖ Fermer</button>
+                        <button class="close" @click="adminStore.positionVisible = false">✖ Fermer</button>
                     </div>
                 </div>
 
                 <!-- etablisement du PNJ -->
-                <button @click="admin.locationVisible = !admin.locationVisible">📍 Etablissement du PNJ</button>
-                <div v-if="admin.locationVisible" class="modal">
+                <button @click="adminStore.locationVisible = !adminStore.locationVisible">📍 Etablissement du PNJ</button>
+                <div v-if="adminStore.locationVisible" class="modal">
                     <div class="modal-content">
                         <h2>Etablissement du PNJ</h2>
-                        <select v-model="admin.location">
+                        <select v-model="modelForm">
                             <option disabled value="">-- Sélectionner un établissement --</option>
-                            <option v-for="location in admin.locationList" :key="location.model" :value="location.model">
+                            <option v-for="location in adminStore.locationList" :key="location.model" :value="location">
                                 {{ location.label }}
                             </option>
                         </select>
-                        <button @click="setLocation">✅ Valider</button>
-                        <button class="close" @click="admin.locationVisible = false">❌ Annuler</button>
-                    </div>
-                </div>
-
-                <!-- Placer un PNJ -->
-                <button @click="admin.npcSelectorVisible = !admin.npcSelectorVisible">📍 Placer un PNJ</button>
-                <div v-if="admin.npcSelectorVisible" class="modal">
-                    <div class="modal-content">
-                        <h2>Choisir un PNJ</h2>
-                        <select v-model="admin.npcSelector">
-                            <option disabled value="">-- Sélectionner un PNJ --</option>
-                            <option v-for="npc in admin.npcList" :key="npc.model" :value="npc.model">
-                                {{ npc.label }}
-                            </option>
-                        </select>
-                        <div class="modal-buttons">
-                            <button @click="setNpc">✅ Valider</button>
-                            <button class="close" @click="admin.npcSelectorVisible = false">❌ Annuler</button>
+                        <input type="text" v-model="idForm" placeholder="ID du PNJ" class="id-input">
+                        <div v-if="idFormError" class="id-input-error">Veuillez entrer un ID</div>
+                        <div class="modal-buttons"> 
+                            <button @click="setLocation">✅ Valider</button>
+                            <button class="close" @click="adminStore.locationVisible = false">❌ Annuler</button>
                         </div>
                     </div>
                 </div>
@@ -57,16 +43,19 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { sendNui } from '../utils/nui'
 import { useAdminStore } from '../stores/adminStore'
 import { useUiStore } from '../stores/uiStore'
 
-const admin = useAdminStore()
-const ui = useUiStore()     
-
+const adminStore = useAdminStore()
+const uiStore = useUiStore()   
+const modelForm = ref('')
+const idForm = ref('')
+const idFormError = ref(false)
 
 const copyCoordsToClipboard = () => {
-    const text = `${admin.position.x.toFixed(1)}f, ${admin.position.y.toFixed(1)}f, ${admin.position.z.toFixed(1)}f`
+    const text = `${adminStore.position.x.toFixed(1)}f, ${adminStore.position.y.toFixed(1)}f, ${adminStore.position.z.toFixed(1)}f`
 
     const textarea = document.createElement('textarea')
     textarea.value = text
@@ -91,28 +80,20 @@ const copyCoordsToClipboard = () => {
 }
 
 
-const setNpc = async () => {
-    if (!admin.npcSelector) return;
-    console.log('PNJ selectionné : ', admin.npcSelector);
-
-    sendNui('admin-spawn', {
-        model: admin.npcSelector
-    });
-
-    admin.npcSelectorVisible = false;
-    admin.npcSelector = "";
-}
-
 const setLocation = async () => {
-    if (!admin.location) return;
-    console.log('lieu selectionné : ', admin.location);
+    if (!modelForm.value) return idFormError.value = true;
+    if (!idForm.value) return idFormError.value = true;
+    console.log('lieu selectionné : ', modelForm.value);
+    console.log('id : ', idForm.value);
 
     sendNui('admin-location', {
-        location: admin.location
+        type: modelForm.value.model,
+        id: idForm.value    
     });
 
-    admin.locationVisible = false;
-    admin.location = "";
+    adminStore.locationVisible = false;
+    modelForm.value = '';
+    idForm.value = '';
 }
 
 const getPosition = async () => {
@@ -121,7 +102,7 @@ const getPosition = async () => {
 
 const close = async () => {
     sendNui('ui-close'); 
-    ui.closeMenu()  
+    uiStore.closeMenu()  
 }
 
 
@@ -210,6 +191,12 @@ button.close:hover {
     text-align: center;
 }
 
+.id-input-error {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
 select {
     width: 100%;
     padding: 0.5rem;
@@ -220,7 +207,17 @@ select {
 
 .modal-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     gap: 1rem;
+    margin-top: 1rem;
 }
+
+.id-input {
+    width: 96%;
+    padding: 1%;
+    font-size: 1rem;
+}
+
+
 </style>

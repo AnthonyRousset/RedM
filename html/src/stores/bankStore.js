@@ -5,10 +5,10 @@ import { defineStore } from 'pinia'
 
 export const useBankStore = defineStore('bank', {
     state: () => ({
-        currentBank: 1,
-        banks: [
-            { id: 1, name: 'Banque', account: 100, stock: [] },
-        ], // { id: 0, name: 'Banque', account: 0, stock: [] }
+        id: 0,
+        exist: false,
+        account: 0,
+        stock: [],
         insurance: {
             weapons: {
                 active: false,
@@ -29,7 +29,12 @@ export const useBankStore = defineStore('bank', {
     }),
     actions: {
         update(data) {
-            this.currentBank = data.id
+            this.id = data.id
+            this.exist = data.exist
+            this.account = data.account
+            this.stock = data.stock
+            this.insurance = data.insurance
+
             if (this.banks.length === 0) {
                 this.banks.push(data)
             } else {
@@ -60,11 +65,12 @@ export const useBankStore = defineStore('bank', {
         }
     },
     getters: {
-        getBank(state) {
+        getBankAccountIsCreated(state) {
+            console.log(state.currentBank)
+            console.log(state.banks.find(bank => bank.id === state.currentBank))
             return state.banks.find(bank => bank.id === state.currentBank)
         },
         getBalance(state) {
-            
             return state.banks.find(bank => bank.id === state.currentBank).account
         }
     }

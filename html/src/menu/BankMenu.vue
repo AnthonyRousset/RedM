@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { sendNui } from '../utils/nui'
 import { useUiStore } from '../stores/uiStore'
 import { usePlayerStore } from '../stores/playerStore'

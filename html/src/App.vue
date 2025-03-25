@@ -6,7 +6,24 @@ import BankMenu from './menu/BankMenu.vue';
 import AdminMenu from './menu/AdminMenu.vue';
 import GameHud from './hud/Hud.vue';  
 import { useUiStore } from './stores/uiStore.js';
+import { sendNui } from './utils/nui.js';
 const uiStore = useUiStore()
+
+let timeout;
+let execute = true;
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (execute) {
+      sendNui('ui-close')
+      uiStore.closeMenu()
+    }
+    execute = false
+    clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      execute = true
+    }, 500)
+  }
+})
 
 </script>
 

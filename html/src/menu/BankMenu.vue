@@ -69,7 +69,7 @@ const deposit = () => {
             console.log('Vous n\'avez pas assez d\'argent sur vous');
             return;
         }
-        sendNui('bank-deposite', { id: bankStore.id, amount: dollarForm.value })
+        sendNui('bank-deposit', { id: bankStore.id, amount: dollarForm.value })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;

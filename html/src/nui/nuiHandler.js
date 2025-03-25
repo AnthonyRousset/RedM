@@ -34,7 +34,6 @@ const handlers = {
 
   // admin
   'admin:open': () => {
-    console.log('admin:open')
     const ui = useUiStore()
     ui.openMenu('admin')
   },
@@ -68,11 +67,11 @@ const handlers = {
     hud.update(data.info)
   },
   'metabolism:update': (data) => {
-    const metabolism = useHudStore() 
+    const metabolism = usePlayerStore()
     metabolism.update(data.info)
   },  
   'wallet:balance': (data) => {
-    const wallet = useHudStore()
+    const wallet = usePlayerStore()
     wallet.update(data.info)
   },    
   'player:update': (data) => {
@@ -106,9 +105,9 @@ const handlers = {
 
 export function handleNuiEvent(event) {
   //if (event.origin !== 'https://nui-game-internal') return // sécurité pour ne pas accepter les messages de nui venant d'un autre site (ex : https://www.google.com) 
-  console.log('handleNuiEvent') 
 
   const data = event.data;
+  console.log(`[NUI MOCK] ${event}`, data)
 
   if (!event.data || !event.data.action) return
 

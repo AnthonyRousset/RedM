@@ -29,6 +29,7 @@ export const useBankStore = defineStore('bank', {
     }),
     actions: {
         update(data) {
+            console.log('update', data)
             this.id = data.id
             this.exist = data.exist
             this.account = data.account

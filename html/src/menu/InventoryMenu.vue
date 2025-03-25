@@ -87,6 +87,13 @@ function onDrop(targetItem) {
   draggedItem.value = null
 }
 
+window.addEventListener('message', (event) => {
+  const { action, data } = event.data
+  if (action === 'player-move') {
+    console.log('player-move', data)
+  }
+})  
+
 </script>
 
 <style scoped>

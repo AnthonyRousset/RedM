@@ -19,7 +19,7 @@ export const usePlayerStore = defineStore('player', {
         update(data) {
             console.log('update', data)
             this.name = data.name ?? this.name
-            this.wallet = data.wallet ?? this.wallet
+            this.wallet = data.balance ?? this.wallet
             this.hunger = data.hunger ?? this.hunger
             this.thirst = data.thirst ?? this.thirst
             this.tiredness = data.tiredness ?? this.tiredness

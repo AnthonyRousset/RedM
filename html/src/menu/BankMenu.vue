@@ -88,12 +88,12 @@ const withdraw = () => {
     if (dollarForm.value > 0) {
         console.log('bankStore.getBalance', bankStore.getBalance)
         // vérifier si le joueur a assez d'argent en banque
-        if (bankStore.getBalance < dollarForm.value) {
+        if (bankStore.getBalance < dollarForm.value * 100) {
             console.log('Vous n\'avez pas assez d\'argent en banque');
             bankMessage.value = 'Par le ciel ! Votre compte est plus sec que le désert, cow-boy !'; 
             return;
         }
-        sendNui('bank-withdraw-'+bankStore.id, { id: bankStore.id, amount: dollarForm.value })
+        sendNui('bank-withdraw-'+bankStore.id, { id: bankStore.id, amount: dollarForm.value * 100 })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
@@ -151,7 +151,7 @@ const createBank = () => {
         <div class="bank-menu" v-else >
                 <div class="balance-title"> {{ playerStore.name }} </div>
             
-            <div class="balance">{{ bankStore.getBalance }}</div>
+            <div class="balance">{{ bankStore.getBalanceDollars }}</div>
 
             <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
             

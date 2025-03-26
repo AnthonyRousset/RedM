@@ -68,8 +68,8 @@ export const useBankStore = defineStore('bank', {
             return state.exist
             //return state.banks.find(bank => bank.id === state.currentBank)
         },
-        getBalance(state) {
-            return state.account
+        getBalanceDollars(state) {
+            return (state.account / 100).toFixed(2)
             //return state.banks.find(bank => bank.id === state.currentBank).account
         }
     }

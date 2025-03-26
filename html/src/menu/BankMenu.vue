@@ -610,6 +610,10 @@ h2 {
 
 /*media query*/
 @media (min-width: 2500px) {
+    .bank{
+        width: 800px;
+        height: 580px;
+    }
     .bank-menu {
         width: 800px;
         height: 580px;
@@ -681,7 +685,7 @@ h2 {
         zoom: 1.5;
     }
 
-    .bank-message.bubble-conversation.bank {
+    .bank-message.bubble-conversation.banker {
         font-size: 1.5rem;
         top: -80px;
         right: 584px;
@@ -693,6 +697,10 @@ h2 {
 }
 
 @media (min-width: 3500px) {
+    .bank{
+        width: 1200px;
+        height: 880px;
+    }
     .bank-menu {
         width: 1200px;
         height: 880px;
@@ -766,7 +774,7 @@ h2 {
         zoom: 1.5;
     }       
 
-    .bank-message.bubble-conversation.bank {
+    .bank-message.bubble-conversation.banker {
         font-size: 1.5rem;
         top: -80px;
         left: 856px;

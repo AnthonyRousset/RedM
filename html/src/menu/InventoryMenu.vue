@@ -118,7 +118,7 @@ window.addEventListener('message', (event) => {
   bottom: 0;
   overflow: hidden;
   z-index: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 1);
 }
 
 .window::before {

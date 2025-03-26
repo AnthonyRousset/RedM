@@ -52,7 +52,7 @@ const handlers = {
   },
 
   // bank
-  'bank:open': () => {
+  'bank:open': (data) => {
     const ui = useUiStore()
     ui.openMenu('bank')
     const bank = useBankStore()

@@ -23,6 +23,10 @@ const handlers = {
     const ui = useUiStore()
     ui.openMenu('inventory')
   },  
+  'inventory:update': (data) => {
+    const inventory = usePlayerStore()
+    inventory.update(data.info)
+  },
   'inventory:close': () => {
     const ui = useUiStore()
     ui.closeMenu()
@@ -51,6 +55,8 @@ const handlers = {
   'bank:open': () => {
     const ui = useUiStore()
     ui.openMenu('bank')
+    const bank = useBankStore()
+    bank.update(data.info)
   },
   'bank:info': (data) => {
     const bank = useBankStore()

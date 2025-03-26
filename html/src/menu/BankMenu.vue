@@ -119,7 +119,7 @@ const createBank = () => {
         bankMessage.value = 'Navré mais vous n\'avez pas assez d\'argent sur vous !';
         return;
     }
-
+    console.log('bank-createAccount', bankStore.id)
     sendNui('bank-createAccount', { id: bankStore.id })
 }
 

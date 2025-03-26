@@ -116,11 +116,21 @@ window.addEventListener('message', (event) => {
   left: 0;
   right: 0;
   bottom: 0;
+  overflow: hidden;
+  z-index: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.window::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background-image: url('https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/13329345/Red_Dead_Redemption_2_20181023103942.jpg?quality=90&strip=all&crop=0,0,100,100');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0.4; /* ← contrôle l'opacité uniquement de l'image */
+  z-index: -1;
 }
 
 </style>

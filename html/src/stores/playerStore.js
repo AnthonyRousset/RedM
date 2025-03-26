@@ -13,7 +13,32 @@ export const usePlayerStore = defineStore('player', {
         drugs:[], // drogues
         sick: [], // maladies
         activeBuffs: [], // buffs actifs
-        inventory: [] // inventaire
+        inventory: [
+            {
+                id: 'lancaster',
+                name: 'Lancaster',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: ['dommaged', 'stolen']
+            },
+            {
+                id: 'lancaster2',
+                name: 'Lancaster2',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: ['stolen']
+            },
+            {
+                id: 'cocaine',
+                name: 'Cocaine',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: ['illegal']
+            }
+        ] // inventaire
     }),
     actions: {
         update(data) {

@@ -71,10 +71,10 @@ const deposit = () => {
         // vérifier si le joueur a assez d'argent sur lui
         if (playerStore.wallet < dollarForm.value * 100) {
             console.log('Vous n\'avez pas assez d\'argent sur vous');
-            playerMessage.value = 'Sacré tonnerre ! Je n\'ai pas assez de pièces d\'or sur moi, partenaire...';
+            playerMessage.value = 'Sacré tonnerre ! Je n\'ai pas assez de dollars sur moi, partenaire...';
             return;
         }
-        sendNui('bank-deposit-'+bankStore.id, { id: bankStore.id, amount: dollarForm.value })
+        sendNui('bank-deposit-'+bankStore.id, { id: bankStore.id, amount: dollarForm.value * 100 })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
@@ -135,6 +135,8 @@ const createBank = () => {
                 <span class="two">.</span>
                 <span class="three">.</span>
             </div>
+            <button class="close" @click="close">X</button>
+
         </div>
         <div class="bank-account" v-else-if="!bankStore.getBankAccountIsCreated">
             <!-- Voulez vous ouvrir une banque ? -->
@@ -143,11 +145,13 @@ const createBank = () => {
             <div class="form">
                 <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
             </div>
+            <button class="close" @click="close">X</button>
+
         </div>
         <div class="bank-menu" v-else >
                 <div class="balance-title"> {{ playerStore.name }} </div>
             
-            <div class="balance">{{ bankStore.getBalance.toLocaleString() }}</div>
+            <div class="balance">{{ bankStore.getBalance }}</div>
 
             <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
             

@@ -49,6 +49,7 @@ export const useBankStore = defineStore('bank', {
             }*/
         },
         createSuccess(data) {
+            console.log('createSuccess', data)
             if (this.id === data.id) {
                 this.exist = true
             }

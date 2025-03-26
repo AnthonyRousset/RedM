@@ -1,10 +1,11 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref } from 'vue'
 import { usePlayerStore } from '../stores/playerStore.js'
 import { sendNui } from '../utils/nui'
 import { useUiStore } from '../stores/uiStore'
 
-const ui = useUiStore()
+const uiStore = useUiStore()
+const playerStore = usePlayerStore()
 
 const slots = ref(Array(20).fill(null))
 const contextVisible = ref(false)
@@ -12,11 +13,12 @@ const contextX = ref(0)
 const contextY = ref(0)
 const selectedItem = ref(null)
 const draggedItem = ref(null)
-const playerStore = usePlayerStore()
+const menuContent = ref('inventory')  
+
 
 function close() {
   sendNui('ui-close')
-  ui.closeMenu()
+  uiStore.closeMenu()
 }
 
 function showContext(e, item) {
@@ -74,42 +76,77 @@ window.addEventListener('message', (event) => {
         
       <div class="menu-vertical">
         <ul>
-          <li>
-            <img src="/images/weapons/lancaster.png" alt="item">
-            <span class="tooltip">Nom</span>
+          <li @click="menuContent = 'inventory'"> 
+            <img src="/images/weapons/lancaster.png" alt="Inventaire">
           </li>
-          <li>
-            <img src="/images/weapons/lancaster.png" alt="item">
-            <span class="tooltip">Nom</span>
+          <li @click="menuContent = 'craft'">
+            <img src="/images/weapons/lancaster.png" alt="Craft">
           </li>
-          <li>
-            <img src="/images/weapons/lancaster.png" alt="item">
-            <span class="tooltip">Nom</span>
+          <li @click="menuContent = 'tutorial'">
+            <img src="/images/weapons/lancaster.png" alt="Tutoriel">
+          </li>
+          <li @click="menuContent = 'announcements'">
+            <img src="/images/weapons/lancaster.png" alt="Annonces">
+          </li>
+          <li @click="menuContent = 'options'">
+            <img src="/images/weapons/lancaster.png" alt="Options">
           </li>
         </ul>
       </div>
-      <div class="inventory">
-        <div class="title">Sac à dos</div>
-        <div class="content">
-          <ul>
-            <li>
-              <div class="item">
-                <div class="name">Nom</div>
-                <div class="description">Description</div>
-              </div>
-            </li>
-          </ul>
+      <div class="menu-content" v-if="menuContent === 'inventory'">
+        <div class="inventory">
+          <div class="_title_">INVENTAIRE</div>
+          <div class="content">
+            <ul>
+              <li>
+                <div class="item" v-for="item in playerStore.inventory" :key="item.id"> 
+                  <div class="name">{{ item.name }}</div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-      <div class="description">
-        <div class="title">Description</div>
-        <div class="content">
-          <div class="item">
-            <div class="name">Nom</div>
-            <div class="description">Description</div>
+        <div class="description" v-if="selectedItem">
+          <div class="title">Description</div>
+          <div class="content">
+            <div class="item">
+              <div class="name">Nom</div>
+              <div class="description">Description</div>
+            </div>
           </div>
         </div>
       </div>
+
+      <div class="menu-content" v-if="menuContent === 'craft'">
+        <div class="craft">
+          <div class="_title_">CRAFT</div>
+          <div class="content">
+            <div class="item">
+              <div class="name">Nom</div>
+              <div class="description">Description</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-content" v-if="menuContent === 'tutorial'">
+        <div class="tutorial">
+          <div class="_title_">TUTORIEL</div>
+        </div>
+      </div>
+
+      <div class="menu-content" v-if="menuContent === 'announcements'">
+        <div class="announcements">
+          <div class="_title_">ANNOUNCES</div>
+        </div>
+      </div>
+
+      <div class="menu-content" v-if="menuContent === 'options'">
+        <div class="options">
+          <div class="_title_">OPTIONS</div>
+        </div>
+      </div>    
+      
     </div>
   </div>
 
@@ -120,6 +157,7 @@ window.addEventListener('message', (event) => {
 
 
 <style scoped>
+
 
 .window {
   position: fixed;
@@ -161,7 +199,7 @@ window.addEventListener('message', (event) => {
   height: 100px;
   width: 96%;
   color: #fff;
-  font-family: 'Special Elite', serif;
+  font-family: 'Oswald', sans-serif;
   font-size: 2rem;
   padding: 0 2%;
 }
@@ -182,18 +220,19 @@ window.addEventListener('message', (event) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 10%;
   height: 100%;
 }
 .menu-vertical ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  width: 80%;
-  padding: 10%;
+  padding: 10px;
+  height: 100%;
 }
 .menu-vertical ul li {
-  height: 100px;
+  height: 4rem;
+  width: 4rem;
+  position: relative;
 }
 .menu-vertical ul li img {
   width: 100%;
@@ -201,6 +240,76 @@ window.addEventListener('message', (event) => {
   object-fit: cover;
   display: block;
 }
+
+
+
+.window .container {
+  height: calc(100% - 100px);
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+}
+
+.window .container .menu-content{
+  height: 100%;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+.menu-content ._title_{
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-bottom: 2px solid #a1a1a1;
+  color: #a1a1a1;
+  padding-bottom: 4px;
+  font-family: 'Oswald', sans-serif;
+}
+
+.menu-content .inventory{
+  width: 400px;
+  height: 100%;
+}
+
+.menu-content .inventory .content{
+  width: 100%;
+  height: 100%;
+} 
+
+.menu-content .inventory .content ul{
+  width: 100%;
+  height: 100%;
+}  
+
+.menu-content .inventory .content ul li{
+  width: 100%;
+  height: 100%;
+} 
+
+.menu-content .inventory .content ul li .item{
+  width: 100%;
+  height: 100%;
+}  
+
+.menu-content .inventory .content ul li .item .name{
+  width: 100%;
+  height: 100%;
+}   
+
+.menu-content .inventory .content ul li .item .description{
+  width: 100%;
+  height: 100%;
+}   
+
+
+
+
+
+
+
+
+
 
 
 

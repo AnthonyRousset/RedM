@@ -58,7 +58,7 @@ const handlers = {
     bank.isLoading = true
     ui.openMenu('bank')
     bank.update(data.info)
-    
+
   },
   'bank:info': (data) => {
     const bank = useBankStore()
@@ -115,9 +115,9 @@ export function handleNuiEvent(event) {
   //if (event.origin !== 'https://nui-game-internal') return // sécurité pour ne pas accepter les messages de nui venant d'un autre site (ex : https://www.google.com) 
 
   const data = event.data;
-  console.log(`[NUI Client.cs] [${data.action}]`, data)
-
-  if (!event.data || !event.data.action) return
+  console.log(`[NUI envoie sur vue.js] [${data.action}]`, data)
+  if (!event.data || !event.data.action) console.warn(`[NUI] ATTENTION : event.data.action n'existe pas`)
+  if (!event.data || !event.data.info) console.warn(`[NUI] ATTENTION : data.INFO n'existe pas`)
 
   const action = event.data.action;
   const handler = handlers[action]

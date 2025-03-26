@@ -76,7 +76,7 @@ const deposit = () => {
             playerMessage.value = 'Mince! Je n\'ai pas assez d\'argent sur moi ...';
             return;
         }
-        sendNui('bank-deposit', { id: bankStore.id, amount: dollarForm.value })
+        sendNui('bank-deposit-'+bankStore.id, { id: bankStore.id, amount: dollarForm.value })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
@@ -95,7 +95,7 @@ const withdraw = () => {
             bankMessage.value = 'Je suis désolé mais vous n\'avez pas assez d\'argent sur votre compte!'; 
             return;
         }
-        sendNui('bank-withdraw', { id: bankStore.id, amount: dollarForm.value })
+        sendNui('bank-withdraw-'+bankStore.id, { id: bankStore.id, amount: dollarForm.value })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
@@ -120,7 +120,7 @@ const createBank = () => {
         return;
     }
     console.log('bank-createAccount', bankStore.id)
-    sendNui('bank-createAccount', { id: bankStore.id })
+    sendNui('bank-createAccount-'+bankStore.id, { id: bankStore.id })
 }
 
 

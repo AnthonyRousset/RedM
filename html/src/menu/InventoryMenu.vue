@@ -102,6 +102,15 @@ window.addEventListener('message', (event) => {
                 <div class="item" v-for="item in playerStore.inventory" :key="item.id"> 
                   <div class="name">{{ item.name }}</div>
                 </div>
+                <div class="item" v-for="item in playerStore.inventory" :key="item.id"> 
+                  <div class="name">{{ item.name }}</div>
+                </div>
+                <div class="item" v-for="item in playerStore.inventory" :key="item.id"> 
+                  <div class="name">{{ item.name }}</div>
+                </div>
+                <div class="item" v-for="item in playerStore.inventory" :key="item.id"> 
+                  <div class="name">{{ item.name }}</div>
+                </div>
               </li>
             </ul>
           </div>
@@ -268,28 +277,31 @@ window.addEventListener('message', (event) => {
 }
 
 .menu-content .inventory{
-  width: 400px;
+  width: 500px;
   height: 100%;
 }
 
 .menu-content .inventory .content{
-  width: 100%;
-  height: 100%;
+
 } 
 
 .menu-content .inventory .content ul{
-  width: 100%;
-  height: 100%;
+
 }  
 
 .menu-content .inventory .content ul li{
-  width: 100%;
-  height: 100%;
+  display: grid;
+  /* grille 5x5 */
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 10px;
 } 
 
 .menu-content .inventory .content ul li .item{
+  background-color: #ffffff;
   width: 100%;
   height: 100%;
+  padding-top: 1px;
 }  
 
 .menu-content .inventory .content ul li .item .name{

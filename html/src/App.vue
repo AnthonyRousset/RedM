@@ -49,6 +49,12 @@ document.addEventListener('keydown', (e) => {
 @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 
+ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .open-bank {
   position: fixed;
   top: 10px;

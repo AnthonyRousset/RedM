@@ -103,7 +103,7 @@ const withdraw = () => {
 };
 
 const close = () => {
-    sendNui('ui-close')
+    sendNui('ui-close-'+bankStore.id)
     ui.closeMenu()
 };
 

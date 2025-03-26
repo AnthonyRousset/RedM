@@ -206,8 +206,8 @@ window.addEventListener('message', (event) => {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url('https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/13329345/Red_Dead_Redemption_2_20181023103942.jpg?quality=90&strip=all&crop=0,0,100,100');
-  background-size: cover;
+  /*background-image: url('https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/13329345/Red_Dead_Redemption_2_20181023103942.jpg?quality=90&strip=all&crop=0,0,100,100');
+  */background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.4;

@@ -9,7 +9,6 @@ const playerStore = usePlayerStore()
 const bankStore = useBankStore()
 const uiStore = useUiStore()
 
-const balance = ref(0);
 const dollarForm = ref();
 const showPlaceholder = ref(true);
 const editableSpan = ref(null);
@@ -49,7 +48,6 @@ const handleKeyDown = (event) => {
         event.preventDefault();
     }
 };
-
 
 const updateAmount = () => {
     console.log('updateAmount', editableSpan.value.innerText)
@@ -123,49 +121,57 @@ const createBank = () => {
         bankMessage.value = 'Par le ciel ! Vous n\'avez pas assez de pièces d\'or pour ouvrir un coffre-fort !';
         return;
     }
+    bankStore.exist = true;
     console.log('bank-createAccount', bankStore.id)
     sendNui('bank-createAccount-'+bankStore.id, { id: bankStore.id })
 }
-
-
 </script>
 
 <template>
-    <div class="bank-account" v-if="!bankStore.getBankAccountIsCreated">
-        <!-- Voulez vous ouvrir une banque ? -->
-        <div class="bank-title"> Voulez vous ouvrir un coffre-fort pour <span>10$</span> ? </div>
-
-        <div class="form">
-            <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
-        </div>
-    </div>
-    <div class="bank-menu" v-else :class="{ '__closing': uiStore.isClosing }">
-            <div class="balance-title"> {{ playerStore.name }} </div>
-        
-        <div class="balance">{{ bankStore.getBalance.toLocaleString() }}</div>
-
-        <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
-        
-
-            <div class="bank-message bubble-conversation player"  :class="{ active: playerMessage }"> <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>  </div>
-
-            <div class="bank-message bubble-conversation bank"  :class="{ active: bankMessage }"> <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span> </div>
-
-
-        <div class="form">
-            <div class="fake-input">
-                <span contenteditable="true" @keydown="handleKeyDown" @input="updateAmount" @blur="updateAmount"
-                    ref="editableSpan" :class="{ error: playerMessage || bankMessage }"></span>
-                <div v-if="showPlaceholder" class="placeholder">0</div>
+    <div class="bank" :class="{ '__closing': uiStore.isClosing }">
+        <div class="waiting-screen" v-if="bankStore.isLoading">
+            <div class="waiting-screen-title">
+                <span class="one">.</span>
+                <span class="two">.</span>
+                <span class="three">.</span>
             </div>
         </div>
+        <div class="bank-account" v-else-if="!bankStore.getBankAccountIsCreated">
+            <!-- Voulez vous ouvrir une banque ? -->
+            <div class="bank-title"> Voulez vous ouvrir un coffre-fort pour <span>10$</span> ? </div>
 
-        <div class="actions">
-            <button class="btn-western deposit" @click="deposit">Déposer</button>
-            <button class="btn-western withdraw" @click="withdraw">Retirer</button>
+            <div class="form">
+                <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
+            </div>
         </div>
+        <div class="bank-menu" v-else >
+                <div class="balance-title"> {{ playerStore.name }} </div>
+            
+            <div class="balance">{{ bankStore.getBalance.toLocaleString() }}</div>
 
-        <button class="close" @click="close">X</button>
+            <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
+            
+
+                <div class="bank-message bubble-conversation player"  :class="{ active: playerMessage }"> <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>  </div>
+
+                <div class="bank-message bubble-conversation banker"  :class="{ active: bankMessage }"> <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span> </div>
+
+
+            <div class="form">
+                <div class="fake-input">
+                    <span contenteditable="true" @keydown="handleKeyDown" @input="updateAmount" @blur="updateAmount"
+                        ref="editableSpan" :class="{ error: playerMessage || bankMessage }"></span>
+                    <div v-if="showPlaceholder" class="placeholder">0</div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn-western deposit" @click="deposit">Déposer</button>
+                <button class="btn-western withdraw" @click="withdraw">Retirer</button>
+            </div>
+
+            <button class="close" @click="close">X</button>
+        </div>
     </div>
 </template>
 
@@ -173,8 +179,7 @@ const createBank = () => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 
-
-.bank-menu {
+.bank {
     position: absolute;
     top: 15%;
     left: 50%;
@@ -183,38 +188,91 @@ const createBank = () => {
     height: 360px;
     padding: 30px;
     border-radius: 5px;
-    color: #805f07;
-    font-family: 'Special Elite', serif;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
-    background-color: rgba(0, 0, 0, 0.5);
-    background-image: url('/images/bank.png');
+    background-image: url('/images/bank-empty.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-
     /* Animation */
     animation: openVault 0.6s ease-out forwards;
     opacity: 0;
     transform: translateX(-50%) translateY(-100%);
 }
 
+.waiting-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}   
+
+.waiting-screen-title {
+    position: absolute;
+    padding: 30px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.waiting-screen-title span {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #805f07;
+}
+
+.waiting-screen-title span.one {
+    animation: blink 1.5s infinite;
+    animation-delay: 0.5s;
+}
+
+.waiting-screen-title span.two {
+    animation: blink 1.5s infinite;
+    animation-delay: 1s;
+}
+
+.waiting-screen-title span.three {
+    animation: blink 1.5s infinite;
+    animation-delay: 1.5s;
+}   
+
+@keyframes blink {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    50% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+
+.bank-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 500px;
+    height: 360px;
+    padding: 30px;
+    border-radius: 5px;
+    color: #805f07;
+    font-family: 'Special Elite', serif;
+    background-color: rgba(0, 0, 0, 0.5);
+    background-image: url('/images/bank.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 
 
 .bank-account {
     position: absolute;
-    top: 15%;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 0;
+    left: 0;
     width: 500px;
     height: 360px;
     padding: 30px;
     border-radius: 5px;
     color: #442c1a;
     font-family: 'Special Elite', serif;
-    background-image: url('/images/bank-empty.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
 }
 
 .bank-title {
@@ -280,7 +338,7 @@ h2 {
 }
 
 
-.bank-message.bubble-conversation.bank.active,
+.bank-message.bubble-conversation.banker.active,
 .bank-message.bubble-conversation.player.active {
     opacity: 1 !important;
 }
@@ -313,20 +371,20 @@ h2 {
     border-radius: 5px;
 }
 
-.bank-message.bubble-conversation.bank {
+.bank-message.bubble-conversation.banker {
     left: 575px;
     width: 271px;
     height: 203px;
     top: -43px;
     background-image: url('/images/bubble-message.png');
 }
-.bank-message.bubble-conversation.bank span {
+.bank-message.bubble-conversation.banker span {
     font-size: 1rem;
     padding: 50px 83px 0 43px;
     display: inline-block;
     text-align: center;
 }
-.bank-message.bubble-conversation.bank .bank-person {
+.bank-message.bubble-conversation.banker .bank-person {
     position: absolute;
     top: 10px;
     left: calc(50% - 20px);

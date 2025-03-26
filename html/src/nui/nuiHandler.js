@@ -54,9 +54,11 @@ const handlers = {
   // bank
   'bank:open': (data) => {
     const ui = useUiStore()
-    ui.openMenu('bank')
     const bank = useBankStore()
+    bank.isLoading = true
+    ui.openMenu('bank')
     bank.update(data.info)
+    
   },
   'bank:info': (data) => {
     const bank = useBankStore()

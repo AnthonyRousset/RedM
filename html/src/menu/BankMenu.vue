@@ -7,7 +7,7 @@ import { useBankStore } from '../stores/bankStore'
 
 const playerStore = usePlayerStore()
 const bankStore = useBankStore()
-const ui = useUiStore()
+const uiStore = useUiStore()
 
 const balance = ref(0);
 const dollarForm = ref();
@@ -73,7 +73,7 @@ const deposit = () => {
         // vérifier si le joueur a assez d'argent sur lui
         if (playerStore.wallet < dollarForm.value * 100) {
             console.log('Vous n\'avez pas assez d\'argent sur vous');
-            playerMessage.value = 'Mince! Je n\'ai pas assez d\'argent sur moi ...';
+            playerMessage.value = 'Sacré tonnerre ! Je n\'ai pas assez de pièces d\'or sur moi, partenaire...';
             return;
         }
         sendNui('bank-deposit-'+bankStore.id, { id: bankStore.id, amount: dollarForm.value })
@@ -92,7 +92,7 @@ const withdraw = () => {
         // vérifier si le joueur a assez d'argent en banque
         if (bankStore.getBalance < dollarForm.value) {
             console.log('Vous n\'avez pas assez d\'argent en banque');
-            bankMessage.value = 'Je suis désolé mais vous n\'avez pas assez d\'argent sur votre compte!'; 
+            bankMessage.value = 'Par le ciel ! Votre compte est plus sec que le désert, cow-boy !'; 
             return;
         }
         sendNui('bank-withdraw-'+bankStore.id, { id: bankStore.id, amount: dollarForm.value })
@@ -103,20 +103,24 @@ const withdraw = () => {
 };
 
 const close = () => {
-    sendNui('ui-close-'+bankStore.id)
-    ui.closeMenu()
+    uiStore.isClosing = true;
+    setTimeout(() => {
+        sendNui('ui-close-'+bankStore.id)
+        uiStore.closeMenu()
+        uiStore.isClosing = false;
+    }, 600); // Attendre la fin de l'animation
 };
 
 const createBank = () => {
     if (bankStore.getBankAccountIsCreated) {
         console.log('Vous avez déjà un compte bancaire')
-        bankMessage.value = 'Mais vous avez déjà un compte bancaire !';
+        bankMessage.value = 'Hé là, partenaire ! Vous avez déjà un coffre-fort dans notre banque !';
         return;
     }
 
     if (playerStore.getWallet < 10) {
         console.log('Vous n\'avez pas assez d\'argent sur vous')
-        bankMessage.value = 'Navré mais vous n\'avez pas assez d\'argent sur vous !';
+        bankMessage.value = 'Par le ciel ! Vous n\'avez pas assez de pièces d\'or pour ouvrir un coffre-fort !';
         return;
     }
     console.log('bank-createAccount', bankStore.id)
@@ -129,23 +133,23 @@ const createBank = () => {
 <template>
     <div class="bank-account" v-if="!bankStore.getBankAccountIsCreated">
         <!-- Voulez vous ouvrir une banque ? -->
-        <div class="bank-title"> Voulez vous ouvrir une banque pour <span>10$</span> ? </div>
+        <div class="bank-title"> Voulez vous ouvrir un coffre-fort pour <span>10$</span> ? </div>
 
         <div class="form">
-            <button class="btn-western bank-price" @click="createBank">Ouvrir un compte</button>
+            <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
         </div>
     </div>
-    <div class="bank-menu" v-else>
-        <div class="balance-title"> {{ 'Jhon Doe' }} </div>
-
-        <div class="balance">{{ balance.toLocaleString() }}</div>
+    <div class="bank-menu" v-else :class="{ '__closing': uiStore.isClosing }">
+            <div class="balance-title"> {{ playerStore.name }} </div>
+        
+        <div class="balance">{{ bankStore.getBalance.toLocaleString() }}</div>
 
         <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
         
 
-            <div class="bank-message bubble-conversation player"  :class="{ active: playerMessage }"> <span> {{ playerMessage }} </span> </div>
+            <div class="bank-message bubble-conversation player"  :class="{ active: playerMessage }"> <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>  </div>
 
-            <div class="bank-message bubble-conversation bank"  :class="{ active: bankMessage }"> <span> {{ bankMessage }} </span> </div>
+            <div class="bank-message bubble-conversation bank"  :class="{ active: bankMessage }"> <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span> </div>
 
 
         <div class="form">
@@ -184,7 +188,6 @@ const createBank = () => {
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
     background-color: rgba(0, 0, 0, 0.5);
     background-image: url('/images/bank.png');
-    /* Parchemin HD */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -192,8 +195,10 @@ const createBank = () => {
     /* Animation */
     animation: openVault 0.6s ease-out forwards;
     opacity: 0;
-    transform: translateX(-50%) scale(0.5);
+    transform: translateX(-50%) translateY(-100%);
 }
+
+
 
 .bank-account {
     position: absolute;
@@ -273,6 +278,8 @@ h2 {
     transition: opacity 0.5s ease;
     opacity: 0;
 }
+
+
 .bank-message.bubble-conversation.bank.active,
 .bank-message.bubble-conversation.player.active {
     opacity: 1 !important;
@@ -287,10 +294,23 @@ h2 {
     background-image: url('/images/bubble-think.png');
 }
 .bank-message.bubble-conversation.player span {
-    font-size: 1rem;
+    font-size: 0.9rem;
     padding: 57px 70px 0 55px;
     display: inline-block;
     text-align: center;
+}
+.bank-message.bubble-conversation.player .bank-person {
+    position: absolute;
+    top: 5px;
+    left: calc(50% - 20px);
+    transform: translateX(-50%);
+    width: calc(initial - 50%);
+    background-color: rgb(77, 27, 27);
+    color: #ffffff; 
+    font-size: 1rem;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
 }
 
 .bank-message.bubble-conversation.bank {
@@ -302,11 +322,24 @@ h2 {
 }
 .bank-message.bubble-conversation.bank span {
     font-size: 1rem;
-    padding: 45px 83px 0 43px;
+    padding: 50px 83px 0 43px;
     display: inline-block;
     text-align: center;
 }
+.bank-message.bubble-conversation.bank .bank-person {
+    position: absolute;
+    top: 10px;
+    left: calc(50% - 20px);
+    transform: translateX(-50%);
+    width: calc(initial - 50%);
+    background-color: rgb(77, 27, 27);
+    color: #ffffff;
 
+    font-size: 1rem;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
 
 
 
@@ -452,17 +485,6 @@ h2 {
     background: #932020;
 }
 
-@keyframes openVault {
-    from {
-        transform: translateX(-50%) scale(0);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(-50%) scale(1);
-        opacity: 1;
-    }
-}
 
 .btn-western {
     flex: 1;
@@ -594,6 +616,21 @@ h2 {
         top: 420px;
     }
 
+    .bank-message.bubble-conversation.player {
+        font-size: 1.5rem;
+        top: 210px;
+        right: 584px;
+        zoom: 1.5;
+    }
+
+    .bank-message.bubble-conversation.bank {
+        font-size: 1.5rem;
+        top: -80px;
+        right: 584px;
+        zoom: 1.5;
+    }
+
+
 
 }
 
@@ -662,6 +699,20 @@ h2 {
     .bank-price {
         font-size: 4rem;
         top: 620px;
+    }
+
+    .bank-message.bubble-conversation.player {
+        font-size: 1.5rem;
+        top: 394px;
+        left: -279px;
+        zoom: 1.5;
+    }       
+
+    .bank-message.bubble-conversation.bank {
+        font-size: 1.5rem;
+        top: -80px;
+        left: 856px;
+        zoom: 1.5;
     }
 
 }

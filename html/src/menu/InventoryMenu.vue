@@ -62,41 +62,52 @@ window.addEventListener('message', (event) => {
 <template>
   <!-- TODO: Implement inventory menu Horizon forbidden west style -->
   <div class="window">
-    <div class="menu-vertical">
-      <ul>
-        <li>
-          <img src="/images/weapons/lancaster.png" alt="item">
-          <span class="tooltip">Nom</span>
-        </li>
-        <li>
-          <img src="/images/weapons/lancaster.png" alt="item">
-          <span class="tooltip">Nom</span>
-        </li>
-        <li>
-          <img src="/images/weapons/lancaster.png" alt="item">
-          <span class="tooltip">Nom</span>
-        </li>
-      </ul>
+    <div class="top">
+      <div class="left">
+        <div class="name">Nom</div>
+      </div>
+      <div class="right">
+        <div class="money">1000$</div> | <div class="zone">Zone</div>
+      </div>
     </div>
-    <div class="inventory">
-      <div class="title">Sac à dos</div>
-      <div class="content">
+    <div class="container">
+        
+      <div class="menu-vertical">
         <ul>
           <li>
-            <div class="item">
-              <div class="name">Nom</div>
-              <div class="description">Description</div>
-            </div>
+            <img src="/images/weapons/lancaster.png" alt="item">
+            <span class="tooltip">Nom</span>
+          </li>
+          <li>
+            <img src="/images/weapons/lancaster.png" alt="item">
+            <span class="tooltip">Nom</span>
+          </li>
+          <li>
+            <img src="/images/weapons/lancaster.png" alt="item">
+            <span class="tooltip">Nom</span>
           </li>
         </ul>
       </div>
-    </div>
-    <div class="description">
-      <div class="title">Description</div>
-      <div class="content">
-        <div class="item">
-          <div class="name">Nom</div>
-          <div class="description">Description</div>
+      <div class="inventory">
+        <div class="title">Sac à dos</div>
+        <div class="content">
+          <ul>
+            <li>
+              <div class="item">
+                <div class="name">Nom</div>
+                <div class="description">Description</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="description">
+        <div class="title">Description</div>
+        <div class="content">
+          <div class="item">
+            <div class="name">Nom</div>
+            <div class="description">Description</div>
+          </div>
         </div>
       </div>
     </div>
@@ -117,7 +128,7 @@ window.addEventListener('message', (event) => {
   right: 0;
   bottom: 0;
   overflow: hidden;
-  z-index: 0;
+  z-index: 100000;
   background-color: rgba(0, 0, 0, 1);
 }
 
@@ -129,8 +140,70 @@ window.addEventListener('message', (event) => {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.4; /* ← contrôle l'opacité uniquement de l'image */
-  z-index: -1;
+  opacity: 0.4;
+  z-index: -3;
 }
+.window::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0%;
+  right: 0%;
+  bottom: 0;
+  overflow: hidden;
+  z-index: -2;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+  width: 96%;
+  color: #fff;
+  font-family: 'Special Elite', serif;
+  font-size: 2rem;
+  padding: 0 2%;
+}
+.top .right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.top .right div {
+  margin: 0 10px;
+}
+
+
+
+
+
+.menu-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 10%;
+  height: 100%;
+}
+.menu-vertical ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 80%;
+  padding: 10%;
+}
+.menu-vertical ul li {
+  height: 100px;
+}
+.menu-vertical ul li img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+
+
 
 </style>

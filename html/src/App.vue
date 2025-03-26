@@ -13,9 +13,13 @@ let timeout;
 let execute = true;
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (execute) {
-      sendNui('ui-close')
-      uiStore.closeMenu()
+    if (execute && !uiStore.isClosing) {
+      uiStore.isClosing = true;
+      setTimeout(() => {
+        sendNui('ui-close')
+        uiStore.closeMenu()
+        uiStore.isClosing = false;
+      }, 600);
     }
     execute = false
     clearTimeout(timeout)
@@ -51,6 +55,33 @@ document.addEventListener('keydown', (e) => {
   padding: 10px;
   border-radius: 5px;
 } 
+.__closing {
+  animation: closeVault 0.6s ease-in forwards !important;
+}
+
+@keyframes closeVault {
+  from {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+  }
+
+  to {
+      transform: translateX(-50%) translateY(-150%);
+      opacity: 1;
+  }
+}
+
+@keyframes openVault {
+  from {
+      transform: translateX(-50%) translateY(-150%);
+      opacity: 0;
+  }
+
+  to {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+  }
+}
 
 #hud {
   position: fixed;

@@ -1,41 +1,3 @@
-<template>
-  <div class="inventory">
-    <h2>Sac à dos</h2>
-    <div class="grid">
-      <div
-        v-for="(item, i) in slots"
-        :key="i"
-        class="slot"
-        @contextmenu.prevent="item && showContext($event, item)"
-        @dragover.prevent
-        @drop="() => onDrop(item)"
-      >
-        <div
-          v-if="item"
-          class="item"
-          draggable="true"
-          @dragstart="() => onDragStart(item)"
-        >
-          <span>{{ item.name }}</span>
-          <span class="qty">x{{ item.quantity }}</span>
-        </div>
-      </div>
-    </div>
-
-    <button @click="close">Fermer</button>
-
-    <div
-      v-if="contextVisible"
-      class="context"
-      :style="{ top: `${contextY}px`, left: `${contextX}px` }"
-    >
-      <div role="button" tabindex="0" @click="() => doAction('use')">Utiliser</div>
-      <div role="button" tabindex="0" @click="() => doAction('drop')">Jeter</div>
-      <div role="button" tabindex="0" @click="() => doAction('inspect')">Examiner</div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { usePlayerStore } from '../stores/playerStore.js'
@@ -96,79 +58,69 @@ window.addEventListener('message', (event) => {
 
 </script>
 
+
+<template>
+  <!-- TODO: Implement inventory menu Horizon forbidden west style -->
+  <div class="window">
+    <div class="menu-vertical">
+      <ul>
+        <li>
+          <img src="/images/weapons/lancaster.png" alt="item">
+          <span class="tooltip">Nom</span>
+        </li>
+        <li>
+          <img src="/images/weapons/lancaster.png" alt="item">
+          <span class="tooltip">Nom</span>
+        </li>
+        <li>
+          <img src="/images/weapons/lancaster.png" alt="item">
+          <span class="tooltip">Nom</span>
+        </li>
+      </ul>
+    </div>
+    <div class="inventory">
+      <div class="title">Sac à dos</div>
+      <div class="content">
+        <ul>
+          <li>
+            <div class="item">
+              <div class="name">Nom</div>
+              <div class="description">Description</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="description">
+      <div class="title">Description</div>
+      <div class="content">
+        <div class="item">
+          <div class="name">Nom</div>
+          <div class="description">Description</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+   
+</template>
+
+
+
 <style scoped>
-.inventory {
-  position: absolute;
-  top: 20%;
-  left: 30%;
-  background: #111;
-  color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 500px;
+
+.window {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/13329345/Red_Dead_Redemption_2_20181023103942.jpg?quality=90&strip=all&crop=0,0,100,100');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5, 80px);
-  grid-template-rows: repeat(4, 80px);
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.slot {
-  background: #2a2a2a;
-  border: 1px solid #444;
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 13px;
-  text-align: center;
-}
-
-.qty {
-  font-size: 11px;
-  color: #ccc;
-}
-
-button {
-  margin-top: 20px;
-  padding: 10px;
-  background: #e99287;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-}
-
-.context {
-  position: absolute;
-  background: #333;
-  border: 1px solid #555;
-  color: white;
-  border-radius: 5px;
-  z-index: 1000;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-}
-
-.context div {
-  padding: 10px 15px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.context div:hover {
-  background: #555;
-}
 </style>

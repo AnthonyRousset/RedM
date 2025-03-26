@@ -4,13 +4,10 @@
  * @param {Object} data - les données à envoyer
  * @returns {Promise<any>} - réponse JSON ou null
  */
-const IS_NUI = typeof GetParentResourceName === 'function'
 
 export async function sendNui(event, data = {}) {
-  if (!IS_NUI) {
-    console.log(`[NUI MOCK.vue] ${event}`, data)
-    return // ou appelle une fonction de mock
-  }
+
+  console.log(`[NUI MOCK.vue] ${event}`, data)
 
   try {
     fetch(`https://${GetParentResourceName()}/${event}`, {

@@ -3,9 +3,11 @@ import { ref } from 'vue'
 import { usePlayerStore } from '../stores/playerStore.js'
 import { sendNui } from '../utils/nui'
 import { useUiStore } from '../stores/uiStore'
+import { useHudStore } from '../stores/hudStore'
 
 const uiStore = useUiStore()
 const playerStore = usePlayerStore()
+const hudStore = useHudStore()  
 
 const slots = ref(Array(20).fill(null))
 const contextVisible = ref(false)
@@ -51,6 +53,28 @@ function onDrop(targetItem) {
   draggedItem.value = null
 }
 
+const tooltip = ref({
+  visible: false,
+  name: null,
+  x: 0,
+  y: 0
+})
+
+function moveTooltip(e) {
+  tooltip.value.x = e.clientX + 10
+  tooltip.value.y = e.clientY + 10
+}
+
+function showTooltip(name) {
+  tooltip.value.visible = true
+  tooltip.value.name = name
+} 
+
+function hideTooltip() {
+  tooltip.value.visible = false
+  tooltip.value.name = null
+}
+
 window.addEventListener('message', (event) => {
   const { action, data } = event.data
   if (action === 'player-move') {
@@ -69,7 +93,7 @@ window.addEventListener('message', (event) => {
         <div class="name">Nom</div>
       </div>
       <div class="right">
-        <div class="money">1000$</div> | <div class="zone">Zone</div>
+        <div class="money">{{ playerStore.getWallet }}$</div> | <div class="zone"> {{ hudStore.zone }} </div>
       </div>
     </div>
     <div class="container">
@@ -77,16 +101,16 @@ window.addEventListener('message', (event) => {
       <div class="menu-vertical">
         <ul>
           <li @click="menuContent = 'inventory'"> 
-            <img src="/images/weapons/lancaster.png" alt="Inventaire">
+            <img src="/images/inventory.png" alt="Inventaire">
           </li>
           <li @click="menuContent = 'craft'">
-            <img src="/images/weapons/lancaster.png" alt="Craft">
+            <img src="/images/craft.png" alt="Craft">
           </li>
           <li @click="menuContent = 'tutorial'">
-            <img src="/images/weapons/lancaster.png" alt="Tutoriel">
+            <img src="/images/tutorial.png" alt="Tutoriel">
           </li>
           <li @click="menuContent = 'announcements'">
-            <img src="/images/weapons/lancaster.png" alt="Annonces">
+            <img src="/images/announcements.png" alt="Annonces">
           </li>
           <li @click="menuContent = 'options'">
             <img src="/images/weapons/lancaster.png" alt="Options">
@@ -98,21 +122,20 @@ window.addEventListener('message', (event) => {
           <div class="_title_">INVENTAIRE</div>
           <div class="content">
             <ul>
-              <li>
-                <div class="item" v-for="item in playerStore.inventory" :key="item.id"> 
-                  <div class="name">{{ item.name }}</div>
-                </div>
-                <div class="item" v-for="item in playerStore.inventory" :key="item.id"> 
-                  <div class="name">{{ item.name }}</div>
-                </div>
-                <div class="item" v-for="item in playerStore.inventory" :key="item.id"> 
-                  <div class="name">{{ item.name }}</div>
-                </div>
-                <div class="item" v-for="item in playerStore.inventory" :key="item.id"> 
-                  <div class="name">{{ item.name }}</div>
+              <li v-for="item in playerStore.inventory" :key="item.id">
+                <div class="item"  @mousemove="moveTooltip" @mouseenter="showTooltip(item.name)" @mouseleave="hideTooltip"> 
+                  {{ item.name }}
                 </div>
               </li>
             </ul>
+            <!-- Tooltip global (placé en dehors du v-for) -->
+            <div
+              class="tooltip"
+              v-if="tooltip.visible"
+              :style="{ top: tooltip.y + 'px', left: tooltip.x + 'px' }"
+            >
+              {{ tooltip.name }}
+            </div>
           </div>
         </div>
         <div class="description" v-if="selectedItem">
@@ -282,32 +305,27 @@ window.addEventListener('message', (event) => {
 }
 
 .menu-content .inventory .content{
-
+  height: 100%;
+  overflow-y: auto;
+  margin-top: 10px;
 } 
 
 .menu-content .inventory .content ul{
-
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 colonnes */
+  gap: 10px;
 }  
 
 .menu-content .inventory .content ul li{
-  display: grid;
-  /* grille 5x5 */
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  gap: 10px;
 } 
 
 .menu-content .inventory .content ul li .item{
-  background-color: #ffffff;
+  background-color: #ffffff13;
   width: 100%;
-  height: 100%;
-  padding-top: 1px;
+  aspect-ratio: 1 / 1; 
+  border-radius: 2px;
 }  
-
-.menu-content .inventory .content ul li .item .name{
-  width: 100%;
-  height: 100%;
-}   
+ 
 
 .menu-content .inventory .content ul li .item .description{
   width: 100%;
@@ -315,6 +333,16 @@ window.addEventListener('message', (event) => {
 }   
 
 
+.menu-content .inventory .content .tooltip{
+  position: fixed; /* suivre la souris */
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  pointer-events: none; /* ne bloque pas les interactions */
+  z-index: 1000;
+}  
 
 
 

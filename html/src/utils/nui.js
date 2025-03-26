@@ -7,7 +7,7 @@
 
 export async function sendNui(event, data = {}) {
 
-  console.log(`[NUI MOCK.vue] ${event}`, data)
+  console.log(`[NUI MOCK.vue] ${event.action}`, data)
 
   try {
     fetch(`https://${GetParentResourceName()}/${event}`, {

@@ -157,6 +157,14 @@ export const usePlayerStore = defineStore('player', {
                 quality: 100,
                 weight: 1,              
                 tags: []
+            },
+            {
+                id: 'gourde',
+                name: 'Gourde',
+                quantity: 2,
+                quality: 100,
+                weight: 1,                  
+                tags: []
             }
         ] // inventaire
     }),

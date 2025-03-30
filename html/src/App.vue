@@ -46,9 +46,10 @@ document.addEventListener('keydown', (e) => {
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Oswald:wght@200..700&family=Special+Elite&display=swap');
+* {
+  /*font-family: 'IM Fell English SC', 'Special Elite', 'Oswald',  sans-serif;*/
+}
 ul{
   list-style: none;
   margin: 0;

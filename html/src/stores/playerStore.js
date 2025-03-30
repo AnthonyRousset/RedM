@@ -20,15 +20,15 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
-                tags: ['dommaged', 'stolen']
+                tags: ['domaged']
             },
             {
-                id: 'lancaster2',
-                name: 'Lancaster2',
+                id: 'graines-de-coca',
+                name: 'Graines de coca',
                 quantity: 2,
                 quality: 100,
                 weight: 1,
-                tags: ['stolen']
+                tags: ['illegal']
             },
             {
                 id: 'cocaine',
@@ -36,6 +36,94 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
+                tags: ['illegal']
+            },
+            {
+                id: 'pain-rustique',
+                name: 'Pain rustique',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: ['stolen']
+            },
+            {
+                id: 'peau-de-cerf',
+                name: 'Peau de cerf',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: []
+            },
+            {
+                id: 'viande-de-cerf',
+                name: 'Viande de cerf',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: []
+            },
+            {
+                id: 'pelle',
+                name: 'Pelle',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: []
+            },
+            {
+                id: 'rateau',
+                name: 'Rateau',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: []
+            },
+            {
+                id: 'hache',
+                name: 'Hache',
+                quantity: 2,
+                quality: 100,
+                weight: 1,  
+                tags: []
+            },
+            {
+                id: 'arc',
+                name: 'Arc',
+                quantity: 2,
+                quality: 100,
+                weight: 1,  
+                tags: []
+            },
+            {
+                id: 'arrosoir',
+                name: 'Arrosoir',
+                quantity: 2,
+                quality: 100,
+                weight: 1,      
+                tags: []
+            },
+            {
+                id: 'graines-de-canabis',
+                name: 'Graines de cannabis',
+                quantity: 2,
+                quality: 100,
+                weight: 1,          
+                tags: ['illegal']
+            },
+            {
+                id: 'graines-de-canne-a-sucre',
+                name: 'Graines de canne à sucre',
+                quantity: 2,
+                quality: 100,
+                weight: 1,          
+                tags: []
+            },
+            {
+                id: 'graines-de-coca',
+                name: 'Graines de coca',
+                quantity: 2,
+                quality: 100,
+                weight: 1,          
                 tags: ['illegal']
             }
         ] // inventaire

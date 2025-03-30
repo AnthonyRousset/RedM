@@ -100,19 +100,19 @@ window.addEventListener('message', (event) => {
         
       <div class="menu-vertical">
         <ul>
-          <li @click="menuContent = 'inventory'"> 
+          <li @click="menuContent = 'inventory'" :class="{ 'active': menuContent === 'inventory' }">
             <img src="/images/inventory.png" alt="Inventaire">
           </li>
-          <li @click="menuContent = 'craft'">
+          <li @click="menuContent = 'craft'" :class="{ 'active': menuContent === 'craft' }">
             <img src="/images/craft.png" alt="Craft">
           </li>
-          <li @click="menuContent = 'tutorial'">
+          <li @click="menuContent = 'tutorial'" :class="{ 'active': menuContent === 'tutorial' }">
             <img src="/images/tutorial.png" alt="Tutoriel">
           </li>
-          <li @click="menuContent = 'announcements'">
+          <li @click="menuContent = 'announcements'" :class="{ 'active': menuContent === 'announcements' }">
             <img src="/images/announcements.png" alt="Annonces">
           </li>
-          <li @click="menuContent = 'options'">
+          <li @click="menuContent = 'options'" :class="{ 'active': menuContent === 'options' }">
             <img src="/images/weapons/lancaster.png" alt="Options">
           </li>
         </ul>
@@ -124,7 +124,10 @@ window.addEventListener('message', (event) => {
             <ul>
               <li v-for="item in playerStore.inventory" :key="item.id">
                 <div class="item"  @mousemove="moveTooltip" @mouseenter="showTooltip(item.name)" @mouseleave="hideTooltip"> 
-                  {{ item.name }}
+                  <img :src="'/images/items/' + item.id + '.png'" alt="Item">
+                </div>
+                <div class="status" v-for="tag in item.tags" :key="tag">
+                  <img :src="'/images/items/_' + tag + '.png'" alt="Tag">
                 </div>
               </li>
             </ul>
@@ -227,7 +230,8 @@ window.addEventListener('message', (event) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100px;
+  align-items: flex-start;
+  height: 120px;
   width: 96%;
   color: #fff;
   font-family: 'Oswald', sans-serif;
@@ -257,20 +261,27 @@ window.addEventListener('message', (event) => {
   list-style: none;
   padding: 0;
   margin: 0;
-  padding: 10px;
+  padding: 0 30px;
   height: 100%;
 }
 .menu-vertical ul li {
-  height: 4rem;
-  width: 4rem;
+  height: 3rem;
+  width: 3rem;
   position: relative;
+  margin-bottom: 20px;
 }
 .menu-vertical ul li img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
 }
+.menu-vertical ul li.active img {
+  opacity: 1;
+}
+
 
 
 
@@ -292,10 +303,13 @@ window.addEventListener('message', (event) => {
 .menu-content ._title_{
   font-size: 1.5rem;
   font-weight: bold;
-  border-bottom: 2px solid #a1a1a1;
   color: #a1a1a1;
-  padding-bottom: 4px;
-  font-family: 'Oswald', sans-serif;
+  padding-bottom: 8px;
+  font-family: 'IM Fell English SC', 'Special Elite', 'Oswald',  sans-serif;
+  /* background line img*/
+  background-image: url(/images/line.png);
+  background-repeat: no-repeat;
+  background-position: -9px 27px;
 }
 
 .menu-content .inventory{
@@ -316,20 +330,52 @@ window.addEventListener('message', (event) => {
 }  
 
 .menu-content .inventory .content ul li{
+  position: relative;
 } 
 
 .menu-content .inventory .content ul li .item{
-  background-color: #ffffff13;
+  /*background-color: #ffffff13;*/
   width: 100%;
   aspect-ratio: 1 / 1; 
   border-radius: 2px;
+  background-image: url(/images/slot2.png);
+  background-size: 125% 125%;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
 }  
+
+.menu-content .inventory .content ul li .item img{
+  width: 70%;
+  height: 70%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 15%;
+}
  
 
 .menu-content .inventory .content ul li .item .description{
   width: 100%;
   height: 100%;
 }   
+
+.menu-content .inventory .content ul li .status{
+  width: 45px;
+  height: 45px;
+  position: absolute;
+  bottom: -11px;
+  right: -11px;
+} 
+
+.menu-content .inventory .content ul li .status img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+} 
 
 
 .menu-content .inventory .content .tooltip{

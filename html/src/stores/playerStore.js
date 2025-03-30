@@ -125,6 +125,38 @@ export const usePlayerStore = defineStore('player', {
                 quality: 100,
                 weight: 1,          
                 tags: ['illegal']
+            },
+            {
+                id: 'fertilizer',
+                name: 'Fertilizer',
+                quantity: 2,
+                quality: 100,
+                weight: 1,              
+                tags: []
+            },
+            {
+                id: 'viande-de-cerf-cuite',
+                name: 'Viande de cerf cuite',
+                quantity: 2,
+                quality: 100,
+                weight: 1,              
+                tags: []
+            },
+            {
+                id: 'lancaster',
+                name: 'Lancaster',
+                quantity: 2,
+                quality: 100,
+                weight: 1,              
+                tags: []
+            },
+            {
+                id: 'pioche',
+                name: 'Pioche',
+                quantity: 2,
+                quality: 100,
+                weight: 1,              
+                tags: []
             }
         ] // inventaire
     }),

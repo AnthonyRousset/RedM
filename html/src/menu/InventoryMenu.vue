@@ -124,10 +124,10 @@ window.addEventListener('message', (event) => {
             <ul>
               <li v-for="item in playerStore.inventory" :key="item.id">
                 <div class="item"  @mousemove="moveTooltip" @mouseenter="showTooltip(item.name)" @mouseleave="hideTooltip"> 
-                  <img :src="'/images/items/' + item.id + '.png'" alt="Item">
+                  <img :src="'./images/items/' + item.id + '.png'" alt="Item">
                 </div>
                 <div class="status" v-for="tag in item.tags" :key="tag">
-                  <img :src="'/images/items/_' + tag + '.png'" alt="Tag">
+                  <img :src="'./images/items/_' + tag + '.png'" alt="Tag">
                 </div>
               </li>
             </ul>

@@ -396,6 +396,52 @@ window.addEventListener('message', (event) => {
 
 
 
+/* Craft */
+.menu-content .craft{
+  width: 500px;
+  height: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+/* Tutorial */
+.menu-content .tutorial{
+  width: 500px;
+  height: 100%;
+}
+
+
+
+
+
+
+
+
+
+/* Announcements */
+.menu-content .announcements{
+  width: 500px;
+  height: 100%;
+}
+
+
+
+
+
+
+
+/* Options */
+.menu-content .options{
+  width: 500px;
+  height: 100%;
+}
 
 
 

@@ -6,6 +6,11 @@ import { useAdminStore } from '../stores/adminStore' // est le store qui gère l
 import { useBankStore } from '../stores/bankStore' // est le store qui gère les actions bancaires (ex : dépot, retrait, coffre, assurance, etc.)  
 
 const handlers = {
+  'start:hud': () => {
+    const ui = useUiStore()
+    ui.visible = true
+  },
+
 
   // character
   'character:open': () => {

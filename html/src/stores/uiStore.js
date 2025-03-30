@@ -5,6 +5,7 @@ import { defineStore } from 'pinia'
 
 export const useUiStore = defineStore('ui', {
     state: () => ({
+        visible: false, // hud visible
         menu: '',
         isClosing: false,
         open: false

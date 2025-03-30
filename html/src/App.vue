@@ -32,7 +32,7 @@ document.addEventListener('keydown', (e) => {
 </script>
 
 <template>
-  <GameHud />
+  <GameHud v-if="uiStore.visible" />
   <AdminMenu v-if="uiStore.menu === 'admin'" />
   <BankMenu v-else-if="uiStore.menu === 'bank'" />
   <CharacterMenu v-else-if="uiStore.menu === 'character'" />

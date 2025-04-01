@@ -20,6 +20,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
+                category: 'weapon',
                 tags: ['domaged']
             },
             {
@@ -28,6 +29,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
+                category: 'seed',
                 tags: ['illegal']
             },
             {
@@ -36,6 +38,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
+                category: 'drug',
                 tags: ['illegal']
             },
             {
@@ -44,6 +47,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
+                category: 'food',
                 tags: ['stolen']
             },
             {
@@ -52,6 +56,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
+                category: 'neutral',             
                 tags: []
             },
             {
@@ -60,6 +65,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
+                category: 'food',                
                 tags: []
             },
             {
@@ -68,6 +74,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
+                category: 'tool',                
                 tags: []
             },
             {
@@ -76,6 +83,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
+                category: 'tool',         
                 tags: []
             },
             {
@@ -84,6 +92,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,  
+                category: 'tool',                
                 tags: []
             },
             {
@@ -92,6 +101,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,  
+                category: 'weapon',                
                 tags: []
             },
             {
@@ -100,6 +110,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,      
+                category: 'tool',                
                 tags: []
             },
             {
@@ -108,6 +119,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,          
+                category: 'seed',                
                 tags: ['illegal']
             },
             {
@@ -116,6 +128,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,          
+                category: 'seed',                
                 tags: []
             },
             {
@@ -124,6 +137,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,          
+                category: 'seed',                
                 tags: ['illegal']
             },
             {
@@ -132,6 +146,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,              
+                category: 'seed',                
                 tags: []
             },
             {
@@ -140,6 +155,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,              
+                category: 'food',                
                 tags: []
             },
             {
@@ -148,6 +164,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,              
+                category: 'weapon',                
                 tags: []
             },
             {
@@ -156,6 +173,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,              
+                category: 'tool',                
                 tags: []
             },
             {
@@ -163,12 +181,16 @@ export const usePlayerStore = defineStore('player', {
                 name: 'Gourde',
                 quantity: 2,
                 quality: 100,
-                weight: 1,                  
+                weight: 1,  
+                category: 'drink',                
                 tags: []
             }
         ] // inventaire
     }),
     actions: {
+        setInventory(data) {
+            this.inventory = data
+        },
         update(data) {
             console.log('update', data)
             this.name = data.name ?? this.name

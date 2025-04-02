@@ -245,7 +245,6 @@ export const usePlayerStore = defineStore('player', {
             
             // Récupérer l'item à déplacer
             const [movedItem] = newInventory.splice(fromIndex, 1)
-            console.log('Item déplacé:', JSON.stringify(movedItem, null, 2))
             
             // Ajuster l'index cible si nécessaire
             const adjustedTargetIndex = fromIndex < toIndex ? toIndex - 1 : toIndex
@@ -255,8 +254,6 @@ export const usePlayerStore = defineStore('player', {
             
             // Mettre à jour l'inventaire
             this.inventory = newInventory
-            console.log('Inventaire après déplacement:', JSON.stringify(this.inventory, null, 2))
-            console.log('=== Fin du déplacement ===')
         }
     },
     getters: {

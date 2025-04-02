@@ -159,18 +159,22 @@ const draggedItem = ref(null)
 const draggedItemIndex = ref(null)
 
 function onDragStart(e, item, index) {
+  e.stopPropagation()
   draggedItem.value = item
   draggedItemIndex.value = index
   e.dataTransfer.effectAllowed = 'move'
+  e.dataTransfer.setData('text/plain', index.toString())
 }
 
 function onDragOver(e) {
   e.preventDefault()
+  e.stopPropagation()
   e.dataTransfer.dropEffect = 'move'
 }
 
 function onDrop(e, targetIndex) {
   e.preventDefault()
+  e.stopPropagation()
   console.log('=== Début onDrop ===')
   console.log('Item déplacé:', draggedItem.value)
   console.log('Index source:', draggedItemIndex.value)
@@ -178,6 +182,11 @@ function onDrop(e, targetIndex) {
 
   if (!draggedItem.value) {
     console.log('Aucun item en cours de déplacement')
+    return
+  }
+
+  if (draggedItemIndex.value === targetIndex) {
+    console.log('Même position, pas de déplacement')
     return
   }
 

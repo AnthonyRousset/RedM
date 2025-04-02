@@ -73,7 +73,7 @@ function doAction(action) {
     case 'give':
       // Open window with target list (player, npc, ...) 
       giveWindow.value = true
-      sendNui('inventory-near-users-0', { id: currentItem.value.id, quantity: quantity.value })
+      sendNui('inventory-near-users', { id: currentItem.value.id, quantity: quantity.value })
       break
     case 'drop':
       // Open window with quantity input
@@ -630,7 +630,7 @@ function simulationPost() {
 .inventory-grid > * {
   position: relative;
   cursor: grab;
-  transition: transform 0.2s ease;
+  transition: none;
 }
 
 .inventory-grid > *:active {
@@ -642,8 +642,11 @@ function simulationPost() {
 }
 
 .inventory-grid .sortable-ghost {
-  opacity: 0.5;
-  background: rgba(255, 255, 255, 0.1);
+  visibility: hidden;
+}
+
+.inventory-grid .sortable-drag {
+  opacity: 1 !important;
 }
 
 .inventory-grid>* .item {

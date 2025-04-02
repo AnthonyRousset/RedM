@@ -6,6 +6,12 @@ import { useUiStore } from '../stores/uiStore'
 import { useHudStore } from '../stores/hudStore'
 import itemsData from '../data/items.json'
 
+const tags = ref(itemsData.tags)
+const categories = ref(itemsData.categories)
+const items = ref(itemsData.items)
+
+console.log(tags.value)
+
 const uiStore = useUiStore()
 const playerStore = usePlayerStore()
 const hudStore = useHudStore()
@@ -125,8 +131,8 @@ function moveTooltip(e) {
 function showTooltip(id) {
   tooltip.value.visible = true
   console.log(id)
-  console.log(itemsData)
-  tooltip.value.name = itemsData.items.find(item => item.id === id).name
+  console.log(items.value)  
+  tooltip.value.name = items.value.find(item => item.id === id).name
 }
 
 
@@ -151,7 +157,34 @@ document.addEventListener('click', (e) => {
     }
 })
 
+const draggedItem = ref(null)
+const draggedItemIndex = ref(null)
 
+function onDragStart(e, item, index) {
+  draggedItem.value = item
+  draggedItemIndex.value = index
+  e.dataTransfer.effectAllowed = 'move'
+}
+
+function onDragOver(e) {
+  e.preventDefault()
+  e.dataTransfer.dropEffect = 'move'
+}
+
+function onDrop(e, targetIndex) {
+  e.preventDefault()
+  if (!draggedItem.value) return
+
+  // Mettre à jour l'inventaire localement
+  const inventory = [...playerStore.inventory]
+  const [movedItem] = inventory.splice(draggedItemIndex.value, 1)
+  inventory.splice(targetIndex, 0, movedItem)
+  playerStore.inventory = inventory
+
+  // Réinitialiser les valeurs
+  draggedItem.value = null
+  draggedItemIndex.value = null
+}
 
 </script>
 
@@ -194,16 +227,29 @@ document.addEventListener('click', (e) => {
             <div class="_title_">INVENTAIRE</div>
             <div class="content">
               <ul>
-                <li v-for="item in playerStore.inventory" :key="item.id" @click="(e) => showOptions(e, item)">
-                  <div class="item" @mousemove="moveTooltip" @mouseenter="showTooltip(item.id)"
-                    @mouseleave="hideTooltip">
+                <li v-for="(item, index) in playerStore.inventory" 
+                    :key="item.id" 
+                    draggable="true"
+                    :class="{
+                      'dragging': draggedItemIndex === index,
+                      'drag-over': draggedItem && draggedItemIndex !== index
+                    }"
+                    @dragstart="onDragStart($event, item, index)"
+                    @dragover="onDragOver($event)"
+                    @drop="onDrop($event, index)"
+                    @click="(e) => showOptions(e, item)">
+                  <div class="item" 
+                       @mousemove="moveTooltip" 
+                       @mouseenter="showTooltip(item.id)"
+                       @mouseleave="hideTooltip">
                     <img :src="'./images/items/' + item.id + '.png'" alt="Item">
                   </div>
                   <div class="status" v-for="tag in item.tags" :key="tag">
-                    <img :src="'./images/items/_' + tag + '.png'" alt="Tag">
+                    <img v-if="tags[tag]" :src="'./images/items/_' + tags[tag]?.image + '.png'" alt="Tag">
                   </div>
                 </li>
               </ul>
+
               <!-- Item options -->
               <div class="item-options" v-if="options.visible" :style="{ top: options.y + 'px', left: options.x + 'px' }">    
 
@@ -452,6 +498,22 @@ document.addEventListener('click', (e) => {
 
 .menu-content .inventory .content ul li {
   position: relative;
+  cursor: grab;
+  transition: transform 0.2s ease;
+}
+
+.menu-content .inventory .content ul li:active {
+  cursor: grabbing;
+}
+
+.menu-content .inventory .content ul li.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.menu-content .inventory .content ul li.drag-over {
+  border: 2px dashed #fff;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .menu-content .inventory .content ul li .item {

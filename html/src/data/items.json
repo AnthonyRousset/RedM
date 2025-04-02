@@ -5,11 +5,7 @@
       "id": "water_bottle",
       "category": 2,
       "weight": 1,
-      "tags": [
-        "drinkable",
-        "hydration",
-        "common"
-      ],
+      "tags": ["food"],
       "description": "Une gourde pour transporter de l'eau. Essentielle pour survivre dans le désert."
     },
     {
@@ -17,107 +13,71 @@
       "id": "rustic_bread",
       "category": 1,
       "weight": 0.5,
-      "tags": [
-        "edible",
-        "food",
-        "common"
-      ],
+      "tags": ["food"],
       "description": "Un pain fraîchement cuit. Restaure votre faim."
     },
     {
       "name": "Fusil Lancaster",
       "id": "lancaster_rifle",
-      "category": 3,
-      "weight": 3,
-      "tags": [
-        "weapon",
-        "firearm",
-        "rare"
-      ],
+        "category": 3,
+        "weight": 3000,
+      "tags": ["weapon"],
       "description": "Un fusil Lancaster de haute qualité. Arme redoutable à moyenne portée."
     },
     {
       "name": "Fusil à Répétition",
       "id": "weapon_repeater_carbine",
       "category": 3,
-      "weight": 3,
-      "tags": [
-        "weapon",
-        "firearm",
-        "common"
-      ],
+      "weight": 3000,
+      "tags": ["weapon"],
       "description": "Un fusil à répétition de haute qualité. Arme redoutable à moyenne portée."
     },
     {
       "name": "Arc",
       "id": "weapon_bow",
       "category": 3,
-      "weight": 2,
-      "tags": [
-        "weapon",
-        "ranged",
-        "rare"
-      ],
+      "weight": 2000,
+      "tags": ["weapon"],
       "description": "Un arc traditionnel. Parfait pour la chasse silencieuse."
     },
     {
       "name": "Pioche",
       "id": "pickaxe",
       "category": 5,
-      "weight": 2,
-      "tags": [
-        "tool",
-        "mining",
-        "common"
-      ],
+      "weight": 2000,
+      "tags": ["tool"],
       "description": "Une pioche robuste pour extraire les minerais."
     },
     {
       "name": "Pelle",
       "id": "shovel",
       "category": 5,
-      "weight": 2,
-      "tags": [
-        "tool",
-        "digging",
-        "common"
-      ],
+      "weight": 2000,
+      "tags": ["tool"],
       "description": "Une pelle robuste pour creuser le sol."
     },
     {
       "name": "Râteau",
       "id": "rake",
       "category": 5,
-      "weight": 1.5,
-      "tags": [
-        "tool",
-        "farming",
-        "common"
-      ],
+      "weight": 1500,
+      "tags": ["tool"],
       "description": "Un râteau pour entretenir vos cultures."
     },
     {
       "name": "Arrosoir",
       "id": "watering_can",
       "category": 5,
-      "weight": 1,
-      "tags": [
-        "tool",
-        "farming",
-        "common"
-      ],
+      "weight": 1000,
+      "tags": ["tool"],
       "description": "Un arrosoir pour irriguer vos plantes."
     },
     {
       "name": "Engrais",
       "id": "fertilizer",
       "category": 4,
-      "weight": 0.5,
-      "tags": [
-        "farming",
-        "crafting",
-        "common"
-      ],
+      "weight": 500,
+      "tags": [],
       "description": "De l'engrais pour améliorer la croissance de vos plantes."
     },
     {
@@ -125,131 +85,87 @@
       "id": "axe",
       "category": 5,
       "weight": 2,
-      "tags": [
-        "tool",
-        "woodcutting",
-        "common"
-      ],
+      "tags": ["tool", "woodcutting", "common"],
       "description": "Une hache pour couper du bois."
     },
     {
       "name": "Graines de Cannabis",
       "id": "cannabis_seeds",
       "category": 4,
-      "weight": 0.1,
-      "tags": [
-        "farming",
-        "illegal",
-        "rare"
-      ],
+      "weight": 10,
+      "tags": ["drug"],
       "description": "Des graines de cannabis pour la culture."
     },
     {
       "name": "Graines de Canne à Sucre",
       "id": "sugarcane_seeds",
       "category": 4,
-      "weight": 0.1,
-      "tags": [
-        "farming",
-        "crafting",
-        "common"
-      ],
+      "weight": 10,
+      "tags": ["crafting"],
       "description": "Des graines de canne à sucre pour la culture."
     },
     {
       "name": "Viande de Cerf Cuite",
       "id": "cooked_deer_meat",
       "category": 1,
-      "weight": 1,
-      "tags": [
-        "edible",
-        "food",
-        "common"
-      ],
+      "weight": 1000,
+      "tags": ["crafting", "food", "animals"],
       "description": "De la viande de cerf cuite. Restaure votre faim."
     },
     {
       "name": "Cocaïne",
       "id": "cocaine",
       "category": 4,
-      "weight": 0.2,
-      "tags": [
-        "drug",
-        "illegal",
-        "rare"
-      ],
+      "weight": 200,
+      "tags": ["drug"],
       "description": "De la cocaïne pure. Substance illégale."
     },
     {
       "name": "Graines de Coca",
       "id": "coca_seeds",
       "category": 4,
-      "weight": 0.1,
-      "tags": [
-        "farming",
-        "illegal",
-        "rare"
-      ],
+      "weight": 10,
+      "tags": ["drug"],
       "description": "Des graines de coca pour la culture."
     },
     {
       "name": "Viande de Cerf",
       "id": "raw_deer_meat",
       "category": 1,
-      "weight": 1,
-      "tags": [
-        "food",
-        "raw",
-        "common"
-      ],
+      "weight": 1000,
+      "tags": ["crafting", "food", "animals"],
       "description": "De la viande de cerf crue. À cuisiner avant consommation."
     },
     {
       "name": "Peau de Cerf",
-      "id": "deer_hide",
+      "id": "deer_skin",
       "category": 4,
-      "weight": 0.5,
-      "tags": [
-        "crafting",
-        "hunting",
-        "common"
-      ],
+      "weight": 500,
+      "tags": ["crafting", "animals"],
       "description": "Une peau de cerf. Utile pour l'artisanat."
     },
     {
       "name": "Peau de Lapin",
-      "id": "rabbit_hide",
+      "id": "rabbit_skin",
       "category": 4,
-      "weight": 0.3,
-      "tags": [
-        "crafting",
-        "hunting",
-        "common"
-      ],
+      "weight": 300,
+      "tags": ["crafting", "animals"],
       "description": "Une peau de lapin. Utile pour l'artisanat."
     },
     {
       "name": "Viande de Lapin",
       "id": "raw_rabbit_meat",
       "category": 1,
-      "weight": 0.5,
-      "tags": [
-        "food",
-        "raw",
-        "common"
-      ],
+      "weight": 500,
+      "tags": ["crafting", "food", "animals"],
       "description": "De la viande de lapin crue. À cuisiner avant consommation."
     },
     {
       "name": "Peau de Crocodile",
-      "id": "crocodile_hide",
+      "id": "crocodile_skin",
       "category": 4,
       "weight": 1,
-      "tags": [
-        "crafting",
-        "hunting",
-        "rare"
-      ],
+      "tags": ["crafting", "animals"],
       "description": "Une peau de crocodile. Très recherchée pour l'artisanat."
     },
     {
@@ -257,11 +173,7 @@
       "id": "crocodile_meat",
       "category": 1,
       "weight": 1.5,
-      "tags": [
-        "food",
-        "raw",
-        "rare"
-      ],
+      "tags": ["crafting", "food", "animals"],
       "description": "De la viande de crocodile crue. À cuisiner avant consommation."
     },
     {
@@ -269,86 +181,63 @@
       "id": "raw_deer_meat",
       "category": 1,
       "weight": 1.2,
-      "tags": [
-        "food",
-        "raw",
-        "common"
-      ],
+      "tags": ["crafting", "food", "animals"],
       "description": "De la viande de sanglier crue. À cuisiner avant consommation."
     },
     {
       "name": "Viande de Cochon",
       "id": "raw_pig_meat",
       "category": 1,
-      "weight": 1,
-      "tags": [
-        "food",
-        "raw",
-        "common"
-      ],
+      "weight": 1000,
+    "tags": ["crafting", "food", "animals"],
       "description": "De la viande de cochon crue. À cuisiner avant consommation."
     },
     {
       "name": "Peau de Loup",
-      "id": "wolf_hide",
+      "id": "wolf_skin",
       "category": 4,
-      "weight": 0.6,
-      "tags": [
-        "crafting",
-        "hunting",
-        "rare"
-      ],
+      "weight": 600,
+      "tags": ["crafting", "animals"],
       "description": "Une peau de loup. Très recherchée pour l'artisanat."
     },
     {
       "name": "Viande de Loup",
       "id": "raw_wolf_meat",
       "category": 1,
-      "weight": 0.8,
-      "tags": [
-        "food",
-        "raw",
-        "rare"
-      ],
+      "weight": 800,
+      "tags": ["crafting", "food", "animals"],
       "description": "De la viande de loup crue. À cuisiner avant consommation."
     },
     {
       "name": "Peau d'Ours",
-      "id": "bear_hide",
+      "id": "bear_skin",
       "category": 4,
-      "weight": 2,
-      "tags": [
-        "crafting",
-        "hunting",
-        "rare"
-      ],
+      "weight": 2500,
+      "tags": ["crafting", "animals"],
       "description": "Une peau d'ours. Très recherchée pour l'artisanat."
     },
     {
       "name": "Viande d'Ours",
       "id": "raw_bear_meat",
       "category": 1,
-      "weight": 2.5,
-      "tags": [
-        "food",
-        "raw",
-        "rare"
-      ],
+      "weight": 2500,
+      "tags": ["crafting", "food", "animals"],
       "description": "De la viande d'ours crue. À cuisiner avant consommation."
-    },
-    {
-      "name": "Viande de Chien",
-      "id": "raw_dog_meat",
-      "category": 1,
-      "weight": 0.6,
-      "tags": [
-        "food",
-        "raw",
-        "common"
-      ],
-      "description": "De la viande de chien crue. À cuisiner avant consommation."
     }
   ],
+  "filters": {
+    "all": "Tout",
+    "weapons": "Armes & Munitions",
+    "food": "Nourriture",
+    "medical": "Médical",
+    "drug": "Drogue",
+    "crafting": "Artisanat",
+    "animals": "Animaux",
+    "tools": "Outils",
+    "clothes": "Vêtements",
+    "documents": "Documents",
+    "quest": "Quest"
+  },
   "categories": {
     "0": "Neutral",
     "1": "Weapon",
@@ -361,27 +250,25 @@
     "8": "Reusable"
   },
   "tags": {
-    "drinkable": "Consommable",
-    "edible": "Comestible",
-    "weapon": "Arme",
-    "firearm": "Arme à feu",
-    "ranged": "À distance",
-    "crafting": "Artisanat",
-    "tool": "Outil",
-    "common": "Commun",
-    "rare": "Rare",
-    "hydration": "Hydratation",
-    "food": "Nourriture",
-    "digging": "Creusage",
-    "mining": "Miner",
-    "farming": "Agriculture",
-    "woodcutting": "Bûcheronnage",
-    "illegal": "Illégal",
-    "stolen": "Volé",
-    "damaged": "Endommagé",
-    "drug": "Drogue",
-    "raw": "Cru",
-    "hunting": "Chasse"
+    "0": {
+      "name": "Cassé",
+      "image": "broken"
+    },
+    "1": {
+      "name": "Volé",
+      "image": "stolen"
+    },
+    "2": {
+      "name": "Illégal",
+      "image": "illegal"
+    },
+    "3": {
+      "name": "Caché",
+      "image": "hidden"
+    },
+    "4": {
+      "name": "Endommagé",
+      "image": "damaged"
+    }
   }
-} 
-
+}

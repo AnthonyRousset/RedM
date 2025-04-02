@@ -33,7 +33,7 @@ const handlers = {
   },  
   'inventory:update': (data) => {
     const inventory = usePlayerStore()
-    inventory.update(data.info)
+    inventory.updateInventory(data.info)
   },
   'inventory:close': () => {
     const ui = useUiStore()

@@ -21,7 +21,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
-                tags: ['domaged'],
+                tags: [0],
                 category: 0
             },
             {
@@ -29,7 +29,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
-                tags: ['illegal'],
+                tags: [],
                 category: 0
             },
             {
@@ -37,7 +37,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,
-                tags: ['illegal'],
+                tags: [2],
                 category: 0
             },
             {
@@ -45,7 +45,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,  
-                tags: ['stolen'],
+                tags: [1],
                 category: 0
             },
             {
@@ -109,7 +109,8 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,          
-                tags: ['illegal']
+                tags: [1],
+                category: 0
             },
             {
                 id: 'sugarcane_seeds',
@@ -124,7 +125,7 @@ export const usePlayerStore = defineStore('player', {
                 quantity: 2,
                 quality: 100,
                 weight: 1,          
-                tags: ['illegal'],
+                tags: [2],
                 category: 0
             },
             {
@@ -156,7 +157,7 @@ export const usePlayerStore = defineStore('player', {
                 quality: 100,
                 weight: 1,              
                 category: 0,
-                    tags: []
+                    tags: [0]
             },
             {
                 id: 'water_bottle',
@@ -198,6 +199,58 @@ export const usePlayerStore = defineStore('player', {
             if (item) {
                 item.quantity -= 1 
             }
+        },
+        updateInventory(data) {
+            // Créer une copie de l'inventaire actuel
+            const currentInventory = [...this.inventory]
+            
+            // Parcourir les nouveaux items
+            data.forEach(newItem => {
+                // Chercher si l'item existe déjà dans l'inventaire
+                const existingIndex = currentInventory.findIndex(item => item.id === newItem.id)
+                
+                if (existingIndex !== -1) {
+                    const oldItem = currentInventory[existingIndex]
+                    // Vérifier les changements spécifiques
+                    if (oldItem.quantity !== newItem.quantity) {
+                        console.log(`Changement de quantité pour ${newItem.id}: ${oldItem.quantity} -> ${newItem.quantity}`)
+                    }
+                    if (oldItem.quality !== newItem.quality) {
+                        console.log(`Changement de qualité pour ${newItem.id}: ${oldItem.quality} -> ${newItem.quality}`)
+                    }
+                    if (JSON.stringify(oldItem.tags) !== JSON.stringify(newItem.tags)) {
+                        console.log(`Changement de tags pour ${newItem.id}:`, {
+                            anciens: oldItem.tags,
+                            nouveaux: newItem.tags
+                        })
+                    }
+                    if (oldItem.category !== newItem.category) {
+                        console.log(`Changement de catégorie pour ${newItem.id}: ${oldItem.category} -> ${newItem.category}`)
+                    }
+                    
+                    // Si l'item existe, mettre à jour ses propriétés sans changer sa position
+                    currentInventory[existingIndex] = {
+                        ...currentInventory[existingIndex],
+                        ...newItem
+                    }
+                } else {
+                    console.log(`Nouvel item ajouté: ${newItem.id}`)
+                    // Si l'item n'existe pas, l'ajouter à la fin
+                    currentInventory.push(newItem)
+                }
+            })
+            
+            // Supprimer les items qui n'existent plus dans les nouvelles données
+            const newItemIds = data.map(item => item.id)
+            const itemsToRemove = currentInventory.filter(item => !newItemIds.includes(item.id))
+            if (itemsToRemove.length > 0) {
+                console.log('Items supprimés:', itemsToRemove.map(item => item.id))
+            }
+            
+            const filteredInventory = currentInventory.filter(item => newItemIds.includes(item.id))
+            
+            // Mettre à jour l'inventaire
+            this.inventory = filteredInventory
         }
     },
     getters: {

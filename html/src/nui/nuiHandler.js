@@ -31,13 +31,13 @@ const handlers = {
     const ui = useUiStore()
     ui.openMenu('inventory')
   },  
-  'inventory:update': (data) => {
-    const inventory = usePlayerStore()
-    inventory.updateInventory(data.info)
-  },
   'inventory:close': () => {
     const ui = useUiStore()
     ui.closeMenu()
+  },
+  'inventory:update': (data) => {
+    const inventory = usePlayerStore()
+    inventory.updateInventory(data.info)
   },
   'inventory:update': (data) => {
     const inventory = usePlayerStore()

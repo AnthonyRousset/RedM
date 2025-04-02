@@ -201,56 +201,62 @@ export const usePlayerStore = defineStore('player', {
             }
         },
         updateInventory(data) {
-            // Créer une copie de l'inventaire actuel
-            const currentInventory = [...this.inventory]
+            console.log('=== Mise à jour de l\'inventaire ===')
+            console.log('Nouvelles données:', JSON.stringify(data, null, 2))
+            
+            // Créer un Map pour stocker les items uniques
+            const uniqueItems = new Map()
             
             // Parcourir les nouveaux items
             data.forEach(newItem => {
-                // Chercher si l'item existe déjà dans l'inventaire
-                const existingIndex = currentInventory.findIndex(item => item.id === newItem.id)
-                
-                if (existingIndex !== -1) {
-                    const oldItem = currentInventory[existingIndex]
-                    // Vérifier les changements spécifiques
-                    if (oldItem.quantity !== newItem.quantity) {
-                        console.log(`Changement de quantité pour ${newItem.id}: ${oldItem.quantity} -> ${newItem.quantity}`)
-                    }
-                    if (oldItem.quality !== newItem.quality) {
-                        console.log(`Changement de qualité pour ${newItem.id}: ${oldItem.quality} -> ${newItem.quality}`)
-                    }
-                    if (JSON.stringify(oldItem.tags) !== JSON.stringify(newItem.tags)) {
-                        console.log(`Changement de tags pour ${newItem.id}:`, {
-                            anciens: oldItem.tags,
-                            nouveaux: newItem.tags
-                        })
-                    }
-                    if (oldItem.category !== newItem.category) {
-                        console.log(`Changement de catégorie pour ${newItem.id}: ${oldItem.category} -> ${newItem.category}`)
-                    }
-                    
-                    // Si l'item existe, mettre à jour ses propriétés sans changer sa position
-                    currentInventory[existingIndex] = {
-                        ...currentInventory[existingIndex],
+                // Si l'item existe déjà, fusionner les propriétés
+                if (uniqueItems.has(newItem.id)) {
+                    const existingItem = uniqueItems.get(newItem.id)
+                    uniqueItems.set(newItem.id, {
+                        ...existingItem,
                         ...newItem
-                    }
+                    })
                 } else {
-                    console.log(`Nouvel item ajouté: ${newItem.id}`)
-                    // Si l'item n'existe pas, l'ajouter à la fin
-                    currentInventory.push(newItem)
+                    uniqueItems.set(newItem.id, newItem)
                 }
             })
             
-            // Supprimer les items qui n'existent plus dans les nouvelles données
-            const newItemIds = data.map(item => item.id)
-            const itemsToRemove = currentInventory.filter(item => !newItemIds.includes(item.id))
-            if (itemsToRemove.length > 0) {
-                console.log('Items supprimés:', itemsToRemove.map(item => item.id))
-            }
-            
-            const filteredInventory = currentInventory.filter(item => newItemIds.includes(item.id))
+            // Convertir le Map en tableau
+            const newInventory = Array.from(uniqueItems.values())
+            console.log('Inventaire après fusion:', JSON.stringify(newInventory, null, 2))
             
             // Mettre à jour l'inventaire
-            this.inventory = filteredInventory
+            this.inventory = newInventory
+            console.log('=== Fin de la mise à jour ===')
+        },
+        moveItem(fromIndex, toIndex) {
+            console.log('=== Début du déplacement ===')
+            console.log('Index source:', fromIndex)
+            console.log('Index cible:', toIndex)
+            console.log('Inventaire avant:', JSON.stringify(this.inventory, null, 2))
+            
+            if (fromIndex === toIndex) {
+                console.log('Les index sont identiques, pas de déplacement nécessaire')
+                return
+            }
+            
+            // Créer une copie profonde de l'inventaire
+            const newInventory = JSON.parse(JSON.stringify(this.inventory))
+            
+            // Récupérer l'item à déplacer
+            const [movedItem] = newInventory.splice(fromIndex, 1)
+            console.log('Item déplacé:', JSON.stringify(movedItem, null, 2))
+            
+            // Ajuster l'index cible si nécessaire
+            const adjustedTargetIndex = fromIndex < toIndex ? toIndex - 1 : toIndex
+            
+            // Insérer l'item à la nouvelle position
+            newInventory.splice(adjustedTargetIndex, 0, movedItem)
+            
+            // Mettre à jour l'inventaire
+            this.inventory = newInventory
+            console.log('Inventaire après déplacement:', JSON.stringify(this.inventory, null, 2))
+            console.log('=== Fin du déplacement ===')
         }
     },
     getters: {

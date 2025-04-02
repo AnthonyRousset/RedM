@@ -130,8 +130,6 @@ function moveTooltip(e) {
 
 function showTooltip(id) {
   tooltip.value.visible = true
-  console.log(id)
-  console.log(items.value)  
   tooltip.value.name = items.value.find(item => item.id === id).name
 }
 
@@ -173,17 +171,23 @@ function onDragOver(e) {
 
 function onDrop(e, targetIndex) {
   e.preventDefault()
-  if (!draggedItem.value) return
+  console.log('=== Début onDrop ===')
+  console.log('Item déplacé:', draggedItem.value)
+  console.log('Index source:', draggedItemIndex.value)
+  console.log('Index cible:', targetIndex)
 
-  // Mettre à jour l'inventaire localement
-  const inventory = [...playerStore.inventory]
-  const [movedItem] = inventory.splice(draggedItemIndex.value, 1)
-  inventory.splice(targetIndex, 0, movedItem)
-  playerStore.inventory = inventory
+  if (!draggedItem.value) {
+    console.log('Aucun item en cours de déplacement')
+    return
+  }
+
+  // Utiliser la méthode du store pour déplacer l'item
+  playerStore.moveItem(draggedItemIndex.value, targetIndex)
 
   // Réinitialiser les valeurs
   draggedItem.value = null
   draggedItemIndex.value = null
+  console.log('=== Fin onDrop ===')
 }
 
 </script>
@@ -228,7 +232,7 @@ function onDrop(e, targetIndex) {
             <div class="content">
               <ul>
                 <li v-for="(item, index) in playerStore.inventory" 
-                    :key="item.id" 
+                    :key="`${item.id}-${index}`" 
                     draggable="true"
                     :class="{
                       'dragging': draggedItemIndex === index,

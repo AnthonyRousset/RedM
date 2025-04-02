@@ -73,7 +73,7 @@ function doAction(action) {
     case 'give':
       // Open window with target list (player, npc, ...) 
       giveWindow.value = true
-      sendNui('inventory-near-users', {})
+      sendNui('inventory-near-users', {xaypho:true})
       break
     case 'drop':
       // Open window with quantity input
@@ -611,7 +611,7 @@ function onDragEnd(evt) {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.2);
   color: white;
   padding: 4px 8px;
   display: flex;
@@ -656,7 +656,7 @@ function onDragEnd(evt) {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.2);
   color: white;
   padding: 4px 8px;
   display: flex;

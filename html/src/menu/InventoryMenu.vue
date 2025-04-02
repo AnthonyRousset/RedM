@@ -243,6 +243,7 @@ function onDrop(e, targetIndex) {
                        @mouseenter="showTooltip(item.id)"
                        @mouseleave="hideTooltip">
                     <img :src="'./images/items/' + item.id + '.png'" alt="Item">
+                    <div class="quantity" v-if="item.quantity > 1">{{ item.quantity }}</div>
                   </div>
                   <div class="status" v-for="tag in item.tags" :key="tag">
                     <img v-if="tags[tag]" :src="'./images/items/_' + tags[tag]?.image + '.png'" alt="Tag">
@@ -560,6 +561,17 @@ function onDrop(e, targetIndex) {
   display: block;
 }
 
+.menu-content .inventory .content ul li .item .quantity {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+}
 
 .menu-content .inventory .content .tooltip {
   position: fixed;

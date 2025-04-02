@@ -5,6 +5,7 @@ import { sendNui } from '../utils/nui'
 import { useUiStore } from '../stores/uiStore'
 import { useHudStore } from '../stores/hudStore'
 import itemsData from '../data/items.json'
+import draggable from 'vuedraggable'
 
 const tags = ref(itemsData.tags)
 const categories = ref(itemsData.categories)
@@ -58,34 +59,33 @@ function showOptions(e, item) {
 function doAction(action) {
   switch (action) {
     case 'equip':
-      sendNui('inventory-request-equip', {id: currentItem.value.id })
-      playerStore.itemEquipedId = currentItem.value.id  
+      sendNui('inventory-request-equip', { id: currentItem.value.id })
+      playerStore.itemEquipedId = currentItem.value.id
       break
     case 'unequip':
-      sendNui('inventory-request-unequip', {id: currentItem.value.id })
+      sendNui('inventory-request-unequip', { id: currentItem.value.id })
       playerStore.itemEquipedId = null
       break
     case 'use':
-      sendNui('inventory-request-use', {id: currentItem.value.id })
+      sendNui('inventory-request-use', { id: currentItem.value.id })
       playerStore.useItem(currentItem.value.id)
       break
     case 'give':
       // Open window with target list (player, npc, ...) 
-        giveWindow.value = true
-      sendNui('inventory-near-users').then((data) => {
-      })
+      giveWindow.value = true
+      sendNui('inventory-near-users')
       break
     case 'drop':
       // Open window with quantity input
       dropWindow.value = true
       break
-  }   
+  }
   options.value.visible = false
 }
 
 function doGive() {
   // When target is selected, send action with target and item  
-  sendNui('inventory-request-give', {id: currentItem.value.id, quantity: quantity.value, target: target.value })
+  sendNui('inventory-request-give', { id: currentItem.value.id, quantity: quantity.value, target: target.value })
   giveWindow.value = false
   target.value = ''
   quantity.value = 1
@@ -93,7 +93,7 @@ function doGive() {
 
 function doDrop() {
   // Open window with quantity input
-  sendNui('inventory-request-drop', {id: currentItem.value.id, quantity: quantity.value})
+  sendNui('inventory-request-drop', { id: currentItem.value.id, quantity: quantity.value })
   dropWindow.value = false
   quantity.value = 1
 }
@@ -133,8 +133,6 @@ function showTooltip(id) {
   tooltip.value.name = items.value.find(item => item.id === id).name
 }
 
-
-
 function hideTooltip() {
   tooltip.value.visible = false
   tooltip.value.name = null
@@ -149,62 +147,21 @@ window.addEventListener('message', (event) => {
 
 // evenement qui se déclenche lorsque on clique droit en dehors du menu 
 document.addEventListener('click', (e) => {
-
-    if (!e.target.closest('.menu-content')) {
-      options.value.visible = false
-    }
+  if (!e.target.closest('.menu-content')) {
+    options.value.visible = false
+  }
 })
 
-// Variables pour gérer le drag and drop
-const draggedItem = ref(null) // Stocke l'item en cours de déplacement
-const draggedItemIndex = ref(null) // Stocke l'index de l'item en cours de déplacement
+// Fonction pour gérer le changement d'ordre des items
 
-// Fonction appelée au début du glisser-déposer
-function onDragStart(e, item, index) {
-  e.stopPropagation() // Empêche la propagation de l'événement aux éléments parents
-  draggedItem.value = item // Stocke l'item en cours de déplacement
-  draggedItemIndex.value = index // Stocke l'index de l'item
-  e.dataTransfer.effectAllowed = 'move' // Définit l'effet autorisé (déplacement)
-  e.dataTransfer.setData('text/plain', index.toString()) // Stocke l'index dans les données de transfert
-}
-
-// Fonction appelée pendant le survol d'une zone de dépôt
-function onDragOver(e) {
-  e.preventDefault() // Empêche le comportement par défaut
-  e.stopPropagation() // Empêche la propagation de l'événement
-  e.dataTransfer.dropEffect = 'move' // Définit l'effet visuel du dépôt
-}
-
-// Fonction appelée lors du dépôt d'un item
-function onDrop(e, targetIndex) {
-  e.preventDefault() // Empêche le comportement par défaut
-  e.stopPropagation() // Empêche la propagation de l'événement
-  
-  console.log('=== Début onDrop ===')
-  console.log('Item déplacé:', draggedItem.value)
-  console.log('Index source:', draggedItemIndex.value)
-  console.log('Index cible:', targetIndex)
-
-  // Vérifie si un item est en cours de déplacement
-  if (!draggedItem.value) {
-    console.log('Aucun item en cours de déplacement')
-    return
+/*
+function onDragEnd(evt) {
+  const { oldIndex, newIndex } = evt
+  if (oldIndex !== newIndex) {
+    playerStore.moveItem(oldIndex, newIndex)
   }
-
-  // Vérifie si la source et la cible sont différentes
-  if (draggedItemIndex.value === targetIndex) {
-    console.log('Même position, pas de déplacement')
-    return
-  }
-
-  // Utilise la méthode du store pour déplacer l'item
-  playerStore.moveItem(draggedItemIndex.value, targetIndex)
-
-  // Réinitialise les variables de drag and drop
-  draggedItem.value = null
-  draggedItemIndex.value = null
-  console.log('=== Fin onDrop ===')
 }
+*/
 
 </script>
 
@@ -246,48 +203,55 @@ function onDrop(e, targetIndex) {
           <PerfectScrollbar>
             <div class="_title_">INVENTAIRE</div>
             <div class="content">
-              <ul>
-                <li v-for="(item, index) in playerStore.inventory" 
-                    :key="`${item.id}-${index}`" 
-                    draggable="true"
-                    :class="{
-                      'dragging': draggedItemIndex === index,
-                      'drag-over': draggedItem && draggedItemIndex !== index
-                    }"
-                    @dragstart="onDragStart($event, item, index)"
-                    @dragover="onDragOver($event)"
-                    @drop="onDrop($event, index)"
-                    @click="(e) => showOptions(e, item)">
-                  <div class="item" 
-                       @mousemove="moveTooltip" 
-                       @mouseenter="showTooltip(item.id)"
-                       @mouseleave="hideTooltip">
-                    <img :src="'./images/items/' + item.id + '.png'" alt="Item">
-                    <div class="quantity" v-if="item.quantity > 1">{{ item.quantity }}</div>
-                  </div>
-                  <div class="status" v-for="tag in item.tags" :key="tag">
-                    <img v-if="tags[tag]" :src="'./images/items/_' + tags[tag]?.image + '.png'" alt="Tag">
-                  </div>
-                </li>
-              </ul>
+              <draggable 
+                v-model="playerStore.inventory"
+                :animation="150"
+                item-key="index"
+                class="inventory-grid"
+                :class="{ 'dragging': true }"
+              >
+                <template #item="{ element: item, index }">
+                  <li @click="(e) => showOptions(e, item)">
+                    <div class="item" 
+                         @mousemove="moveTooltip" 
+                         @mouseenter="showTooltip(item.id)"
+                         @mouseleave="hideTooltip">
+                      <img :src="'./images/items/' + item.id + '.png'" alt="Item">
+                      <div class="quantity" v-if="item.quantity > 1">{{ item.quantity }}</div>
+                    </div>
+                    <div class="status" v-for="tag in item.tags" :key="tag">
+                      <img v-if="tags[tag]" :src="'./images/items/_' + tags[tag]?.image + '.png'" alt="Tag">
+                    </div>
+                  </li>
+                </template>
+              </draggable>
 
               <!-- Item options -->
-              <div class="item-options" v-if="options.visible" :style="{ top: options.y + 'px', left: options.x + 'px' }">    
+              <div class="item-options" v-if="options.visible"
+                :style="{ top: options.y + 'px', left: options.x + 'px' }">
 
-                <div v-if="currentItem && currentItem.category === '3'" class="option" @click="doAction('use', currentItem)">Utiliser</div>
-                <div v-if="currentItem && currentItem.category === '8'" class="option" @click="doAction('use', currentItem)">Utiliser</div>
-                <div v-if="currentItem && currentItem.category === '6'" class="option" @click="doAction('equip', currentItem)">Équiper</div>
+                <div v-if="currentItem && currentItem.category === '3'" class="option"
+                  @click="doAction('use', currentItem)">Utiliser</div>
+                <div v-if="currentItem && currentItem.category === '8'" class="option"
+                  @click="doAction('use', currentItem)">Utiliser</div>
+                <div v-if="currentItem && currentItem.category === '6'" class="option"
+                  @click="doAction('equip', currentItem)">Équiper</div>
 
                 <div v-if="playerStore.itemEquipedId === currentItem.id">
-                  <div v-if="currentItem.category === '4'" class="option" @click="doAction('unequip', currentItem)">Déséquiper</div>
-                  <div v-if="currentItem.category === '1'" class="option" @click="doAction('unequip', currentItem)">Déséquiper</div>
+                  <div v-if="currentItem.category === '4'" class="option" @click="doAction('unequip', currentItem)">
+                    Déséquiper</div>
+                  <div v-if="currentItem.category === '1'" class="option" @click="doAction('unequip', currentItem)">
+                    Déséquiper</div>
                 </div>
                 <div v-else>
-                  <div v-if="currentItem.category === '4'" class="option" @click="doAction('equip', currentItem)">Équiper</div>
-                  <div v-if="currentItem.category === '1'" class="option" @click="doAction('equip', currentItem)">Équiper</div>
+                  <div v-if="currentItem.category === '4'" class="option" @click="doAction('equip', currentItem)">
+                    Équiper</div>
+                  <div v-if="currentItem.category === '1'" class="option" @click="doAction('equip', currentItem)">
+                    Équiper</div>
                 </div>
 
-                <div v-if="currentItem && currentItem.category === '7'" class="option" @click="doAction('open', currentItem)">Ouvrir</div>                      
+                <div v-if="currentItem && currentItem.category === '7'" class="option"
+                  @click="doAction('open', currentItem)">Ouvrir</div>
                 <div class="option" @click="doAction('give', currentItem)">Donner</div>
                 <div class="option" @click="doAction('drop', currentItem)">Détruire</div>
               </div>
@@ -325,7 +289,7 @@ function onDrop(e, targetIndex) {
             <div class="item">
               <div class="name">Nom</div>
               <div class="description">
-                  
+
               </div>
 
             </div>
@@ -513,35 +477,33 @@ function onDrop(e, targetIndex) {
   margin-top: 10px;
 }
 
-.menu-content .inventory .content ul {
+.inventory-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  /* 5 colonnes */
   gap: 10px;
   padding: 0 15px 0 0;
 }
 
-.menu-content .inventory .content ul li {
+.inventory-grid > * {
   position: relative;
   cursor: grab;
   transition: transform 0.2s ease;
 }
 
-.menu-content .inventory .content ul li:active {
+.inventory-grid > *:active {
   cursor: grabbing;
 }
 
-.menu-content .inventory .content ul li.dragging {
+.inventory-grid.dragging {
+  cursor: grabbing;
+}
+
+.inventory-grid .sortable-ghost {
   opacity: 0.5;
-  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.menu-content .inventory .content ul li.drag-over {
-  border: 2px dashed #fff;
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.menu-content .inventory .content ul li .item {
+.inventory-grid>* .item {
   /*background-color: #ffffff13;*/
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -553,7 +515,7 @@ function onDrop(e, targetIndex) {
   position: relative;
 }
 
-.menu-content .inventory .content ul li .item img {
+.inventory-grid>* .item img {
   width: 70%;
   height: 70%;
   object-fit: cover;
@@ -565,12 +527,12 @@ function onDrop(e, targetIndex) {
 }
 
 
-.menu-content .inventory .content ul li .item .description {
+.inventory-grid>* .item .description {
   width: 100%;
   height: 100%;
 }
 
-.menu-content .inventory .content ul li .status {
+.inventory-grid>* .status {
   width: 60px;
   height: 60px;
   position: absolute;
@@ -578,14 +540,14 @@ function onDrop(e, targetIndex) {
   right: -13px;
 }
 
-.menu-content .inventory .content ul li .status img {
+.inventory-grid>* .status img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.menu-content .inventory .content ul li .item .quantity {
+.inventory-grid>* .item .quantity {
   position: absolute;
   bottom: 5px;
   right: 5px;
@@ -659,21 +621,21 @@ function onDrop(e, targetIndex) {
   display: flex;
   flex-direction: column;
   gap: 10px;
-} 
+}
 
 .menu-content .inventory .content .drop-window .form input {
   padding: 8px;
   border-radius: 4px;
   border: none;
   background-color: rgba(255, 255, 255, 1);
-}   
+}
 
 .menu-content .inventory .content .drop-window .form button {
   padding: 8px;
   border-radius: 4px;
   border: none;
   background-color: rgba(255, 255, 255, 1);
-}   
+}
 
 
 
@@ -683,7 +645,7 @@ function onDrop(e, targetIndex) {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%; 
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
   color: white;
   padding: 4px 8px;
@@ -695,15 +657,15 @@ function onDrop(e, targetIndex) {
 }
 
 .menu-content .inventory .content .near-users .title {
-  font-size: 24px;    
+  font-size: 24px;
   font-weight: bold;
   margin-bottom: 16px;
 }
 
 .menu-content .inventory .content .near-users .form {
   display: flex;
-  flex-direction: column;   
-  gap: 10px;  
+  flex-direction: column;
+  gap: 10px;
   width: 200px;
 }
 
@@ -719,14 +681,14 @@ function onDrop(e, targetIndex) {
   border-radius: 4px;
   border: none;
   background-color: rgba(255, 255, 255, 1);
-}   
+}
 
 .menu-content .inventory .content .near-users .form button {
   padding: 8px;
   border-radius: 4px;
   border: none;
   background-color: rgba(255, 255, 255, 1);
-}      
+}
 
 
 

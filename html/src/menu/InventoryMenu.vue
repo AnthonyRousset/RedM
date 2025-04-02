@@ -192,7 +192,7 @@ document.addEventListener('click', (e) => {
         <div class="inventory">
           <PerfectScrollbar>
             <div class="_title_">INVENTAIRE</div>
-            <div class="content" style="overflow-y: auto; height: 800px;">
+            <div class="content" style="overflow-y: auto; height: 800px;color: #fff;">
                 <pre>
                   {{ playerStore.inventory }}
                 </pre>

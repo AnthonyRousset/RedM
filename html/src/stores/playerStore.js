@@ -229,31 +229,8 @@ export const usePlayerStore = defineStore('player', {
             this.inventory = newInventory
             console.log('=== Fin de la mise à jour ===')
         },
-        moveItem(fromIndex, toIndex) {
-            console.log('=== Début du déplacement ===')
-            console.log('Index source:', fromIndex)
-            console.log('Index cible:', toIndex)
-            console.log('Inventaire avant:', JSON.stringify(this.inventory, null, 2))
-            
-            if (fromIndex === toIndex) {
-                console.log('Les index sont identiques, pas de déplacement nécessaire')
-                return
-            }
-            
-            // Créer une copie profonde de l'inventaire
-            const newInventory = JSON.parse(JSON.stringify(this.inventory))
-            
-            // Récupérer l'item à déplacer
-            const [movedItem] = newInventory.splice(fromIndex, 1)
-            
-            // Ajuster l'index cible si nécessaire
-            const adjustedTargetIndex = fromIndex < toIndex ? toIndex - 1 : toIndex
-            
-            // Insérer l'item à la nouvelle position
-            newInventory.splice(adjustedTargetIndex, 0, movedItem)
-            
-            // Mettre à jour l'inventaire
-            this.inventory = newInventory
+        updatePosition(data) {
+            console.log('updatePosition', data)
         }
     },
     getters: {

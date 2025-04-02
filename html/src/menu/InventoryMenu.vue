@@ -73,7 +73,7 @@ function doAction(action) {
     case 'give':
       // Open window with target list (player, npc, ...) 
       giveWindow.value = true
-      sendNui('inventory-near-users', { id: currentItem.value.id, quantity: quantity.value })
+      sendNui('inventory-near-users-0', { id: currentItem.value.id, quantity: quantity.value })
       break
     case 'drop':
       // Open window with quantity input
@@ -116,35 +116,6 @@ function onDrop(targetItem) {
 }
 */
 
-const tooltip = ref({
-  visible: false,
-  name: null,
-  x: 0,
-  y: 0
-})
-
-function moveTooltip(e) {
-  tooltip.value.x = e.clientX + 10
-  tooltip.value.y = e.clientY + 10
-}
-
-function showTooltip(id) {
-  tooltip.value.visible = true
-  tooltip.value.name = items.value.find(item => item.id === id).name
-}
-
-function hideTooltip() {
-  tooltip.value.visible = false
-  tooltip.value.name = null
-}
-
-window.addEventListener('message', (event) => {
-  const { action, data } = event.data
-  if (action === 'player-move') {
-    console.log('player-move', data)
-  }
-})
-
 // evenement qui se déclenche lorsque on clique droit en dehors du menu 
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.menu-content')) {
@@ -158,6 +129,15 @@ function onDragStart(evt) {
   console.log('Début du drag:', evt)
 }
 
+function updatePosition(evt) {
+  console.log('Mise à jour de la position:', evt)
+  const { oldIndex, newIndex } = evt
+  if (oldIndex !== newIndex) {
+    playerStore.updatePosition(oldIndex, newIndex)
+  }
+}
+
+/*
 function onDragEnd(evt) {
   console.log('Fin du drag:', evt)
   const { oldIndex, newIndex } = evt
@@ -165,6 +145,7 @@ function onDragEnd(evt) {
     playerStore.moveItem(oldIndex, newIndex)
   }
 }
+*/
 
 </script>
 
@@ -218,14 +199,11 @@ function onDragEnd(evt) {
                 :scrollSensitivity="100"
                 :scrollSpeed="10"
                 @start="onDragStart"
-                @end="onDragEnd"
+                @end="updatePosition"
               >
                 <template #item="{ element: item, index }">
                   <li @click="(e) => showOptions(e, item)">
-                    <div class="item" 
-                         @mousemove="moveTooltip" 
-                         @mouseenter="showTooltip(item.id)"
-                         @mouseleave="hideTooltip">
+                    <div class="item">
                       <img :src="'./images/items/' + item.id + '.png'" alt="Item">
                       <div class="quantity" v-if="item.quantity > 1">{{ item.quantity }}</div>
                     </div>
@@ -236,7 +214,7 @@ function onDragEnd(evt) {
                 </template>
               </draggable>
 
-              <!-- Item options -->
+              <!-- Item options 
               <div class="item-options" v-if="options.visible"
                 :style="{ top: options.y + 'px', left: options.x + 'px' }">
 
@@ -265,6 +243,8 @@ function onDragEnd(evt) {
                 <div class="option" @click="doAction('give', currentItem)">Donner</div>
                 <div class="option" @click="doAction('drop', currentItem)">Détruire</div>
               </div>
+              -->
+
               <!-- Drop window -->
               <div class="drop-window" v-if="dropWindow">
                 <div class="form">
@@ -286,20 +266,17 @@ function onDragEnd(evt) {
                   <button @click="giveWindow = false">Annuler</button>
                 </div>
               </div>
-              <!-- Tooltip global (placé en dehors du v-for) -->
-              <div class="tooltip" v-if="tooltip.visible" :style="{ top: tooltip.y + 'px', left: tooltip.x + 'px' }">
-                {{ tooltip.name }}
-              </div>
+
             </div>
           </PerfectScrollbar>
         </div>
-        <div class="description" v-if="selectedItem">
-          <div class="title">Description</div>
+        <div class="description" v-if="currentItem">
+          <div class="title">{{ items.find(item => item.id === currentItem.id).name }}</div>
           <div class="content">
             <div class="item">
               <div class="name">Nom</div>
               <div class="description">
-
+                {{ items.find(item => item.id === currentItem.id).description }}
               </div>
 
             </div>
@@ -492,6 +469,13 @@ function onDragEnd(evt) {
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   padding: 0 15px 0 0;
+  list-style: none;
+}
+
+.inventory-grid li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .inventory-grid > * {
@@ -568,21 +552,6 @@ function onDragEnd(evt) {
   font-size: 12px;
   font-weight: bold;
 }
-
-.menu-content .inventory .content .tooltip {
-  position: fixed;
-  /* suivre la souris */
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 4px 8px;
-  font-size: 12px;
-  border-radius: 4px;
-  pointer-events: none;
-  /* ne bloque pas les interactions */
-  z-index: 1000;
-}
-
-
 
 /* Item options */
 .menu-content .inventory .content .item-options {

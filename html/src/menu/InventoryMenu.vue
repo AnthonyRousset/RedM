@@ -122,9 +122,11 @@ function moveTooltip(e) {
   tooltip.value.y = e.clientY + 10
 }
 
-function showTooltip(name) {
+function showTooltip(id) {
   tooltip.value.visible = true
-  tooltip.value.name = name
+  console.log(id)
+  console.log(itemsData)
+  tooltip.value.name = itemsData.items.find(item => item.id === id).name
 }
 
 
@@ -193,7 +195,7 @@ document.addEventListener('click', (e) => {
             <div class="content">
               <ul>
                 <li v-for="item in playerStore.inventory" :key="item.id" @click="(e) => showOptions(e, item)">
-                  <div class="item" @mousemove="moveTooltip" @mouseenter="showTooltip(item.name)"
+                  <div class="item" @mousemove="moveTooltip" @mouseenter="showTooltip(item.id)"
                     @mouseleave="hideTooltip">
                     <img :src="'./images/items/' + item.id + '.png'" alt="Item">
                   </div>

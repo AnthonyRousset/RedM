@@ -14,6 +14,7 @@ const notifications = ref([]);
 </script>
 
 
+
 <style scoped>
 .notifications {
   position: fixed;

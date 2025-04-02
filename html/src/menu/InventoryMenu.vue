@@ -1,23 +1,29 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { usePlayerStore } from '../stores/playerStore.js'
 import { sendNui } from '../utils/nui'
 import { useUiStore } from '../stores/uiStore'
 import { useHudStore } from '../stores/hudStore'
+import itemsData from '../data/items.json'
 
 const uiStore = useUiStore()
 const playerStore = usePlayerStore()
 const hudStore = useHudStore()
 
-const slots = ref(Array(20).fill(null))
-const contextVisible = ref(false)
-const contextX = ref(0)
-const contextY = ref(0)
 const selectedItem = ref(null)
-const draggedItem = ref(null)
 const menuContent = ref('inventory')
 
+const currentItem = ref(null)
 
+// open give window
+const giveWindow = ref(false)
+const target = ref('')
+const quantity = ref(1)
+
+// open drop window
+const dropWindow = ref(false)
+
+/*
 function close() {
   sendNui('ui-close')
   uiStore.closeMenu()
@@ -29,14 +35,64 @@ function showContext(e, item) {
   contextY.value = e.clientY
   contextVisible.value = true
 }
+*/
+const options = ref({
+  visible: false,
+  x: 0,
+  y: 0
+})
 
-function doAction(action) {
-  if (selectedItem.value) {
-    sendNui('player-action', { action, item: selectedItem.value })
-  }
-  contextVisible.value = false
+function showOptions(e, item) {
+  currentItem.value = item
+  options.value.visible = true
+  options.value.x = e.clientX
+  options.value.y = e.clientY
 }
 
+function doAction(action) {
+  switch (action) {
+    case 'equip':
+      sendNui('inventory-equip', {id: currentItem.value.id })
+      playerStore.itemEquipedId = currentItem.value.id  
+      break
+    case 'unequip':
+      sendNui('inventory-unequip', {id: currentItem.value.id })
+      playerStore.itemEquipedId = null
+      break
+    case 'use':
+      sendNui('inventory-use', {id: currentItem.value.id })
+      playerStore.useItem(currentItem.value.id)
+      break
+    case 'give':
+      // Open window with target list (player, npc, ...) 
+      sendNui('inventory-near-users').then((data) => {
+        giveWindow.value = true
+      })
+      break
+    case 'drop':
+      // Open window with quantity input
+      dropWindow.value = true
+      break
+  }   
+  options.value.visible = false
+}
+
+function doGive() {
+  // When target is selected, send action with target and item  
+  sendNui('inventory-give', {id: currentItem.value.id, quantity: quantity.value, target: target.value })
+  giveWindow.value = false
+  target.value = ''
+  quantity.value = 1
+}
+
+function doDrop() {
+  // Open window with quantity input
+  sendNui('inventory-drop', {id: currentItem.value.id, quantity: quantity.value})
+  dropWindow.value = false
+  quantity.value = 1
+}
+
+/*
 function closeContext() {
   contextVisible.value = false
 }
@@ -52,6 +108,7 @@ function onDrop(targetItem) {
 
   draggedItem.value = null
 }
+*/
 
 const tooltip = ref({
   visible: false,
@@ -70,6 +127,8 @@ function showTooltip(name) {
   tooltip.value.name = name
 }
 
+
+
 function hideTooltip() {
   tooltip.value.visible = false
   tooltip.value.name = null
@@ -81,6 +140,16 @@ window.addEventListener('message', (event) => {
     console.log('player-move', data)
   }
 })
+
+// evenement qui se déclenche lorsque on clique droit en dehors du menu 
+document.addEventListener('click', (e) => {
+
+    if (!e.target.closest('.menu-content')) {
+      options.value.visible = false
+    }
+})
+
+
 
 </script>
 
@@ -123,7 +192,7 @@ window.addEventListener('message', (event) => {
             <div class="_title_">INVENTAIRE</div>
             <div class="content">
               <ul>
-                <li v-for="item in playerStore.inventory" :key="item.id">
+                <li v-for="item in playerStore.inventory" :key="item.id" @click="(e) => showOptions(e, item)">
                   <div class="item" @mousemove="moveTooltip" @mouseenter="showTooltip(item.name)"
                     @mouseleave="hideTooltip">
                     <img :src="'./images/items/' + item.id + '.png'" alt="Item">
@@ -133,6 +202,43 @@ window.addEventListener('message', (event) => {
                   </div>
                 </li>
               </ul>
+              <!-- Item options -->
+              <div class="item-options" v-if="options.visible" :style="{ top: options.y + 'px', left: options.x + 'px' }">    
+
+                <div v-if="currentItem && currentItem.category === '3'" class="option" @click="doAction('use', currentItem)">Utiliser</div>
+                <div v-if="currentItem && currentItem.category === '8'" class="option" @click="doAction('use', currentItem)">Utiliser</div>
+                <div v-if="currentItem && currentItem.category === '6'" class="option" @click="doAction('equip', currentItem)">Équiper</div>
+
+                <div v-if="playerStore.itemEquipedId === currentItem.id">
+                  <div v-if="currentItem.category === '4'" class="option" @click="doAction('unequip', currentItem)">Déséquiper</div>
+                  <div v-if="currentItem.category === '1'" class="option" @click="doAction('unequip', currentItem)">Déséquiper</div>
+                </div>
+                <div v-else>
+                  <div v-if="currentItem.category === '4'" class="option" @click="doAction('equip', currentItem)">Équiper</div>
+                  <div v-if="currentItem.category === '1'" class="option" @click="doAction('equip', currentItem)">Équiper</div>
+                </div>
+
+                <div v-if="currentItem && currentItem.category === '7'" class="option" @click="doAction('open', currentItem)">Ouvrir</div>                      
+                <div class="option" @click="doAction('give', currentItem)">Donner</div>
+                <div class="option" @click="doAction('drop', currentItem)">Jeter</div>
+              </div>
+              <!-- Drop window -->
+              <div class="drop-window" v-if="dropWindow">
+                <div class="title">Jeter</div>
+                <div class="form">
+                  <input type="number" v-model="quantity" placeholder="Quantité" min="1" :max="currentItem.quantity">
+                  <button @click="doDrop()">Jeter</button>
+                </div>
+              </div>
+              <!-- Give window -->
+              <div class="near-users" v-if="giveWindow">
+                <div class="title">Joueurs proches</div>
+                <div class="form">
+                  <input type="text" v-model="target" placeholder="Nom du joueur">
+                  <input type="number" v-model="quantity" placeholder="Quantité" min="1" :max="currentItem.quantity">
+                  <button @click="doGive()">Donner</button>
+                </div>
+              </div>
               <!-- Tooltip global (placé en dehors du v-for) -->
               <div class="tooltip" v-if="tooltip.visible" :style="{ top: tooltip.y + 'px', left: tooltip.x + 'px' }">
                 {{ tooltip.name }}
@@ -145,7 +251,10 @@ window.addEventListener('message', (event) => {
           <div class="content">
             <div class="item">
               <div class="name">Nom</div>
-              <div class="description">Description</div>
+              <div class="description">
+                  
+              </div>
+
             </div>
           </div>
         </div>
@@ -222,7 +331,7 @@ window.addEventListener('message', (event) => {
   bottom: 0;
   overflow: hidden;
   z-index: -2;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+  background: linear-gradient(108deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2));
 }
 
 .top {

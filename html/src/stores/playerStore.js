@@ -13,176 +13,157 @@ export const usePlayerStore = defineStore('player', {
         drugs:[], // drogues
         sick: [], // maladies
         activeBuffs: [], // buffs actifs
+        nearUsers: [], // joueurs proches
+        itemEquipedId: null, // item équipé
         inventory: [
             {
-                id: 'lancaster',
-                name: 'Lancaster',
+                id: 'lancaster_rifle',
                 quantity: 2,
                 quality: 100,
                 weight: 1,
-                category: 'weapon',
-                tags: ['domaged']
+                tags: ['domaged'],
+                category: 0
             },
             {
-                id: 'graines-de-coca',
-                name: 'Graines de coca',
+                id: 'coca_seeds',
                 quantity: 2,
                 quality: 100,
                 weight: 1,
-                category: 'seed',
-                tags: ['illegal']
+                tags: ['illegal'],
+                category: 0
             },
             {
                 id: 'cocaine',
-                name: 'Cocaine',
                 quantity: 2,
                 quality: 100,
                 weight: 1,
-                category: 'drug',
-                tags: ['illegal']
+                tags: ['illegal'],
+                category: 0
             },
             {
-                id: 'pain-rustique',
-                name: 'Pain rustique',
-                quantity: 2,
-                quality: 100,
-                weight: 1,
-                category: 'food',
-                tags: ['stolen']
-            },
-            {
-                id: 'peau-de-cerf',
-                name: 'Peau de cerf',
-                quantity: 2,
-                quality: 100,
-                weight: 1,
-                category: 'neutral',             
-                tags: []
-            },
-            {
-                id: 'viande-de-cerf',
-                name: 'Viande de cerf',
-                quantity: 2,
-                quality: 100,
-                weight: 1,
-                category: 'food',                
-                tags: []
-            },
-            {
-                id: 'pelle',
-                name: 'Pelle',
-                quantity: 2,
-                quality: 100,
-                weight: 1,
-                category: 'tool',                
-                tags: []
-            },
-            {
-                id: 'rateau',
-                name: 'Rateau',
-                quantity: 2,
-                quality: 100,
-                weight: 1,
-                category: 'tool',         
-                tags: []
-            },
-            {
-                id: 'hache',
-                name: 'Hache',
+                id: 'rustic_bread',
                 quantity: 2,
                 quality: 100,
                 weight: 1,  
-                category: 'tool',                
-                tags: []
+                tags: ['stolen'],
+                category: 0
             },
             {
-                id: 'arc',
-                name: 'Arc',
+                id: 'deer_hide',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'raw_deer_meat',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'pickaxe',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'rake',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'axe',
                 quantity: 2,
                 quality: 100,
                 weight: 1,  
-                category: 'weapon',                
-                tags: []
+                tags: [],
+                category: 0
             },
             {
-                id: 'arrosoir',
-                name: 'Arrosoir',
+                id: 'weapon_bow',
+                quantity: 2,
+                quality: 100,
+                weight: 1,  
+                    tags: [],
+                category: 0
+            },
+            {
+                id: 'watering_can',
                 quantity: 2,
                 quality: 100,
                 weight: 1,      
-                category: 'tool',                
-                tags: []
+                tags: [],
+                category: 0 
             },
             {
-                id: 'graines-de-canabis',
-                name: 'Graines de cannabis',
+                id: 'cannabis_seeds',
                 quantity: 2,
                 quality: 100,
                 weight: 1,          
-                category: 'seed',                
                 tags: ['illegal']
             },
             {
-                id: 'graines-de-canne-a-sucre',
-                name: 'Graines de canne à sucre',
+                id: 'sugarcane_seeds',
                 quantity: 2,
                 quality: 100,
                 weight: 1,          
-                category: 'seed',                
-                tags: []
+                tags: [],
+                category: 0
             },
             {
-                id: 'graines-de-coca',
-                name: 'Graines de coca',
+                id: 'coca_seeds',
                 quantity: 2,
                 quality: 100,
                 weight: 1,          
-                category: 'seed',                
-                tags: ['illegal']
+                tags: ['illegal'],
+                category: 0
             },
             {
                 id: 'fertilizer',
-                name: 'Fertilizer',
                 quantity: 2,
                 quality: 100,
                 weight: 1,              
-                category: 'seed',                
-                tags: []
+                tags: [],
+                category: 0
             },
             {
-                id: 'viande-de-cerf-cuite',
-                name: 'Viande de cerf cuite',
+                id: 'cooked_deer_meat',
                 quantity: 2,
                 quality: 100,
                 weight: 1,              
-                category: 'food',                
                 tags: []
             },
             {
-                id: 'lancaster',
-                name: 'Lancaster',
+                id: 'lancaster_rifle',
                 quantity: 2,
                 quality: 100,
                 weight: 1,              
-                category: 'weapon',                
-                tags: []
+                tags: [],
+                category: 0
             },
             {
-                id: 'pioche',
-                name: 'Pioche',
+                id: 'shovel',
                 quantity: 2,
                 quality: 100,
                 weight: 1,              
-                category: 'tool',                
-                tags: []
+                category: 0,
+                    tags: []
             },
             {
-                id: 'gourde',
-                name: 'Gourde',
+                id: 'water_bottle',
                 quantity: 2,
                 quality: 100,
-                weight: 1,  
-                category: 'drink',                
+                weight: 1, 
+                category: 0,
                 tags: []
             }
         ] // inventaire
@@ -203,6 +184,19 @@ export const usePlayerStore = defineStore('player', {
             this.sick = data.sick ?? this.sick
             this.activeBuffs = data.activeBuffs ?? this.activeBuffs
             this.inventory = data.inventory ?? this.inventory
+            this.nearUsers = data.nearUsers ?? this.nearUsers
+        },
+        setNearUsers(data) {
+            this.nearUsers = data
+        },
+        setWeaponEquiped(data) {
+            this.itemEquipedId = data.id
+        },  
+        useItem(id) {
+            const item = this.inventory.find(item => item.id === id)
+            if (item) {
+                item.quantity -= 1 
+            }
         }
     },
     getters: {
@@ -214,6 +208,7 @@ export const usePlayerStore = defineStore('player', {
         getDrugs: (state) => state.drugs,
         getSick: (state) => state.sick,
         getActiveBuffs: (state) => state.activeBuffs,
-        getInventory: (state) => state.inventory
+        getInventory: (state) => state.inventory,
+        getNearUsers: (state) => state.nearUsers
     },
 })

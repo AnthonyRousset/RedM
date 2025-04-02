@@ -43,6 +43,18 @@ const handlers = {
     const inventory = usePlayerStore()
     inventory.setInventory(data)
   },
+  'inventory:near:users': (data) => {
+    const inventory = usePlayerStore()
+    inventory.setNearUsers(data)
+  },
+  'inventory:weapon:equip': (data) => {
+    const inventory = usePlayerStore()
+    inventory.setWeaponEquiped(data)
+  },
+  'inventory:weapon:unequip': (data) => {
+    const inventory = usePlayerStore()
+    inventory.setWeaponEquiped(null)
+  },
 
   // admin
   'admin:open': () => {

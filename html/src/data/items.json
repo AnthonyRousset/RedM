@@ -37,6 +37,18 @@
       "description": "Un fusil Lancaster de haute qualité. Arme redoutable à moyenne portée."
     },
     {
+      "name": "Fusil à Répétition",
+      "id": "weapon_repeater_carbine",
+      "category": 3,
+      "weight": 3,
+      "tags": [
+        "weapon",
+        "firearm",
+        "common"
+      ],
+      "description": "Un fusil à répétition de haute qualité. Arme redoutable à moyenne portée."
+    },
+    {
       "name": "Arc",
       "id": "weapon_bow",
       "category": 3,

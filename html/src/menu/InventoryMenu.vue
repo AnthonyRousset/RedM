@@ -97,8 +97,176 @@ function doDrop() {
   dropWindow.value = false
   quantity.value = 1
 }
+/*
+// Simulation de l'événement inventory:update
+window.addEventListener('message', (event) => {
+  const { action, data } = event.data
+  if (action === 'inventory:update') {
+    console.log('Inventaire reçu du client:', data)
+    playerStore.inventory = data
+  }
+})*/
 
-
+function simulationPost() {
+  window.postMessage({
+  action: 'inventory:update',
+ 
+    info: [
+            {
+                id: 'lancaster_rifle',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [0],
+                category: 0
+            },
+            {
+                id: 'coca_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'cocaine',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [2],
+                category: 0
+            },
+            {
+                id: 'rustic_bread',
+                quantity: 2,
+                quality: 100,
+                weight: 1,  
+                tags: [1],
+                category: 0
+            },
+            {
+                id: 'deer_hide',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'raw_deer_meat',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'pickaxe',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'rake',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'axe',
+                quantity: 2,
+                quality: 100,
+                weight: 1,  
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'weapon_bow',
+                quantity: 2,
+                quality: 100,
+                weight: 1,  
+                    tags: [],
+                category: 0
+            },
+            {
+                id: 'watering_can',
+                quantity: 2,
+                quality: 100,
+                weight: 1,      
+                tags: [],
+                category: 0 
+            },
+            {
+                id: 'cannabis_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,          
+                tags: [1],
+                category: 0
+            },
+            {
+                id: 'sugarcane_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,          
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'coca_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,          
+                tags: [2],
+                category: 0
+            },
+            {
+                id: 'fertilizer',
+                quantity: 2,
+                quality: 100,
+                weight: 1,              
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'cooked_deer_meat',
+                quantity: 200,
+                quality: 100,
+                weight: 1,              
+                tags: []
+            },
+            {
+                id: 'lancaster_rifle',
+                quantity: 2,
+                quality: 100,
+                weight: 1,              
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'shovel',
+                quantity: 2,
+                quality: 100,
+                weight: 1,              
+                category: 0,
+                    tags: [0]
+            },
+            {
+                id: 'water_bottle',
+                quantity: 200,
+                quality: 100,
+                weight: 1, 
+                category: 0,
+                tags: []
+            }
+        ]
+  
+}, '*')
+}
 
 </script>
 
@@ -115,6 +283,8 @@ function doDrop() {
       </div>
     </div>
     <div class="container">
+
+      <button @click="simulationPost()">Simulation</button>
 
       <div class="menu-vertical">
         <ul>

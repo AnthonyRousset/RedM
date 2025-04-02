@@ -136,8 +136,8 @@ export function handleNuiEvent(event) {
 
   const data = event.data;
   console.log(`[NUI envoie sur vue.js] [${data.action}]`, data)
-  if (!event.data || !event.data.action) console.warn(`[NUI] ATTENTION : event.data.action n'existe pas`)
-  if (!event.data || !event.data.info) console.warn(`[NUI] ATTENTION : data.INFO n'existe pas`)
+  if (!event.data || !event.data.action) console.warn(`[NUI] ATTENTION : event.data.action n'existe pas`, event.data)
+  if (!event.data || !event.data.info) console.warn(`[NUI] ATTENTION : data.INFO n'existe pas`, event.data)
 
   const action = event.data.action;
   const handler = handlers[action]

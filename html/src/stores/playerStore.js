@@ -186,12 +186,17 @@ export const usePlayerStore = defineStore('player', {
         },
         updateInventory(data) {
             if (!data || !Array.isArray(data)) return
-            // On garde le même tableau mais on met à jour les données
-            this.inventory = this.inventory.map(currentItem => {
-                // Chercher l'item correspondant dans les nouvelles données
-                const newItem = data.find(item => item.id === currentItem.id)
-                if (newItem) {
-                    // Si l'item existe dans les nouvelles données, on met à jour ses propriétés
+            
+            console.log('=== Mise à jour de l\'inventaire ===')
+            console.log('Données reçues:', data)
+
+            // Filtrer l'inventaire pour ne garder que les items qui existent dans data
+            this.inventory = this.inventory
+                .filter(currentItem => data.some(newItem => newItem.id === currentItem.id))
+                .map(currentItem => {
+                    // Chercher l'item correspondant dans les nouvelles données
+                    const newItem = data.find(item => item.id === currentItem.id)
+                    // Mettre à jour les propriétés
                     return {
                         ...currentItem,
                         quantity: newItem.quantity,
@@ -200,11 +205,10 @@ export const usePlayerStore = defineStore('player', {
                         tags: newItem.tags || currentItem.tags,
                         category: newItem.category
                     }
-                }
+                })
 
-                // Si l'item n'existe pas dans les nouvelles données, on le garde tel quel
-                return currentItem
-            })
+            console.log('Inventaire mis à jour:', this.inventory)
+            console.log('=== Fin de la mise à jour ===')
         },
         setNearUsers(data) {
             this.nearUsers = data

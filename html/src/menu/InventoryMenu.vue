@@ -52,15 +52,15 @@ function showOptions(e, item) {
 function doAction(action) {
   switch (action) {
     case 'equip':
-      sendNui('inventory-equip', {id: currentItem.value.id })
+      sendNui('inventory-request-equip', {id: currentItem.value.id })
       playerStore.itemEquipedId = currentItem.value.id  
       break
     case 'unequip':
-      sendNui('inventory-unequip', {id: currentItem.value.id })
+      sendNui('inventory-request-unequip', {id: currentItem.value.id })
       playerStore.itemEquipedId = null
       break
     case 'use':
-      sendNui('inventory-use', {id: currentItem.value.id })
+      sendNui('inventory-request-use', {id: currentItem.value.id })
       playerStore.useItem(currentItem.value.id)
       break
     case 'give':
@@ -79,7 +79,7 @@ function doAction(action) {
 
 function doGive() {
   // When target is selected, send action with target and item  
-  sendNui('inventory-give', {id: currentItem.value.id, quantity: quantity.value, target: target.value })
+  sendNui('inventory-request-give', {id: currentItem.value.id, quantity: quantity.value, target: target.value })
   giveWindow.value = false
   target.value = ''
   quantity.value = 1
@@ -87,7 +87,7 @@ function doGive() {
 
 function doDrop() {
   // Open window with quantity input
-  sendNui('inventory-drop', {id: currentItem.value.id, quantity: quantity.value})
+  sendNui('inventory-request-drop', {id: currentItem.value.id, quantity: quantity.value})
   dropWindow.value = false
   quantity.value = 1
 }

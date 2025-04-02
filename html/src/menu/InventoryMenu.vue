@@ -192,10 +192,18 @@ document.addEventListener('click', (e) => {
         <div class="inventory">
           <PerfectScrollbar>
             <div class="_title_">INVENTAIRE</div>
-            <div class="content">
+            <div class="content" style="overflow-y: auto; height: 800px;">
+                <pre>
+                  {{ playerStore.inventory }}
+                </pre>
+                <hr>
               <ul>
                 <li v-for="item in playerStore.inventory" :key="item.id" @click="(e) => showOptions(e, item)">
-                  <div class="item" @mousemove="moveTooltip" @mouseenter="showTooltip(item.id)"
+                  
+
+                  <pre>
+                    {{ item }}
+                  </pre>                  <div class="item" @mousemove="moveTooltip" @mouseenter="showTooltip(item.id)"
                     @mouseleave="hideTooltip">
                     <img :src="'./images/items/' + item.id + '.png'" alt="Item">
                   </div>

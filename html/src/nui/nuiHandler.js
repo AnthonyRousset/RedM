@@ -41,15 +41,15 @@ const handlers = {
   },
   'inventory:update': (data) => {
     const inventory = usePlayerStore()
-    inventory.setInventory(data)
+    inventory.setInventory(data.info) 
   },
   'inventory:near:users': (data) => {
     const inventory = usePlayerStore()
-    inventory.setNearUsers(data)
+    inventory.setNearUsers(data.info)
   },
   'inventory:weapon:equip': (data) => {
     const inventory = usePlayerStore()
-    inventory.setWeaponEquiped(data)
+    inventory.setWeaponEquiped(data.info)
   },
   'inventory:weapon:unequip': (data) => {
     const inventory = usePlayerStore()
@@ -104,25 +104,25 @@ const handlers = {
   },    
   'player:update': (data) => {
     //const player = usePlayerStore()
-    //player.update(data)
+    //player.update(data.info)
   },  
   'buffs:update': (data) => {
     //const buffs = useBuffsStore()
-    //buffs.update(data)
+    //buffs.update(data.info)
   },  
   'weather:update': (data) => {
     //const weather = useWeatherStore()
-    //weather.update(data)
+    //weather.update(data.info)
   },    
   'location:update': (data) => {
     //const location = useLocationStore()
-    //location.update(data)
+    //location.update(data.info)
   },  
 
   // notify
   'notify:message': (data) => {
     //const notify = useNotifyStore()
-    //notify.update(data)
+    //notify.update(data.info)
   }
 
 }

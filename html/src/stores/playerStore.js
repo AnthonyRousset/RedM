@@ -171,6 +171,7 @@ export const usePlayerStore = defineStore('player', {
     actions: {
         setInventory(data) {
             this.inventory = data
+            console.log('setInventory-xaypho', this.inventory)
         },
         update(data) {
             console.log('update', data)

@@ -190,13 +190,11 @@ export const usePlayerStore = defineStore('player', {
             console.log('=== Mise à jour de l\'inventaire ===')
             console.log('Données reçues:', data)
 
-            // Filtrer l'inventaire pour ne garder que les items qui existent dans data
-            this.inventory = this.inventory
+            // Garder les items existants qui sont dans data et les mettre à jour
+            const updatedInventory = this.inventory
                 .filter(currentItem => data.some(newItem => newItem.id === currentItem.id))
                 .map(currentItem => {
-                    // Chercher l'item correspondant dans les nouvelles données
                     const newItem = data.find(item => item.id === currentItem.id)
-                    // Mettre à jour les propriétés
                     return {
                         ...currentItem,
                         quantity: newItem.quantity,
@@ -206,6 +204,14 @@ export const usePlayerStore = defineStore('player', {
                         category: newItem.category
                     }
                 })
+
+            // Ajouter les nouveaux items qui n'existaient pas avant
+            const newItems = data.filter(newItem => 
+                !this.inventory.some(currentItem => currentItem.id === newItem.id)
+            )
+
+            // Combiner les items existants mis à jour avec les nouveaux items
+            this.inventory = [...updatedInventory, ...newItems]
 
             console.log('Inventaire mis à jour:', this.inventory)
             console.log('=== Fin de la mise à jour ===')

@@ -10,7 +10,7 @@ export const usePlayerStore = defineStore('player', {
         thirst: 0, // soif
         tiredness: 0, // fatigue
         recovery: 0, // récupération
-        drugs:[], // drogues
+        drugs: [], // drogues
         sick: [], // maladies
         activeBuffs: [], // buffs actifs
         nearUsers: [], // joueurs proches
@@ -44,7 +44,7 @@ export const usePlayerStore = defineStore('player', {
                 id: 'rustic_bread',
                 quantity: 2,
                 quality: 100,
-                weight: 1,  
+                weight: 1,
                 tags: [1],
                 category: 0
             },
@@ -84,7 +84,7 @@ export const usePlayerStore = defineStore('player', {
                 id: 'axe',
                 quantity: 2,
                 quality: 100,
-                weight: 1,  
+                weight: 1,
                 tags: [],
                 category: 0
             },
@@ -92,23 +92,23 @@ export const usePlayerStore = defineStore('player', {
                 id: 'weapon_bow',
                 quantity: 2,
                 quality: 100,
-                weight: 1,  
-                    tags: [],
+                weight: 1,
+                tags: [],
                 category: 0
             },
             {
                 id: 'watering_can',
                 quantity: 2,
                 quality: 100,
-                weight: 1,      
+                weight: 1,
                 tags: [],
-                category: 0 
+                category: 0
             },
             {
                 id: 'cannabis_seeds',
                 quantity: 2,
                 quality: 100,
-                weight: 1,          
+                weight: 1,
                 tags: [1],
                 category: 0
             },
@@ -116,7 +116,7 @@ export const usePlayerStore = defineStore('player', {
                 id: 'sugarcane_seeds',
                 quantity: 2,
                 quality: 100,
-                weight: 1,          
+                weight: 1,
                 tags: [],
                 category: 0
             },
@@ -124,7 +124,7 @@ export const usePlayerStore = defineStore('player', {
                 id: 'coca_seeds',
                 quantity: 2,
                 quality: 100,
-                weight: 1,          
+                weight: 1,
                 tags: [2],
                 category: 0
             },
@@ -132,7 +132,7 @@ export const usePlayerStore = defineStore('player', {
                 id: 'fertilizer',
                 quantity: 2,
                 quality: 100,
-                weight: 1,              
+                weight: 1,
                 tags: [],
                 category: 0
             },
@@ -140,14 +140,14 @@ export const usePlayerStore = defineStore('player', {
                 id: 'cooked_deer_meat',
                 quantity: 2,
                 quality: 100,
-                weight: 1,              
+                weight: 1,
                 tags: []
             },
             {
                 id: 'lancaster_rifle',
                 quantity: 2,
                 quality: 100,
-                weight: 1,              
+                weight: 1,
                 tags: [],
                 category: 0
             },
@@ -155,15 +155,15 @@ export const usePlayerStore = defineStore('player', {
                 id: 'shovel',
                 quantity: 2,
                 quality: 100,
-                weight: 1,              
+                weight: 1,
                 category: 0,
-                    tags: [0]
+                tags: [0]
             },
             {
                 id: 'water_bottle',
                 quantity: 2,
                 quality: 100,
-                weight: 1, 
+                weight: 1,
                 category: 0,
                 tags: []
             }
@@ -184,7 +184,7 @@ export const usePlayerStore = defineStore('player', {
             this.inventory = data.inventory ?? this.inventory
             this.nearUsers = data.nearUsers ?? this.nearUsers
         },
-        updateInventory(data) {            
+        updateInventory(data) {
             if (!data || !Array.isArray(data)) return
             // On garde le même tableau mais on met à jour les données
             this.inventory = this.inventory.map(currentItem => {
@@ -201,24 +201,21 @@ export const usePlayerStore = defineStore('player', {
                         category: newItem.category
                     }
                 }
-                
+
                 // Si l'item n'existe pas dans les nouvelles données, on le garde tel quel
                 return currentItem
             })
-            
-            console.log('Inventaire mis à jour:', this.inventory)
-            console.log('=== Fin de la mise à jour ===')
         },
         setNearUsers(data) {
             this.nearUsers = data
         },
         setWeaponEquiped(data) {
             this.itemEquipedId = data.id
-        },  
+        },
         useItem(id) {
             const item = this.inventory.find(item => item.id === id)
             if (item) {
-                item.quantity -= 1 
+                item.quantity -= 1
             }
         },
     },

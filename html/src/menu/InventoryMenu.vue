@@ -114,7 +114,7 @@ function simulationPost() {
             },
             {
                 id: 'coca_seeds',
-                quantity: 212121,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 1012120,
                 weight: 1,
                 tags: [],
@@ -122,7 +122,7 @@ function simulationPost() {
             },
             {
                 id: 'cocaine',
-                quantity: 21212,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 104450,
                 weight: 1,
                 tags: [2],
@@ -130,7 +130,7 @@ function simulationPost() {
             },
             {
                 id: 'rustic_bread',
-                quantity: 2,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,  
                 tags: [1],
@@ -138,7 +138,7 @@ function simulationPost() {
             },
             {
                 id: 'deer_hide',
-                quantity: 12122,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 1045450,
                 weight: 1,
                 tags: [],
@@ -146,7 +146,7 @@ function simulationPost() {
             },
             {
                 id: 'raw_deer_meat',
-                quantity: 12122,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,
                 tags: [],
@@ -154,7 +154,7 @@ function simulationPost() {
             },
             {
                 id: 'pickaxe',
-                quantity: 2,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 1045450,
                 weight: 1,
                 tags: [],
@@ -162,7 +162,7 @@ function simulationPost() {
             },
             {
                 id: 'rake',
-                quantity: 2,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 1454500,
                 weight: 1,
                 tags: [],
@@ -170,7 +170,7 @@ function simulationPost() {
             },
             {
                 id: 'axe',
-                quantity: 2,
+              quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,  
                 tags: [],
@@ -178,7 +178,7 @@ function simulationPost() {
             },
             {
                 id: 'weapon_bow',
-                quantity: 2,
+                  quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,  
                     tags: [],
@@ -186,7 +186,7 @@ function simulationPost() {
             },
             {
                 id: 'watering_can',
-                quantity: 2,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,      
                 tags: [],
@@ -194,7 +194,7 @@ function simulationPost() {
             },
             {
                 id: 'cannabis_seeds',
-                quantity: 2,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,          
                 tags: [1],
@@ -202,7 +202,7 @@ function simulationPost() {
             },
             {
                 id: 'sugarcane_seeds',
-                quantity: 2,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,          
                 tags: [],
@@ -210,7 +210,7 @@ function simulationPost() {
             },
             {
                 id: 'coca_seeds',
-                quantity: 2,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,          
                 tags: [2],
@@ -218,7 +218,7 @@ function simulationPost() {
             },
             {
                 id: 'fertilizer',
-                quantity: 2,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,              
                 tags: [],
@@ -226,14 +226,14 @@ function simulationPost() {
             },
             {
                 id: 'cooked_deer_meat',
-                quantity: 200,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,              
                 tags: []
             },
             {
                 id: 'lancaster_rifle',
-                quantity: 2,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,              
                 tags: [],
@@ -241,7 +241,7 @@ function simulationPost() {
             },
             {
                 id: 'shovel',
-                quantity: 2,
+                quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1,              
                 category: 0,
@@ -249,7 +249,7 @@ function simulationPost() {
             },
             {
                 id: 'water_bottle',
-                quantity: 200,
+                    quantity: Math.floor(Math.random() * 1000000),
                 quality: 100,
                 weight: 1, 
                 category: 0,

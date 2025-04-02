@@ -39,10 +39,6 @@ const handlers = {
     const inventory = usePlayerStore()
     inventory.updateInventory(data.info)
   },
-  'inventory:update': (data) => {
-    const inventory = usePlayerStore()
-    inventory.setInventory(data.info) 
-  },
   'inventory:near:users': (data) => {
     const inventory = usePlayerStore()
     inventory.setNearUsers(data.info)

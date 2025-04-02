@@ -170,10 +170,6 @@ export const usePlayerStore = defineStore('player', {
         ] // inventaire
     }),
     actions: {
-        setInventory(data) {
-            this.inventory = data
-            console.log('setInventory-xaypho', this.inventory)
-        },
         update(data) {
             console.log('update', data)
             this.name = data.name ?? this.name
@@ -188,6 +184,31 @@ export const usePlayerStore = defineStore('player', {
             this.inventory = data.inventory ?? this.inventory
             this.nearUsers = data.nearUsers ?? this.nearUsers
         },
+        updateInventory(data) {            
+            if (!data || !Array.isArray(data)) return
+            // On garde le même tableau mais on met à jour les données
+            this.inventory = this.inventory.map(currentItem => {
+                // Chercher l'item correspondant dans les nouvelles données
+                const newItem = data.find(item => item.id === currentItem.id)
+                if (newItem) {
+                    // Si l'item existe dans les nouvelles données, on met à jour ses propriétés
+                    return {
+                        ...currentItem,
+                        quantity: newItem.quantity,
+                        quality: newItem.quality,
+                        weight: newItem.weight,
+                        tags: newItem.tags || currentItem.tags,
+                        category: newItem.category
+                    }
+                }
+                
+                // Si l'item n'existe pas dans les nouvelles données, on le garde tel quel
+                return currentItem
+            })
+            
+            console.log('Inventaire mis à jour:', this.inventory)
+            console.log('=== Fin de la mise à jour ===')
+        },
         setNearUsers(data) {
             this.nearUsers = data
         },
@@ -199,35 +220,6 @@ export const usePlayerStore = defineStore('player', {
             if (item) {
                 item.quantity -= 1 
             }
-        },
-        updateInventory(data) {
-            console.log('=== Mise à jour de l\'inventaire ===')
-            console.log('Nouvelles données:', JSON.stringify(data, null, 2))
-            
-            // Créer un Map pour stocker les items uniques
-            const uniqueItems = new Map()
-            
-            // Parcourir les nouveaux items
-            data.forEach(newItem => {
-                // Si l'item existe déjà, fusionner les propriétés
-                if (uniqueItems.has(newItem.id)) {
-                    const existingItem = uniqueItems.get(newItem.id)
-                    uniqueItems.set(newItem.id, {
-                        ...existingItem,
-                        ...newItem
-                    })
-                } else {
-                    uniqueItems.set(newItem.id, newItem)
-                }
-            })
-            
-            // Convertir le Map en tableau
-            const newInventory = Array.from(uniqueItems.values())
-            console.log('Inventaire après fusion:', JSON.stringify(newInventory, null, 2))
-            
-            // Mettre à jour l'inventaire
-            this.inventory = newInventory
-            console.log('=== Fin de la mise à jour ===')
         },
     },
     getters: {

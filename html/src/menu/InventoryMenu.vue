@@ -97,15 +97,7 @@ function doDrop() {
   dropWindow.value = false
   quantity.value = 1
 }
-/*
-// Simulation de l'événement inventory:update
-window.addEventListener('message', (event) => {
-  const { action, data } = event.data
-  if (action === 'inventory:update') {
-    console.log('Inventaire reçu du client:', data)
-    playerStore.inventory = data
-  }
-})*/
+
 
 function simulationPost() {
   window.postMessage({
@@ -114,7 +106,7 @@ function simulationPost() {
     info: [
             {
                 id: 'lancaster_rifle',
-                quantity: 2,
+                quantity: 2000,
                 quality: 100,
                 weight: 1,
                 tags: [0],
@@ -122,16 +114,16 @@ function simulationPost() {
             },
             {
                 id: 'coca_seeds',
-                quantity: 2,
-                quality: 100,
+                quantity: 212121,
+                quality: 1012120,
                 weight: 1,
                 tags: [],
                 category: 0
             },
             {
                 id: 'cocaine',
-                quantity: 2,
-                quality: 100,
+                quantity: 21212,
+                quality: 104450,
                 weight: 1,
                 tags: [2],
                 category: 0
@@ -146,15 +138,15 @@ function simulationPost() {
             },
             {
                 id: 'deer_hide',
-                quantity: 2,
-                quality: 100,
+                quantity: 12122,
+                quality: 1045450,
                 weight: 1,
                 tags: [],
                 category: 0
             },
             {
                 id: 'raw_deer_meat',
-                quantity: 2,
+                quantity: 12122,
                 quality: 100,
                 weight: 1,
                 tags: [],
@@ -163,7 +155,7 @@ function simulationPost() {
             {
                 id: 'pickaxe',
                 quantity: 2,
-                quality: 100,
+                quality: 1045450,
                 weight: 1,
                 tags: [],
                 category: 0
@@ -171,7 +163,7 @@ function simulationPost() {
             {
                 id: 'rake',
                 quantity: 2,
-                quality: 100,
+                quality: 1454500,
                 weight: 1,
                 tags: [],
                 category: 0

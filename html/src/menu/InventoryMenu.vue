@@ -154,14 +154,17 @@ document.addEventListener('click', (e) => {
 
 // Fonction pour gérer le changement d'ordre des items
 
-/*
+function onDragStart(evt) {
+  console.log('Début du drag:', evt)
+}
+
 function onDragEnd(evt) {
+  console.log('Fin du drag:', evt)
   const { oldIndex, newIndex } = evt
   if (oldIndex !== newIndex) {
     playerStore.moveItem(oldIndex, newIndex)
   }
 }
-*/
 
 </script>
 
@@ -206,9 +209,16 @@ function onDragEnd(evt) {
               <draggable 
                 v-model="playerStore.inventory"
                 :animation="150"
-                item-key="index"
+                :item-key="(item, index) => index"
                 class="inventory-grid"
                 :class="{ 'dragging': true }"
+                :disabled="false"
+                :forceFallback="true"
+                :scroll="true"
+                :scrollSensitivity="100"
+                :scrollSpeed="10"
+                @start="onDragStart"
+                @end="onDragEnd"
               >
                 <template #item="{ element: item, index }">
                   <li @click="(e) => showOptions(e, item)">

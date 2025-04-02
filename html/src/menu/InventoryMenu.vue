@@ -71,8 +71,8 @@ function doAction(action) {
       break
     case 'give':
       // Open window with target list (player, npc, ...) 
-      sendNui('inventory-near-users').then((data) => {
         giveWindow.value = true
+      sendNui('inventory-near-users').then((data) => {
       })
       break
     case 'drop':
@@ -155,45 +155,52 @@ document.addEventListener('click', (e) => {
     }
 })
 
-const draggedItem = ref(null)
-const draggedItemIndex = ref(null)
+// Variables pour gérer le drag and drop
+const draggedItem = ref(null) // Stocke l'item en cours de déplacement
+const draggedItemIndex = ref(null) // Stocke l'index de l'item en cours de déplacement
 
+// Fonction appelée au début du glisser-déposer
 function onDragStart(e, item, index) {
-  e.stopPropagation()
-  draggedItem.value = item
-  draggedItemIndex.value = index
-  e.dataTransfer.effectAllowed = 'move'
-  e.dataTransfer.setData('text/plain', index.toString())
+  e.stopPropagation() // Empêche la propagation de l'événement aux éléments parents
+  draggedItem.value = item // Stocke l'item en cours de déplacement
+  draggedItemIndex.value = index // Stocke l'index de l'item
+  e.dataTransfer.effectAllowed = 'move' // Définit l'effet autorisé (déplacement)
+  e.dataTransfer.setData('text/plain', index.toString()) // Stocke l'index dans les données de transfert
 }
 
+// Fonction appelée pendant le survol d'une zone de dépôt
 function onDragOver(e) {
-  e.preventDefault()
-  e.stopPropagation()
-  e.dataTransfer.dropEffect = 'move'
+  e.preventDefault() // Empêche le comportement par défaut
+  e.stopPropagation() // Empêche la propagation de l'événement
+  e.dataTransfer.dropEffect = 'move' // Définit l'effet visuel du dépôt
 }
 
+// Fonction appelée lors du dépôt d'un item
 function onDrop(e, targetIndex) {
-  e.preventDefault()
-  e.stopPropagation()
+  e.preventDefault() // Empêche le comportement par défaut
+  e.stopPropagation() // Empêche la propagation de l'événement
+  
   console.log('=== Début onDrop ===')
   console.log('Item déplacé:', draggedItem.value)
   console.log('Index source:', draggedItemIndex.value)
   console.log('Index cible:', targetIndex)
 
+  // Vérifie si un item est en cours de déplacement
   if (!draggedItem.value) {
     console.log('Aucun item en cours de déplacement')
     return
   }
 
+  // Vérifie si la source et la cible sont différentes
   if (draggedItemIndex.value === targetIndex) {
     console.log('Même position, pas de déplacement')
     return
   }
 
-  // Utiliser la méthode du store pour déplacer l'item
+  // Utilise la méthode du store pour déplacer l'item
   playerStore.moveItem(draggedItemIndex.value, targetIndex)
 
-  // Réinitialiser les valeurs
+  // Réinitialise les variables de drag and drop
   draggedItem.value = null
   draggedItemIndex.value = null
   console.log('=== Fin onDrop ===')
@@ -282,23 +289,27 @@ function onDrop(e, targetIndex) {
 
                 <div v-if="currentItem && currentItem.category === '7'" class="option" @click="doAction('open', currentItem)">Ouvrir</div>                      
                 <div class="option" @click="doAction('give', currentItem)">Donner</div>
-                <div class="option" @click="doAction('drop', currentItem)">Jeter</div>
+                <div class="option" @click="doAction('drop', currentItem)">Détruire</div>
               </div>
               <!-- Drop window -->
               <div class="drop-window" v-if="dropWindow">
-                <div class="title">Jeter</div>
                 <div class="form">
                   <input type="number" v-model="quantity" placeholder="Quantité" min="1" :max="currentItem.quantity">
                   <button @click="doDrop()">Jeter</button>
+                  <button @click="dropWindow = false">Annuler</button>
                 </div>
               </div>
               <!-- Give window -->
               <div class="near-users" v-if="giveWindow">
-                <div class="title">Joueurs proches</div>
                 <div class="form">
-                  <input type="text" v-model="target" placeholder="Nom du joueur">
+                  <select v-model="target">
+                    <option v-for="user in playerStore.nearUsers" :key="user.id" :value="user.id">
+                      {{ user.name }}
+                    </option>
+                  </select>
                   <input type="number" v-model="quantity" placeholder="Quantité" min="1" :max="currentItem.quantity">
                   <button @click="doGive()">Donner</button>
+                  <button @click="giveWindow = false">Annuler</button>
                 </div>
               </div>
               <!-- Tooltip global (placé en dehors du v-for) -->
@@ -601,8 +612,121 @@ function onDrop(e, targetIndex) {
 
 
 
+/* Item options */
+.menu-content .inventory .content .item-options {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+}
+
+.menu-content .inventory .content .item-options .option {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.menu-content .inventory .content .item-options .option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
 
 
+/* Drop window */
+.menu-content .inventory .content .drop-window {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+
+.menu-content .inventory .content .drop-window .title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.menu-content .inventory .content .drop-window .form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+} 
+
+.menu-content .inventory .content .drop-window .form input {
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  background-color: rgba(255, 255, 255, 1);
+}   
+
+.menu-content .inventory .content .drop-window .form button {
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  background-color: rgba(255, 255, 255, 1);
+}   
+
+
+
+/* Give window  */
+.menu-content .inventory .content .near-users {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; 
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+
+.menu-content .inventory .content .near-users .title {
+  font-size: 24px;    
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.menu-content .inventory .content .near-users .form {
+  display: flex;
+  flex-direction: column;   
+  gap: 10px;  
+  width: 200px;
+}
+
+.menu-content .inventory .content .near-users .form select {
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.menu-content .inventory .content .near-users .form input {
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  background-color: rgba(255, 255, 255, 1);
+}   
+
+.menu-content .inventory .content .near-users .form button {
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  background-color: rgba(255, 255, 255, 1);
+}      
 
 
 

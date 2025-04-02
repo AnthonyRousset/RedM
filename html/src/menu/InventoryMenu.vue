@@ -98,54 +98,7 @@ function doDrop() {
   quantity.value = 1
 }
 
-/*
-function closeContext() {
-  contextVisible.value = false
-}
 
-function onDragStart(item) {
-  draggedItem.value = item
-}
-
-function onDrop(targetItem) {
-  if (!draggedItem.value) return
-
-  sendNui('player-move', { from: draggedItem.value, to: targetItem })
-
-  draggedItem.value = null
-}
-*/
-
-// evenement qui se déclenche lorsque on clique droit en dehors du menu 
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.menu-content')) {
-    options.value.visible = false
-  }
-})
-
-// Fonction pour gérer le changement d'ordre des items
-
-function onDragStart(evt) {
-  console.log('Début du drag:', evt)
-}
-
-function updatePosition(evt) {
-  console.log('Mise à jour de la position:', evt)
-  const { oldIndex, newIndex } = evt
-  if (oldIndex !== newIndex) {
-    playerStore.updatePosition(oldIndex, newIndex)
-  }
-}
-
-/*
-function onDragEnd(evt) {
-  console.log('Fin du drag:', evt)
-  const { oldIndex, newIndex } = evt
-  if (oldIndex !== newIndex) {
-    playerStore.moveItem(oldIndex, newIndex)
-  }
-}
-*/
 
 </script>
 
@@ -198,8 +151,6 @@ function onDragEnd(evt) {
                 :scroll="true"
                 :scrollSensitivity="100"
                 :scrollSpeed="10"
-                @start="onDragStart"
-                @end="updatePosition"
               >
                 <template #item="{ element: item, index }">
                   <li @click="(e) => showOptions(e, item)">
@@ -274,9 +225,37 @@ function onDragEnd(evt) {
           <div class="title">{{ items.find(item => item.id === currentItem.id).name }}</div>
           <div class="content">
             <div class="item">
-              <div class="name">Nom</div>
               <div class="description">
                 {{ items.find(item => item.id === currentItem.id).description }}
+              </div>
+
+              <div class="item-options"
+                :style="{ top: options.y + 'px', left: options.x + 'px' }">
+
+                <div v-if="currentItem && currentItem.category === '3'" class="option"
+                  @click="doAction('use', currentItem)">Utiliser</div>
+                <div v-if="currentItem && currentItem.category === '8'" class="option"
+                  @click="doAction('use', currentItem)">Utiliser</div>
+                <div v-if="currentItem && currentItem.category === '6'" class="option"
+                  @click="doAction('equip', currentItem)">Équiper</div>
+
+                <div v-if="playerStore.itemEquipedId === currentItem.id">
+                  <div v-if="currentItem.category === '4'" class="option" @click="doAction('unequip', currentItem)">
+                    Déséquiper</div>
+                  <div v-if="currentItem.category === '1'" class="option" @click="doAction('unequip', currentItem)">
+                    Déséquiper</div>
+                </div>
+                <div v-else>
+                  <div v-if="currentItem.category === '4'" class="option" @click="doAction('equip', currentItem)">
+                    Équiper</div>
+                  <div v-if="currentItem.category === '1'" class="option" @click="doAction('equip', currentItem)">
+                    Équiper</div>
+                </div>
+
+                <div v-if="currentItem && currentItem.category === '7'" class="option"
+                  @click="doAction('open', currentItem)">Ouvrir</div>
+                <div class="option" @click="doAction('give', currentItem)">Donner</div>
+                <div class="option" @click="doAction('drop', currentItem)">Détruire</div>
               </div>
 
             </div>
@@ -459,7 +438,7 @@ function onDragEnd(evt) {
   height: 100%;
 }
 
-.menu-content .inventory .content {
+.menu-content {
   height: 100%;
   margin-top: 10px;
 }
@@ -554,27 +533,26 @@ function onDragEnd(evt) {
 }
 
 /* Item options */
-.menu-content .inventory .content .item-options {
-  position: fixed;
+.menu-content .item-options {
   background-color: rgba(0, 0, 0, 0.8);
   color: white;
   padding: 4px 8px;
 }
 
-.menu-content .inventory .content .item-options .option {
+.menu-content .item-options .option {
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
   transition: background-color 0.3s ease;
 }
 
-.menu-content .inventory .content .item-options .option:hover {
+.menu-content .item-options .option:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
 
 /* Drop window */
-.menu-content .inventory .content .drop-window {
+.menu-content .drop-window {
   position: fixed;
   top: 0;
   left: 0;
@@ -590,26 +568,26 @@ function onDragEnd(evt) {
   z-index: 1000;
 }
 
-.menu-content .inventory .content .drop-window .title {
+.menu-content .drop-window .title {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 16px;
 }
 
-.menu-content .inventory .content .drop-window .form {
+.menu-content .drop-window .form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.menu-content .inventory .content .drop-window .form input {
+.menu-content .drop-window .form input {
   padding: 8px;
   border-radius: 4px;
   border: none;
   background-color: rgba(255, 255, 255, 1);
 }
 
-.menu-content .inventory .content .drop-window .form button {
+.menu-content .drop-window .form button {
   padding: 8px;
   border-radius: 4px;
   border: none;
@@ -619,7 +597,7 @@ function onDragEnd(evt) {
 
 
 /* Give window  */
-.menu-content .inventory .content .near-users {
+.menu-content .near-users {
   position: fixed;
   top: 0;
   left: 0;
@@ -635,34 +613,34 @@ function onDragEnd(evt) {
   z-index: 1000;
 }
 
-.menu-content .inventory .content .near-users .title {
+.menu-content .near-users .title {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 16px;
 }
 
-.menu-content .inventory .content .near-users .form {
+.menu-content .near-users .form {
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 200px;
 }
 
-.menu-content .inventory .content .near-users .form select {
+.menu-content .near-users .form select {
   padding: 8px;
   border-radius: 4px;
   border: none;
   background-color: rgba(255, 255, 255, 1);
 }
 
-.menu-content .inventory .content .near-users .form input {
+.menu-content .near-users .form input {
   padding: 8px;
   border-radius: 4px;
   border: none;
   background-color: rgba(255, 255, 255, 1);
 }
 
-.menu-content .inventory .content .near-users .form button {
+.menu-content .near-users .form button {
   padding: 8px;
   border-radius: 4px;
   border: none;

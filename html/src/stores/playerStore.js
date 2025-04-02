@@ -229,9 +229,6 @@ export const usePlayerStore = defineStore('player', {
             this.inventory = newInventory
             console.log('=== Fin de la mise à jour ===')
         },
-        updatePosition(data) {
-            console.log('updatePosition', data)
-        }
     },
     getters: {
         getWallet: (state) => (state.wallet / 100).toFixed(2),

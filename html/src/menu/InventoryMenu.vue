@@ -73,7 +73,7 @@ function doAction(action) {
     case 'give':
       // Open window with target list (player, npc, ...) 
       giveWindow.value = true
-      sendNui('inventory-near-users')
+      sendNui('inventory-near-users', {})
       break
     case 'drop':
       // Open window with quantity input

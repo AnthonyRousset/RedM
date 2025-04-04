@@ -14,6 +14,7 @@ const showPlaceholder = ref(true);
 const editableSpan = ref(null);
 const playerMessage = ref('');
 const bankMessage = ref('');
+const switchBank = ref('account');
 
 const handleKeyDown = (event) => {
     const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
@@ -126,6 +127,11 @@ const createBank = () => {
     sendNui('bank-createAccount-' + bankStore.id, { id: bankStore.id })
 }
 
+
+const switcijklhBank = (bank) => {
+    switchBank.value = bank;
+}
+
 setTimeout(() => {
     bankStore.isLoading = false;
 }, 2000);
@@ -133,58 +139,70 @@ setTimeout(() => {
 </script>
 
 <template>
-    <div class="bank" :class="{ '__closing': uiStore.isClosing }">
-        <div class="waiting-screen" v-if="bankStore.isLoading">
-            <div class="waiting-screen-title">
-                <span class="one">.</span>
-                <span class="two">.</span>
-                <span class="three">.</span>
+
+
+        <div class="bank" :class="{ '__closing': uiStore.isClosing }">
+            <div class="waiting-screen" v-if="bankStore.isLoading">
+                <div class="waiting-screen-title">
+                    <span class="one">.</span>
+                    <span class="two">.</span>
+                    <span class="three">.</span>
+                </div>
+                <button class="close" @click="close">X</button>
             </div>
-            <button class="close" @click="close">X</button>
-        </div>
-        <div class="bank-account" v-else-if="!bankStore.getBankAccountIsCreated">
-            <!-- Voulez vous ouvrir une banque ? -->
-            <div class="bank-title"> Voulez vous ouvrir un coffre-fort pour <span>10$</span> ? </div>
+            <div class="bank-open" v-else-if="!bankStore.getBankAccountIsCreated">
+                <!-- Voulez vous ouvrir une banque ? -->
+                <div class="bank-title"> Voulez vous ouvrir un coffre-fort pour <span>10$</span> ? </div>
 
-            <div class="form">
-                <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
+                <div class="form">
+                    <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
+                </div>
+                <button class="close" @click="close">X</button>
             </div>
-            <button class="close" @click="close">X</button>
-        </div>
-        <div class="bank-menu" v-else>
-            <div class="balance-title"> {{ playerStore.name }} </div>
+            <div class="bank-container" v-else>
+                <div class="bank-account" v-if="switchBank === 'account'">
+                    <div class="balance-title"> {{ playerStore.name }} </div>
 
-            <div class="balance">{{ bankStore.getBalanceDollars }}</div>
+                    <div class="balance">{{ bankStore.getBalanceDollars }}</div>
 
-            <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
+                    <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
 
 
-            <div class="bank-message bubble-conversation player" :class="{ active: playerMessage }">
-                <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>
-            </div>
+                    <div class="bank-message bubble-conversation player" :class="{ active: playerMessage }">
+                        <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>
+                    </div>
 
-            <div class="bank-message bubble-conversation banker" :class="{ active: bankMessage }">
-                <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span>
-            </div>
+                    <div class="bank-message bubble-conversation banker" :class="{ active: bankMessage }">
+                        <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span>
+                    </div>
 
-            <div class="form">
-                <div class="fake-input">
-                    <span contenteditable="true" @keydown="handleKeyDown" @input="updateAmount" @blur="updateAmount"
-                        ref="editableSpan" :class="{ error: playerMessage || bankMessage }"></span>
-                    <div v-if="showPlaceholder" class="placeholder">0</div>
+                    <div class="form">
+                        <div class="fake-input">
+                            <span contenteditable="true" @keydown="handleKeyDown" @input="updateAmount" @blur="updateAmount"
+                                ref="editableSpan" :class="{ error: playerMessage || bankMessage }"></span>
+                            <div v-if="showPlaceholder" class="placeholder">0</div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn-western deposit" @click="deposit">Déposer</button>
+                        <button class="btn-western withdraw" @click="withdraw">Retirer</button>
+                    </div>
+
+                    <button class="close" @click="close">X</button>
+                </div>
+                <div class="bank-vault" v-else-if="switchBank === 'vault'">
+                    <div class="bank-vault-title">
+                        <div class="bank-vault-title-item">
+                            <div class="bank-vault-title-item-name">Nom</div>
+                            <div class="bank-vault-title-item-quantity">Quantité</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="actions">
-                <button class="btn-western deposit" @click="deposit">Déposer</button>
-                <button class="btn-western withdraw" @click="withdraw">Retirer</button>
-            </div>
-
-            <button class="close" @click="close">X</button>
         </div>
-    </div>
-
-    <div class="bank-conversation" v-if="bankStore.isLoading || bankStore.getBankAccountIsCreated">
+    
+    <div class="bank-conversation" v-if="bankStore.isLoading || !bankStore.getBankAccountIsCreated">
         <div class="bubble">
             Bien l'bonjour, m'sieur le banquier !
         </div>
@@ -195,11 +213,12 @@ setTimeout(() => {
         </div>
         <div class="bank-person">Moi</div><span> Au revoir, m'sieur le banquier ! </span>
     </div>
+
     <div class="bank-conversation" v-else>
-        <div class="bubble" @click="accessAccount">
+        <div class="bubble" @click="switcijklhBank('account')">
             Hé là, m'sieur le banquier ! J'viens voir mes économies !
         </div>
-        <div class="bubble">
+        <div class="bubble" @click="switcijklhBank('vault')">
             J'aimerais jeter un œil à mon coffre, si vous l'permettez.
         </div>
     </div>
@@ -211,9 +230,15 @@ setTimeout(() => {
 
 .bank {
     position: absolute;
-    top: 15%;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
+}
+
+.waiting-screen {
+    position: absolute;
+    top: calc(50% - 250px);
+    left: 50%;
     width: 500px;
     height: 360px;
     padding: 30px;
@@ -225,15 +250,6 @@ setTimeout(() => {
     /* Animation */
     animation: openVault 0.6s ease-out forwards;
     opacity: 0;
-    transform: translateX(-50%) translateY(-100%);
-}
-
-.waiting-screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
 }
 
 .waiting-screen-title {
@@ -288,10 +304,10 @@ setTimeout(() => {
 }
 
 
-.bank-menu {
+.bank-account {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: calc(50% - 250px);
+    left: calc(50%);
     width: 500px;
     height: 360px;
     padding: 30px;
@@ -299,24 +315,35 @@ setTimeout(() => {
     color: #805f07;
     font-family: 'Special Elite', serif;
     background-color: rgba(0, 0, 0, 0.5);
-    background-image: url('/images/bank.png');
+    background-image: url(/images/bank.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    animation: openVault 0.6s ease-out forwards;
+    opacity: 0;
 }
 
 
 
-.bank-account {
+.bank-open {
+
+    color: #442c1a;
+    font-family: 'Special Elite', serif;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: calc(50% - 250px);
+    left: 50%;
     width: 500px;
     height: 360px;
     padding: 30px;
     border-radius: 5px;
-    color: #442c1a;
-    font-family: 'Special Elite', serif;
+    background-image: url('/images/bank-empty.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* Animation */
+    animation: openVault 0.6s ease-out forwards;
+    opacity: 0;
+    
 }
 
 .bank-title {
@@ -455,19 +482,19 @@ h2 {
     bottom: 1.5vw;
     left: 50%;
     transform: translateX(-50%);
-    min-width: 60%;
 }
 
 .bank-conversation .bubble {
     background-color: #00000096;
     color: #ffffff;
     font-family: 'Special Elite', serif;
-    font-size: 1.5rem;
+    font-size: 1vw;
     text-align: center;
     padding: 1vw;
     border-radius: 50px;
     cursor: pointer;
     font-style: italic;
+    margin-top: 0.5vw;
 }
 
 
@@ -686,7 +713,7 @@ h2 {
         height: 580px;
     }
 
-    .bank-menu {
+    .bank-account {
         width: 800px;
         height: 580px;
     }
@@ -733,7 +760,7 @@ h2 {
         padding: 20px 18px;
     }
 
-    .bank-account {
+    .bank-open {
         width: 800px;
         height: 580px;
     }
@@ -774,7 +801,7 @@ h2 {
         height: 880px;
     }
 
-    .bank-menu {
+    .bank-account {
         width: 1200px;
         height: 880px;
     }
@@ -823,7 +850,7 @@ h2 {
         padding: 25px 18px;
     }
 
-    .bank-account {
+    .bank-open {
         width: 1200px;
         height: 880px;
     }

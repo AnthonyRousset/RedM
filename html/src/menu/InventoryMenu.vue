@@ -373,13 +373,13 @@ function simulationPost() {
                 <template #item="{ element: item, index }">
                   <li @click="(e) => showOptions(e, item)">
                     <div class="item">
-                      <img :src="'./images/items/' + item.id + '.png'" alt="Item">
+                    <img :src="'./images/items/' + item.id + '.png'" alt="Item">
                       <div class="quantity" v-if="item.quantity > 1">{{ item.quantity }}</div>
-                    </div>
-                    <div class="status" v-for="tag in item.tags" :key="tag">
+                  </div>
+                  <div class="status" v-for="tag in item.tags" :key="tag">
                       <img v-if="tags[tag]" :src="'./images/items/_' + tags[tag]?.image + '.png'" alt="Tag">
-                    </div>
-                  </li>
+                  </div>
+                </li>
                 </template>
               </draggable>
 
@@ -525,6 +525,12 @@ function simulationPost() {
 
 
 <style scoped>
+
+* {
+  color: #fff;
+}
+
+
 /* Ajout en haut du CSS */
 :deep(.ps) {
   -ms-overflow-style: none !important;  /* IE and Edge */

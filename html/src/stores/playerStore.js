@@ -166,6 +166,212 @@ export const usePlayerStore = defineStore('player', {
                 weight: 1,
                 category: 0,
                 tags: []
+            },
+            {
+                id: 'pickaxe',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'rake',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'axe',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'weapon_bow',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'watering_can',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'cannabis_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [1],
+                category: 0
+            },
+            {
+                id: 'sugarcane_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'coca_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [2],
+                category: 0
+            },
+            {
+                id: 'fertilizer',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'cooked_deer_meat',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: []
+            },
+            {
+                id: 'lancaster_rifle',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'shovel',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                category: 0,
+                tags: [0]
+            },
+            {
+                id: 'water_bottle',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                category: 0,
+                tags: []
+            },
+            {
+                id: 'pickaxe',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'rake',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'axe',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'weapon_bow',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'watering_can',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'cannabis_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [1],
+                category: 0
+            },
+            {
+                id: 'sugarcane_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'coca_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [2],
+                category: 0
+            },
+            {
+                id: 'fertilizer',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'cooked_deer_meat',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: []
+            },
+            {
+                id: 'lancaster_rifle',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'shovel',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                category: 0,
+                tags: [0]
+            },
+            {
+                id: 'water_bottle',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                category: 0,
+                tags: []
             }
         ] // inventaire
     }),

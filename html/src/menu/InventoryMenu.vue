@@ -254,7 +254,63 @@ function simulationPost() {
                 weight: 1, 
                 category: 0,
                 tags: []
-            }
+            },
+            {
+                  id: 'lancaster_rifle1',
+                quantity: Math.floor(Math.random() * 1000000),
+                quality: 100,
+                weight: 1,              
+                tags: [],
+                category: 0
+            },
+            {
+                  id: 'lancaster_rifle2 ',
+                quantity: Math.floor(Math.random() * 1000000),
+                quality: 100,
+                weight: 1,              
+                tags: [],
+                category: 0
+            },
+            {
+                    id: 'lancaster_rifle3',
+                quantity: Math.floor(Math.random() * 1000000),
+                quality: 100,
+                weight: 1,              
+                tags: [],
+                category: 0
+            },
+            {
+                    id: 'lancaster_rifle4',
+                quantity: Math.floor(Math.random() * 1000000),
+                quality: 100,
+                weight: 1,              
+                tags: [],
+                category: 0
+            },
+            {
+                      id: 'lancaster_rifle5',
+                quantity: Math.floor(Math.random() * 1000000),
+                quality: 100,
+                weight: 1,              
+                tags: [],
+                category: 0
+            },
+            {
+                      id: 'lancaster_rifle6',
+                quantity: Math.floor(Math.random() * 1000000),
+                quality: 100,
+                weight: 1,              
+                tags: [],
+                category: 0
+            },
+            {
+                      id: 'lancaster_rifle7',
+                quantity: Math.floor(Math.random() * 1000000),
+                quality: 100,
+                weight: 1,              
+                tags: [],
+                category: 0
+            },
         ]
   
 }, '*')
@@ -281,19 +337,19 @@ function simulationPost() {
       <div class="menu-vertical">
         <ul>
           <li @click="menuContent = 'inventory'" :class="{ 'active': menuContent === 'inventory' }">
-            <img src="/images/inventory.png" alt="Inventaire">
+            <img src="/images/menu-inventory.png" alt="Inventaire">
           </li>
           <li @click="menuContent = 'craft'" :class="{ 'active': menuContent === 'craft' }">
-            <img src="/images/craft.png" alt="Craft">
+            <img src="/images/menu-craft.png" alt="Craft">
           </li>
           <li @click="menuContent = 'tutorial'" :class="{ 'active': menuContent === 'tutorial' }">
-            <img src="/images/tutorial.png" alt="Tutoriel">
+            <img src="/images/menu-tutorial.png" alt="Tutoriel">
           </li>
           <li @click="menuContent = 'announcements'" :class="{ 'active': menuContent === 'announcements' }">
-            <img src="/images/announcements.png" alt="Annonces">
+            <img src="/images/menu-announcements.png" alt="Annonces">
           </li>
-          <li @click="menuContent = 'options'" :class="{ 'active': menuContent === 'options' }">
-            <img src="/images/weapons/lancaster.png" alt="Options">
+          <li @click="menuContent = 'setting'" :class="{ 'active': menuContent === 'setting' }">
+            <img src="/images/menu-setting.png" alt="Paramètres">
           </li>
         </ul>
       </div>
@@ -398,24 +454,28 @@ function simulationPost() {
                   @click="doAction('use', currentItem)">Utiliser</div>
                 <div v-if="currentItem && currentItem.category === '8'" class="option"
                   @click="doAction('use', currentItem)">Utiliser</div>
-                <div v-if="currentItem && currentItem.category === '6'" class="option"
-                  @click="doAction('equip', currentItem)">Équiper</div>
+                  
 
                 <div v-if="playerStore.itemEquipedId === currentItem.id">
                   <div v-if="currentItem.category === '4'" class="option" @click="doAction('unequip', currentItem)">
-                    Déséquiper</div>
+                    Ranger</div>
                   <div v-if="currentItem.category === '1'" class="option" @click="doAction('unequip', currentItem)">
-                    Déséquiper</div>
+                    Ranger</div>
+                  <div v-if="currentItem.category === '6'" class="option" @click="doAction('equip', currentItem)">
+                    Se déshabiller</div>
                 </div>
                 <div v-else>
                   <div v-if="currentItem.category === '4'" class="option" @click="doAction('equip', currentItem)">
-                    Équiper</div>
+                    Prendre en main</div>
                   <div v-if="currentItem.category === '1'" class="option" @click="doAction('equip', currentItem)">
-                    Équiper</div>
+                    Prendre en main</div>
+                  <div v-if="currentItem.category === '6'" class="option" @click="doAction('equip', currentItem)">
+                    Se vestir</div>
                 </div>
 
                 <div v-if="currentItem && currentItem.category === '7'" class="option"
                   @click="doAction('open', currentItem)">Ouvrir</div>
+                  
                 <div class="option" @click="doAction('give', currentItem)">Donner</div>
                 <div class="option" @click="doAction('drop', currentItem)">Détruire</div>
               </div>
@@ -449,8 +509,8 @@ function simulationPost() {
         </div>
       </div>
 
-      <div class="menu-content" v-if="menuContent === 'options'">
-        <div class="options">
+      <div class="menu-content" v-if="menuContent === 'setting'">
+        <div class="setting">
           <div class="_title_">OPTIONS</div>
         </div>
       </div>
@@ -465,6 +525,25 @@ function simulationPost() {
 
 
 <style scoped>
+/* Ajout en haut du CSS */
+:deep(.ps) {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
+}
+
+:deep(.ps::-webkit-scrollbar) {
+  display: none !important; /* Chrome, Safari and Opera */
+}
+
+:deep(.ps__rail-x),
+:deep(.ps__rail-y) {
+  display: none !important;
+}
+
+.ps{
+  height: 100%;
+}
+
 .window {
   position: fixed;
   top: 0;
@@ -856,7 +935,7 @@ function simulationPost() {
 
 
 /* Options */
-.menu-content .options {
+.menu-content .setting {
   width: 500px;
   height: 100%;
 }
@@ -864,13 +943,13 @@ function simulationPost() {
 
 @media (min-width: 2500px) {
   .window>* {
-    zoom: 1.5;
+    /*zoom: 1.5;*/
   }
 }
 
 @media (min-width: 3500px) {
   .window>* {
-    zoom: 2;
+    /*zoom: 2;*/
   }
 }
 </style>

@@ -47,7 +47,7 @@ const handlers = {
     const inventory = usePlayerStore()
     inventory.setWeaponEquiped(data.info)
   },
-  'inventory:weapon:unequip': (data) => {
+  'inventory:weapon:unequip': () => {
     const inventory = usePlayerStore()
     inventory.setWeaponEquiped(null)
   },

@@ -74,7 +74,7 @@ const deposit = () => {
             playerMessage.value = 'Sacré tonnerre ! Je n\'ai pas assez de dollars sur moi, partenaire...';
             return;
         }
-        sendNui('bank-deposit-'+bankStore.id, { id: bankStore.id, amount: dollarForm.value * 100 })
+        sendNui('bank-deposit-' + bankStore.id, { id: bankStore.id, amount: dollarForm.value * 100 })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
@@ -90,10 +90,10 @@ const withdraw = () => {
         // vérifier si le joueur a assez d'argent en banque
         if (bankStore.getBalance < dollarForm.value * 100) {
             console.log('Vous n\'avez pas assez d\'argent en banque');
-            bankMessage.value = 'Par le ciel ! Votre compte est plus sec que le désert, cow-boy !'; 
+            bankMessage.value = 'Par le ciel ! Votre compte est plus sec que le désert, cow-boy !';
             return;
         }
-        sendNui('bank-withdraw-'+bankStore.id, { id: bankStore.id, amount: dollarForm.value * 100 })
+        sendNui('bank-withdraw-' + bankStore.id, { id: bankStore.id, amount: dollarForm.value * 100 })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
@@ -103,7 +103,7 @@ const withdraw = () => {
 const close = () => {
     uiStore.isClosing = true;
     setTimeout(() => {
-        sendNui('ui-close-'+bankStore.id)
+        sendNui('bank-close-' + bankStore.id)
         uiStore.closeMenu()
         uiStore.isClosing = false;
     }, 600); // Attendre la fin de l'animation
@@ -123,8 +123,13 @@ const createBank = () => {
     }
     bankStore.exist = true;
     console.log('bank-createAccount', bankStore.id)
-    sendNui('bank-createAccount-'+bankStore.id, { id: bankStore.id })
+    sendNui('bank-createAccount-' + bankStore.id, { id: bankStore.id })
 }
+
+setTimeout(() => {
+    bankStore.isLoading = false;
+}, 2000);
+
 </script>
 
 <template>
@@ -136,7 +141,6 @@ const createBank = () => {
                 <span class="three">.</span>
             </div>
             <button class="close" @click="close">X</button>
-
         </div>
         <div class="bank-account" v-else-if="!bankStore.getBankAccountIsCreated">
             <!-- Voulez vous ouvrir une banque ? -->
@@ -146,20 +150,22 @@ const createBank = () => {
                 <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
             </div>
             <button class="close" @click="close">X</button>
-
         </div>
-        <div class="bank-menu" v-else >
-                <div class="balance-title"> {{ playerStore.name }} </div>
-            
+        <div class="bank-menu" v-else>
+            <div class="balance-title"> {{ playerStore.name }} </div>
+
             <div class="balance">{{ bankStore.getBalanceDollars }}</div>
 
             <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
-            
 
-                <div class="bank-message bubble-conversation player"  :class="{ active: playerMessage }"> <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>  </div>
 
-                <div class="bank-message bubble-conversation banker"  :class="{ active: bankMessage }"> <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span> </div>
+            <div class="bank-message bubble-conversation player" :class="{ active: playerMessage }">
+                <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>
+            </div>
 
+            <div class="bank-message bubble-conversation banker" :class="{ active: bankMessage }">
+                <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span>
+            </div>
 
             <div class="form">
                 <div class="fake-input">
@@ -175,6 +181,20 @@ const createBank = () => {
             </div>
 
             <button class="close" @click="close">X</button>
+        </div>
+    </div>
+
+    <div class="bank-conversation" v-if="bankStore.isLoading || bankStore.getBankAccountIsCreated">
+        <div class="bubble">
+            Bien l'bonjour, m'sieur le banquier !
+        </div>
+    </div>
+    <div class="bank-conversation" v-else>
+        <div class="bubble" @click="accessAccount">
+            Hé là, m'sieur le banquier ! J'viens voir mes économies !
+        </div>
+        <div class="bubble">
+            J'aimerais jeter un œil à mon coffre, si vous l'permettez.
         </div>
     </div>
 </template>
@@ -208,7 +228,7 @@ const createBank = () => {
     left: 0;
     width: 100%;
     height: 100%;
-}   
+}
 
 .waiting-screen-title {
     position: absolute;
@@ -237,14 +257,28 @@ const createBank = () => {
 .waiting-screen-title span.three {
     animation: blink 1.5s infinite;
     animation-delay: 1.5s;
-}   
+}
 
 @keyframes blink {
-    0% { opacity: 0; }
-    20% { opacity: 1; }
-    50% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { opacity: 0; }
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 
@@ -331,6 +365,7 @@ h2 {
     right: 259px;
     font-size: 2rem;
 }
+
 .bank-message {
     position: absolute;
     font-size: 1rem;
@@ -355,12 +390,14 @@ h2 {
     top: 181px;
     background-image: url('/images/bubble-think.png');
 }
+
 .bank-message.bubble-conversation.player span {
     font-size: 0.9rem;
     padding: 57px 70px 0 55px;
     display: inline-block;
     text-align: center;
 }
+
 .bank-message.bubble-conversation.player .bank-person {
     position: absolute;
     top: 5px;
@@ -368,7 +405,7 @@ h2 {
     transform: translateX(-50%);
     width: calc(initial - 50%);
     background-color: rgb(77, 27, 27);
-    color: #ffffff; 
+    color: #ffffff;
     font-size: 1rem;
     text-align: center;
     padding: 5px 10px;
@@ -382,12 +419,14 @@ h2 {
     top: -43px;
     background-image: url('/images/bubble-message.png');
 }
+
 .bank-message.bubble-conversation.banker span {
     font-size: 1rem;
     padding: 50px 83px 0 43px;
     display: inline-block;
     text-align: center;
 }
+
 .bank-message.bubble-conversation.banker .bank-person {
     position: absolute;
     top: 10px;
@@ -401,6 +440,28 @@ h2 {
     text-align: center;
     padding: 5px 10px;
     border-radius: 5px;
+}
+
+
+
+.bank-conversation {
+    position: absolute;
+    bottom: 1.5vw;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 60%;
+}
+
+.bank-conversation .bubble {
+    background-color: #00000096;
+    color: #ffffff;
+    font-family: 'Special Elite', serif;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 1vw;
+    border-radius: 50px;
+    cursor: pointer;
+    font-style: italic;
 }
 
 
@@ -614,10 +675,11 @@ h2 {
 
 /*media query*/
 @media (min-width: 2500px) {
-    .bank{
+    .bank {
         width: 800px;
         height: 580px;
     }
+
     .bank-menu {
         width: 800px;
         height: 580px;
@@ -701,10 +763,11 @@ h2 {
 }
 
 @media (min-width: 3500px) {
-    .bank{
+    .bank {
         width: 1200px;
         height: 880px;
     }
+
     .bank-menu {
         width: 1200px;
         height: 880px;
@@ -776,7 +839,7 @@ h2 {
         top: 394px;
         left: -279px;
         zoom: 1.5;
-    }       
+    }
 
     .bank-message.bubble-conversation.banker {
         font-size: 1.5rem;

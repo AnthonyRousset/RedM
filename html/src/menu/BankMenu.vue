@@ -14,7 +14,8 @@ const showPlaceholder = ref(true);
 const editableSpan = ref(null);
 const playerMessage = ref('');
 const bankMessage = ref('');
-const switchBank = ref('account');
+const bankView = ref('account');
+const isSwitching = ref(false);
 
 const handleKeyDown = (event) => {
     const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
@@ -89,7 +90,7 @@ const withdraw = () => {
     if (dollarForm.value > 0) {
         console.log('bankStore.getBalance', bankStore.getBalance)
         // vérifier si le joueur a assez d'argent en banque
-        if (bankStore.getBalance < dollarForm.value * 100) {
+        if (bankStore.getBalanceDollars < dollarForm.value) {
             console.log('Vous n\'avez pas assez d\'argent en banque');
             bankMessage.value = 'Par le ciel ! Votre compte est plus sec que le désert, cow-boy !';
             return;
@@ -128,8 +129,13 @@ const createBank = () => {
 }
 
 
-const switcijklhBank = (bank) => {
-    switchBank.value = bank;
+const switchBank = (bank) => {
+    // switch the bank view 
+    isSwitching.value = true;
+    setTimeout(() => {
+        bankView.value = bank;
+        isSwitching.value = false;
+    }, 1000);
 }
 
 setTimeout(() => {
@@ -140,10 +146,10 @@ setTimeout(() => {
 
 <template>
 
-
-        <div class="bank" :class="{ '__closing': uiStore.isClosing }">
-            <div class="waiting-screen" v-if="bankStore.isLoading">
-                <div class="waiting-screen-title">
+    <div class="bank">
+        <div class="bank-container" :class="{ '__closing': uiStore.isClosing || isSwitching }">
+            <div class="bank-loading" v-if="bankStore.isLoading">
+                <div class="loading">
                     <span class="one">.</span>
                     <span class="two">.</span>
                     <span class="three">.</span>
@@ -159,8 +165,8 @@ setTimeout(() => {
                 </div>
                 <button class="close" @click="close">X</button>
             </div>
-            <div class="bank-container" v-else>
-                <div class="bank-account" v-if="switchBank === 'account'">
+            <div class="container" v-else>
+                <div class="bank-account" v-if="bankView === 'account'">
                     <div class="balance-title"> {{ playerStore.name }} </div>
 
                     <div class="balance">{{ bankStore.getBalanceDollars }}</div>
@@ -191,7 +197,7 @@ setTimeout(() => {
 
                     <button class="close" @click="close">X</button>
                 </div>
-                <div class="bank-vault" v-else-if="switchBank === 'vault'">
+                <div class="bank-vault" v-else-if="bankView === 'vault'">
                     <div class="bank-vault-title">
                         <div class="bank-vault-title-item">
                             <div class="bank-vault-title-item-name">Nom</div>
@@ -201,6 +207,7 @@ setTimeout(() => {
                 </div>
             </div>
         </div>
+    </div>
     
     <div class="bank-conversation" v-if="bankStore.isLoading || !bankStore.getBankAccountIsCreated">
         <div class="bubble">
@@ -215,10 +222,10 @@ setTimeout(() => {
     </div>
 
     <div class="bank-conversation" v-else>
-        <div class="bubble" @click="switcijklhBank('account')">
+        <div class="bubble" @click="switchBank('account')" v-if="bankView === 'vault'">
             Hé là, m'sieur le banquier ! J'viens voir mes économies !
         </div>
-        <div class="bubble" @click="switcijklhBank('vault')">
+        <div class="bubble" @click="switchBank('vault')" v-if="bankView === 'account'">
             J'aimerais jeter un œil à mon coffre, si vous l'permettez.
         </div>
     </div>
@@ -228,31 +235,30 @@ setTimeout(() => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
 
+
 .bank {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
 }
 
-.waiting-screen {
+.bank-container {
     position: absolute;
-    top: calc(50% - 250px);
     left: 50%;
-    width: 500px;
-    height: 360px;
-    padding: 30px;
-    border-radius: 5px;
-    background-image: url('/images/bank-empty.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    /* Animation */
+    transform: translate(-50%, -100%);
     animation: openVault 0.6s ease-out forwards;
-    opacity: 0;
+    height: 100%;
+    width: 100%;
+}
+.bank-container.__closing {
+    animation: closeVault 0.6s ease-in forwards !important;
 }
 
-.waiting-screen-title {
+
+
+.loading {
     position: absolute;
     padding: 30px;
     top: 50%;
@@ -260,23 +266,23 @@ setTimeout(() => {
     transform: translate(-50%, -50%);
 }
 
-.waiting-screen-title span {
+.loading span {
     font-size: 4rem;
     font-weight: bold;
     color: #805f07;
 }
 
-.waiting-screen-title span.one {
+.loading span.one {
     animation: blink 1.5s infinite;
     animation-delay: 0.5s;
 }
 
-.waiting-screen-title span.two {
+.loading span.two {
     animation: blink 1.5s infinite;
     animation-delay: 1s;
 }
 
-.waiting-screen-title span.three {
+.loading span.three {
     animation: blink 1.5s infinite;
     animation-delay: 1.5s;
 }
@@ -303,11 +309,43 @@ setTimeout(() => {
     }
 }
 
+.bank-loading {
+    position: absolute;
+    top: calc(50% - 209px);
+    left: calc(50% - 285px);
+    width: 500px;
+    height: 360px;
+    padding: 30px;
+    border-radius: 5px;
+    background-image: url('/images/bank-empty.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
+
+
+.bank-open {
+
+    color: #442c1a;
+    font-family: 'Special Elite', serif;
+    position: absolute;
+    top: calc(50% - 209px);
+    left: calc(50% - 285px);
+    width: 500px;
+    height: 360px;
+    padding: 30px;
+    border-radius: 5px;
+    background-image: url('/images/bank-empty.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+}
 .bank-account {
     position: absolute;
-    top: calc(50% - 250px);
-    left: calc(50%);
+    top: calc(50% - 209px);
+    left: calc(50% - 285px);
     width: 500px;
     height: 360px;
     padding: 30px;
@@ -319,32 +357,8 @@ setTimeout(() => {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    animation: openVault 0.6s ease-out forwards;
-    opacity: 0;
 }
 
-
-
-.bank-open {
-
-    color: #442c1a;
-    font-family: 'Special Elite', serif;
-    position: absolute;
-    top: calc(50% - 250px);
-    left: 50%;
-    width: 500px;
-    height: 360px;
-    padding: 30px;
-    border-radius: 5px;
-    background-image: url('/images/bank-empty.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    /* Animation */
-    animation: openVault 0.6s ease-out forwards;
-    opacity: 0;
-    
-}
 
 .bank-title {
     position: absolute;
@@ -518,6 +532,8 @@ h2 {
     text-align: end;
     color: black;
 }
+
+
 
 .form {
     display: flex;
@@ -705,6 +721,31 @@ h2 {
         0 4px 12px rgba(0, 0, 0, 0.8),
         0 0 6px #ffb29e;
 }
+
+
+
+
+.bank-vault {
+    position: absolute;
+    top: calc(50% - 209px);
+    left: calc(50% - 285px);
+    width: 500px;
+    height: 360px;
+    padding: 30px;
+    border-radius: 5px;
+    color: #805f07;
+    font-family: 'Special Elite', serif;
+    background-color: rgba(0, 0, 0, 0.5);
+    background-image: url(/images/bank.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
+
+
+
 
 /*media query*/
 @media (min-width: 2500px) {

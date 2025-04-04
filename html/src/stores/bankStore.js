@@ -8,7 +8,7 @@ export const useBankStore = defineStore('bank', {
         isLoading: true,
         id: 'nodata',
         exist: false,
-        account: 0,
+        account: 9999, // cents (100 = 1$)
         stock: [],
         insurance: {
             weapons: {

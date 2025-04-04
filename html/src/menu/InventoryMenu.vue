@@ -450,30 +450,30 @@ function simulationPost() {
               <div class="item-options"
                 :style="{ top: options.y + 'px', left: options.x + 'px' }">
 
-                <div v-if="currentItem && currentItem.category === '3'" class="option"
+                <div v-if="currentItem && currentItem.category === 3" class="option"
                   @click="doAction('use', currentItem)">Utiliser</div>
-                <div v-if="currentItem && currentItem.category === '8'" class="option"
+                <div v-if="currentItem && currentItem.category === 8" class="option"
                   @click="doAction('use', currentItem)">Utiliser</div>
                   
 
                 <div v-if="playerStore.itemEquipedId === currentItem.id">
-                  <div v-if="currentItem.category === '4'" class="option" @click="doAction('unequip', currentItem)">
+                  <div v-if="currentItem.category === 4" class="option" @click="doAction('unequip', currentItem)">
                     Ranger</div>
-                  <div v-if="currentItem.category === '1'" class="option" @click="doAction('unequip', currentItem)">
+                  <div v-if="currentItem.category === 1" class="option" @click="doAction('unequip', currentItem)">
                     Ranger</div>
-                  <div v-if="currentItem.category === '6'" class="option" @click="doAction('equip', currentItem)">
+                  <div v-if="currentItem.category === 6" class="option" @click="doAction('equip', currentItem)">
                     Se déshabiller</div>
                 </div>
                 <div v-else>
-                  <div v-if="currentItem.category === '4'" class="option" @click="doAction('equip', currentItem)">
+                  <div v-if="currentItem.category === 4" class="option" @click="doAction('equip', currentItem)">
                     Prendre en main</div>
-                  <div v-if="currentItem.category === '1'" class="option" @click="doAction('equip', currentItem)">
+                  <div v-if="currentItem.category === 1" class="option" @click="doAction('equip', currentItem)">
                     Prendre en main</div>
-                  <div v-if="currentItem.category === '6'" class="option" @click="doAction('equip', currentItem)">
+                  <div v-if="currentItem.category === 6" class="option" @click="doAction('equip', currentItem)">
                     Se vestir</div>
                 </div>
 
-                <div v-if="currentItem && currentItem.category === '7'" class="option"
+                <div v-if="currentItem && currentItem.category === 7" class="option"
                   @click="doAction('open', currentItem)">Ouvrir</div>
                   
                 <div class="option" @click="doAction('give', currentItem)">Donner</div>

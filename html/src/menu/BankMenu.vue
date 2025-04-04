@@ -189,6 +189,12 @@ setTimeout(() => {
             Bien l'bonjour, m'sieur le banquier !
         </div>
     </div>
+    <div class="bank-conversation" v-else-if="uiStore.isClosing">
+        <div class="bubble">
+            Au revoir, m'sieur le banquier !
+        </div>
+        <div class="bank-person">Moi</div><span> Au revoir, m'sieur le banquier ! </span>
+    </div>
     <div class="bank-conversation" v-else>
         <div class="bubble" @click="accessAccount">
             Hé là, m'sieur le banquier ! J'viens voir mes économies !

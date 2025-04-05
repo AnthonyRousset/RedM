@@ -9,7 +9,32 @@ export const useBankStore = defineStore('bank', {
         id: 'nodata',
         exist: false,
         account: 9999, // cents (100 = 1$)
-        stock: [],
+        stock: [
+            {
+                id: 'lancaster_rifle',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [0],
+                category: 0
+            },
+            {
+                id: 'coca_seeds',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [],
+                category: 0
+            },
+            {
+                id: 'cocaine',
+                quantity: 2,
+                quality: 100,
+                weight: 1,
+                tags: [2],
+                category: 0
+            }
+        ],
         insurance: {
             weapons: {
                 active: false,

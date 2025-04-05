@@ -1,0 +1,99 @@
+<script setup>
+import { ref } from 'vue'
+import itemsData from '../../data/items.json'
+const tags = ref(itemsData.tags)
+const items = ref(itemsData.items)
+
+const props = defineProps({
+    item: {
+        type: Object,
+        required: true
+    }
+})
+
+// Définir les émetteurs d'événements
+const emit = defineEmits(['showTooltip', 'hideTooltip'])
+
+// Trouver l'item correspondant dans itemsData pour afficher son nom et sa description
+const itemDetails = items.value.find(i => i.id === props.item.id) || { name: 'Inconnu', description: 'Aucune description disponible' }
+
+// Fonction pour afficher le tooltip
+const handleMouseEnter = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    emit('showTooltip', {
+        item: props.item,
+        itemDetails,
+        position: {
+            x: rect.x + rect.width,
+            y: rect.y
+        }
+    })
+}
+
+// Fonction pour masquer le tooltip
+const handleMouseLeave = () => {
+    emit('hideTooltip')
+}
+</script>
+
+<template>
+    <div id="item-container" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
+        <div class="item">
+            <img :src="'./images/items/' + item.id + '.png'" alt="Item">
+            <div class="quantity" v-if="item.quantity > 1">{{ item.quantity }}</div>
+        </div>
+        <div class="status" v-for="tag in item.tags" :key="tag">
+            <img v-if="tags[tag]" :src="'./images/items/_' + tags[tag]?.image + '.png'" alt="Tag">
+        </div>
+    </div>
+</template>
+
+<style lang="scss" scoped>
+#item-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    
+    .item {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+
+        .quantity {
+            position: absolute;
+            bottom: 5%;
+            right: 5%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.1vw 0.3vw;
+            border-radius: 0.15vw;
+            font-size: 0.8vw;
+            font-weight: bold;
+        }
+    }
+
+    .status {
+        width: 65%;
+        height: 65%;
+        position: absolute;
+        bottom: -0.45vw;
+        right: -0.45vw;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+    }
+}
+</style>

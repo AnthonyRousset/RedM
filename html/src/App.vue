@@ -71,24 +71,24 @@ ul{
 
 @keyframes closeVault {
   from {
-      transform: translateX(-50%) translateY(0);
+      transform: translateX(0%) translateY(0);
       opacity: 1;
   }
 
   to {
-      transform: translateX(-50%) translateY(-150%);
+      transform: translateX(0%) translateY(-150%);
       opacity: 1;
   }
 }
 
 @keyframes openVault {
   from {
-      transform: translateX(-50%) translateY(-150%);
+      transform: translateX(0%) translateY(-150%);
       opacity: 0;
   }
 
   to {
-      transform: translateX(-50%) translateY(0);
+      transform: translateX(0%) translateY(0);
       opacity: 1;
   }
 }

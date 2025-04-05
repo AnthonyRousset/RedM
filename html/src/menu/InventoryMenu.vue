@@ -101,219 +101,219 @@ function doDrop() {
 
 function simulationPost() {
   window.postMessage({
-  action: 'inventory:update',
- 
+    action: 'inventory:update',
+
     info: [
-            {
-                id: 'lancaster_rifle',
-                quantity: 2000,
-                quality: 100,
-                weight: 1,
-                tags: [0],
-                category: 0
-            },
-            {
-                id: 'coca_seeds',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 1012120,
-                weight: 1,
-                tags: [],
-                category: 0
-            },
-            {
-                id: 'cocaine',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 104450,
-                weight: 1,
-                tags: [2],
-                category: 0
-            },
-            {
-                id: 'rustic_bread',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,  
-                tags: [1],
-                category: 0
-            },
-            {
-                id: 'deer_hide',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 1045450,
-                weight: 1,
-                tags: [],
-                category: 0
-            },
-            {
-                id: 'raw_deer_meat',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,
-                tags: [],
-                category: 0
-            },
-            {
-                id: 'pickaxe',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 1045450,
-                weight: 1,
-                tags: [],
-                category: 0
-            },
-            {
-                id: 'rake',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 1454500,
-                weight: 1,
-                tags: [],
-                category: 0
-            },
-            {
-                id: 'axe',
-              quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,  
-                tags: [],
-                category: 0
-            },
-            {
-                id: 'weapon_bow',
-                  quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,  
-                    tags: [],
-                category: 0
-            },
-            {
-                id: 'watering_can',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,      
-                tags: [],
-                category: 0 
-            },
-            {
-                id: 'cannabis_seeds',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,          
-                tags: [1],
-                category: 0
-            },
-            {
-                id: 'sugarcane_seeds',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,          
-                tags: [],
-                category: 0
-            },
-            {
-                id: 'coca_seeds',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,          
-                tags: [2],
-                category: 0
-            },
-            {
-                id: 'fertilizer',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                tags: [],
-                category: 0
-            },
-            {
-                id: 'cooked_deer_meat',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                tags: []
-            },
-            {
-                id: 'lancaster_rifle',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                tags: [],
-                category: 0
-            },
-            {
-                id: 'shovel',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                category: 0,
-                    tags: [0]
-            },
-            {
-                id: 'water_bottle',
-                    quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1, 
-                category: 0,
-                tags: []
-            },
-            {
-                  id: 'lancaster_rifle1',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                tags: [],
-                category: 0
-            },
-            {
-                  id: 'lancaster_rifle2 ',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                tags: [],
-                category: 0
-            },
-            {
-                    id: 'lancaster_rifle3',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                tags: [],
-                category: 0
-            },
-            {
-                    id: 'lancaster_rifle4',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                tags: [],
-                category: 0
-            },
-            {
-                      id: 'lancaster_rifle5',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                tags: [],
-                category: 0
-            },
-            {
-                      id: 'lancaster_rifle6',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                tags: [],
-                category: 0
-            },
-            {
-                      id: 'lancaster_rifle7',
-                quantity: Math.floor(Math.random() * 1000000),
-                quality: 100,
-                weight: 1,              
-                tags: [],
-                category: 0
-            },
-        ]
-  
-}, '*')
+      {
+        id: 'lancaster_rifle',
+        quantity: 2000,
+        quality: 100,
+        weight: 1,
+        tags: [0],
+        category: 0
+      },
+      {
+        id: 'coca_seeds',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 1012120,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'cocaine',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 104450,
+        weight: 1,
+        tags: [2],
+        category: 0
+      },
+      {
+        id: 'rustic_bread',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [1],
+        category: 0
+      },
+      {
+        id: 'deer_hide',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 1045450,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'raw_deer_meat',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'pickaxe',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 1045450,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'rake',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 1454500,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'axe',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'weapon_bow',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'watering_can',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'cannabis_seeds',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [1],
+        category: 0
+      },
+      {
+        id: 'sugarcane_seeds',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'coca_seeds',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [2],
+        category: 0
+      },
+      {
+        id: 'fertilizer',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'cooked_deer_meat',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: []
+      },
+      {
+        id: 'lancaster_rifle',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'shovel',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        category: 0,
+        tags: [0]
+      },
+      {
+        id: 'water_bottle',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        category: 0,
+        tags: []
+      },
+      {
+        id: 'lancaster_rifle1',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'lancaster_rifle2 ',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'lancaster_rifle3',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'lancaster_rifle4',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'lancaster_rifle5',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'lancaster_rifle6',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+      {
+        id: 'lancaster_rifle7',
+        quantity: Math.floor(Math.random() * 1000000),
+        quality: 100,
+        weight: 1,
+        tags: [],
+        category: 0
+      },
+    ]
+
+  }, '*')
 }
 
 </script>
@@ -358,28 +358,19 @@ function simulationPost() {
           <PerfectScrollbar>
             <div class="_title_">INVENTAIRE</div>
             <div class="content">
-              <draggable 
-                v-model="playerStore.inventory"
-                :animation="150"
-                :item-key="(item, index) => index"
-                class="inventory-grid"
-                :class="{ 'dragging': true }"
-                :disabled="false"
-                :forceFallback="true"
-                :scroll="true"
-                :scrollSensitivity="100"
-                :scrollSpeed="10"
-              >
+              <draggable v-model="playerStore.inventory" :animation="150" :item-key="(item, index) => index"
+                class="inventory-grid" :class="{ 'dragging': true }" :disabled="false" :forceFallback="true"
+                :scroll="true" :scrollSensitivity="100" :scrollSpeed="10">
                 <template #item="{ element: item, index }">
                   <li @click="(e) => showOptions(e, item)">
                     <div class="item">
-                    <img :src="'./images/items/' + item.id + '.png'" alt="Item">
+                      <img :src="'./images/items/' + item.id + '.png'" alt="Item">
                       <div class="quantity" v-if="item.quantity > 1">{{ item.quantity }}</div>
-                  </div>
-                  <div class="status" v-for="tag in item.tags" :key="tag">
+                    </div>
+                    <div class="status" v-for="tag in item.tags" :key="tag">
                       <img v-if="tags[tag]" :src="'./images/items/_' + tags[tag]?.image + '.png'" alt="Tag">
-                  </div>
-                </li>
+                    </div>
+                  </li>
                 </template>
               </draggable>
 
@@ -440,21 +431,22 @@ function simulationPost() {
           </PerfectScrollbar>
         </div>
         <div class="description" v-if="currentItem">
-          <div class="title">{{ items.find(item => item.id === currentItem.id).name }}</div>
+          <div class="title">{{items.find(item => item.id === currentItem.id).name}}</div>
           <div class="content">
             <div class="item">
               <div class="description">
-                {{ items.find(item => item.id === currentItem.id).description }}
+                {{items.find(item => item.id === currentItem.id).description}}
               </div>
 
-              <div class="item-options"
-                :style="{ top: options.y + 'px', left: options.x + 'px' }">
+              <div class="item-options" :style="{ top: options.y + 'px', left: options.x + 'px' }">
 
                 <div v-if="currentItem && currentItem.category === 3" class="option"
-                  @click="doAction('use', currentItem)">Utiliser</div>
+                  @click="doAction('use', currentItem)">
+                  Utiliser</div>
                 <div v-if="currentItem && currentItem.category === 8" class="option"
-                  @click="doAction('use', currentItem)">Utiliser</div>
-                  
+                  @click="doAction('use', currentItem)">
+                  Utiliser</div>
+
 
                 <div v-if="playerStore.itemEquipedId === currentItem.id">
                   <div v-if="currentItem.category === 4" class="option" @click="doAction('unequip', currentItem)">
@@ -474,8 +466,9 @@ function simulationPost() {
                 </div>
 
                 <div v-if="currentItem && currentItem.category === 7" class="option"
-                  @click="doAction('open', currentItem)">Ouvrir</div>
-                  
+                  @click="doAction('open', currentItem)">
+                  Ouvrir</div>
+
                 <div class="option" @click="doAction('give', currentItem)">Donner</div>
                 <div class="option" @click="doAction('drop', currentItem)">Détruire</div>
               </div>
@@ -525,7 +518,6 @@ function simulationPost() {
 
 
 <style scoped>
-
 * {
   color: #fff;
 }
@@ -533,12 +525,15 @@ function simulationPost() {
 
 /* Ajout en haut du CSS */
 :deep(.ps) {
-  -ms-overflow-style: none !important;  /* IE and Edge */
-  scrollbar-width: none !important;  /* Firefox */
+  -ms-overflow-style: none !important;
+  /* IE and Edge */
+  scrollbar-width: none !important;
+  /* Firefox */
 }
 
 :deep(.ps::-webkit-scrollbar) {
-  display: none !important; /* Chrome, Safari and Opera */
+  display: none !important;
+  /* Chrome, Safari and Opera */
 }
 
 :deep(.ps__rail-x),
@@ -546,7 +541,7 @@ function simulationPost() {
   display: none !important;
 }
 
-.ps{
+.ps {
   height: 100%;
 }
 
@@ -704,13 +699,13 @@ function simulationPost() {
   padding: 0;
 }
 
-.inventory-grid > * {
+.inventory-grid>* {
   position: relative;
   cursor: grab;
   transition: none;
 }
 
-.inventory-grid > *:active {
+.inventory-grid>*:active {
   cursor: grabbing;
 }
 

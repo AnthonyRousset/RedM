@@ -4,10 +4,16 @@ import { sendNui } from '../utils/nui'
 import { useUiStore } from '../stores/uiStore'
 import { usePlayerStore } from '../stores/playerStore'
 import { useBankStore } from '../stores/bankStore'
+import Item from './components/item.vue'
+import itemsData from '../data/items.json'
 
 const playerStore = usePlayerStore()
 const bankStore = useBankStore()
 const uiStore = useUiStore()
+
+const tags = ref(itemsData.tags)
+const categories = ref(itemsData.categories)
+const items = ref(itemsData.items)
 
 const dollarForm = ref();
 const showPlaceholder = ref(true);
@@ -16,6 +22,49 @@ const playerMessage = ref('');
 const bankMessage = ref('');
 const bankView = ref('account');
 const isSwitching = ref(false);
+
+// Gestion du tooltip global
+const tooltipData = ref(null)
+const tooltipPosition = ref({ x: 0, y: 0 })
+
+// Afficher le tooltip
+const showTooltip = (data) => {
+    tooltipData.value = data
+
+    // Ajuster la position pour éviter que le tooltip sorte de l'écran
+    const padding = 1; // en vw
+    const tooltipWidth = 14; // largeur en vw
+    const tooltipHeight = 10; // hauteur estimée en vh
+
+    // Convertir les coordonnées en pourcentages de la fenêtre
+    let x = (data.position.x / window.innerWidth) * 100; // convertir en pourcentage de la largeur
+    let y = (data.position.y / window.innerHeight) * 100; // convertir en pourcentage de la hauteur
+
+    // Ajouter le padding (en pourcentage)
+    x = x + padding;
+
+    // Vérifier si le tooltip dépasse à droite
+    if (x + tooltipWidth > 100) {
+        x = (data.position.x / window.innerWidth) * 100 - tooltipWidth - padding;
+    }
+
+    // Vérifier si le tooltip dépasse en bas
+    if (y + tooltipHeight > 100) {
+        y = 100 - tooltipHeight - padding;
+    }
+
+    // Vérifier si le tooltip dépasse en haut
+    if (y < 0) {
+        y = padding;
+    }
+
+    tooltipPosition.value = { x, y };
+}
+
+// Masquer le tooltip
+const hideTooltip = () => {
+    tooltipData.value = null
+}
 
 const handleKeyDown = (event) => {
     const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
@@ -200,11 +249,7 @@ setTimeout(() => {
                 </div>
                 <div class="bank-vault" v-else-if="bankView === 'vault'">
                     <div class="vault">
-
-                    </div>
-                    <div class="bag">
-                        <div class="inventory">
-                            <PerfectScrollbar>
+                        <div class="emplacements">
                             <ul>
                                 <li>
                                     <img src="/images/items/pickaxe.png" alt="">
@@ -215,68 +260,21 @@ setTimeout(() => {
                                 <li>
                                     <img src="/images/items/pickaxe.png" alt="">
                                 </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
                             </ul>
-                        </PerfectScrollbar>
+                        </div>
+                        <div class="information">
+                            Seulement 3 objets sont stockables dans le coffre-fort.
+                        </div>
+                    </div>
+                    <div class="bag">
+                        <div class="inventory">
+                            <PerfectScrollbar>
+                                <ul>
+                                    <li v-for="(item, index) in playerStore.inventory" :key="index">
+                                        <Item :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
+                                    </li>
+                                </ul>
+                            </PerfectScrollbar>
                         </div>
                     </div>
 
@@ -305,6 +303,25 @@ setTimeout(() => {
             J'aimerais jeter un œil à mon coffre, si vous l'permettez.
         </div>
     </div>
+
+    <!-- Tooltip global -->
+    <div class="global-tooltip" v-if="tooltipData" :style="{left: tooltipPosition.x + 'vw', top: tooltipPosition.y + 'vh'}">
+        <div class="bottom">
+            <div class="tooltip-title">{{ tooltipData.itemDetails.name }}</div>
+            <div class="tooltip-description">{{ tooltipData.itemDetails.description }}</div>
+            <div class="tooltip-stats" v-if="tooltipData.item.quality">
+                <div class="stat">
+                    <div class="stat-label">Qualité</div>
+                    <div class="stat-value">{{ tooltipData.item.quality }}%</div>
+                </div>
+            </div>
+            <div class="tooltip-tags" v-if="tooltipData.item.tags && tooltipData.item.tags.length > 0">
+                <div class="tag" v-for="tagId in tooltipData.item.tags" :key="tagId">
+                    {{ tags[tagId]?.name }}
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 
@@ -323,688 +340,821 @@ $animation-timing: 0.6s ease-out;
 
 /* Masquer la scrollbar tout en gardant la fonctionnalité */
 :deep(.ps) {
-  -ms-overflow-style: none !important;  /* IE and Edge */
-  scrollbar-width: none !important;  /* Firefox */
-  
-  &::-webkit-scrollbar {
-    display: none !important; /* Chrome, Safari and Opera */
-  }
+    -ms-overflow-style: none !important;
+    /* IE and Edge */
+    scrollbar-width: none !important;
+    /* Firefox */
+
+    &::-webkit-scrollbar {
+        display: none !important;
+        /* Chrome, Safari and Opera */
+    }
 }
-  
+
 :deep(.ps__rail-x),
 :deep(.ps__rail-y) {
-  display: none !important;
+    display: none !important;
 }
-  
+
 .bank {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
 }
 
 .bank-container {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -100%);
-  animation: openVault $animation-timing forwards;
-  height: 100%;
-  width: 100%;
-  
-  &.__closing {
-    animation: closeVault $animation-timing forwards !important;
-  }
+    animation: openVault $animation-timing forwards;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+    &.__closing {
+        animation: closeVault $animation-timing forwards !important;
+    }
 }
 
 .loading {
-  position: absolute;
-  padding: 30px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  
-  span {
-    font-size: 4rem;
-    font-weight: bold;
-    color: $color-gold;
-    
-    &.one {
-      animation: blink 1.5s infinite;
-      animation-delay: 0.5s;
+    position: absolute;
+    padding: 1.5vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    span {
+        font-size: 4vw;
+        font-weight: bold;
+        color: $color-gold;
+
+        &.one {
+            animation: blink 1.5s infinite;
+            animation-delay: 0.5s;
+        }
+
+        &.two {
+            animation: blink 1.5s infinite;
+            animation-delay: 1s;
+        }
+
+        &.three {
+            animation: blink 1.5s infinite;
+            animation-delay: 1.5s;
+        }
     }
-    
-    &.two {
-      animation: blink 1.5s infinite;
-      animation-delay: 1s;
-    }
-    
-    &.three {
-      animation: blink 1.5s infinite;
-      animation-delay: 1.5s;
-    }
-  }
 }
 
 @keyframes blink {
-  0% { opacity: 0; }
-  20% { opacity: 1; }
-  50% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 .bank-loading {
-  position: absolute;
-  top: calc(50% - 209px);
-  left: calc(50% - 285px);
-  width: 500px;
-  height: 360px;
-  padding: 30px;
-  border-radius: 5px;
-  background-image: url('/images/bank/bank-account-empty.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+    position: absolute;
+    top: calc(50% - 10.5vw);
+    left: calc(50% - 14.25vw);
+    width: 25vw;
+    height: 18vw;
+    padding: 1.5vw;
+    border-radius: 0.25vw;
+    background-image: url('/images/bank/bank-account-empty.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .bank-open {
-  color: $color-text-dark;
-  font-family: $font-family-primary;
-  position: absolute;
-  top: calc(50% - 209px);
-  left: calc(50% - 285px);
-  width: 500px;
-  height: 360px;
-  padding: 30px;
-  border-radius: 5px;
-  background-image: url('/images/bank/bank-account-empty.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+    color: $color-text-dark;
+    font-family: $font-family-primary;
+    position: absolute;
+    top: calc(50% - 10.5vw);
+    left: calc(50% - 14.25vw);
+    width: 25vw;
+    height: 18vw;
+    padding: 1.5vw;
+    border-radius: 0.25vw;
+    background-image: url('/images/bank/bank-account-empty.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .bank-account {
-  position: absolute;
-  top: calc(50% - 209px);
-  left: calc(50% - 285px);
-  width: 500px;
-  height: 360px;
-  padding: 30px;
-  border-radius: 5px;
-  color: $color-gold;
-  font-family: $font-family-primary;
-  background-color: rgba(0, 0, 0, 0.5);
-  background-image: url(/images/bank/bank-account.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+    position: absolute;
+    top: calc(50% - 10.5vw);
+    left: calc(50% - 14.25vw);
+    width: 25vw;
+    height: 18vw;
+    padding: 1.5vw;
+    border-radius: 0.25vw;
+    color: $color-gold;
+    font-family: $font-family-primary;
+    background-color: rgba(0, 0, 0, 0.5);
+    background-image: url(/images/bank/bank-account.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .bank-title {
-  position: absolute;
-  top: 193px;
-  right: 50px;
-  left: 50px;
-  text-align: center;
-  font-size: 2rem;
-  font-weight: bold;
-  
-  span {
-    color: $color-gold-light;
-  }
+    position: absolute;
+    top: 9.65vw;
+    right: 2.5vw;
+    left: 2.5vw;
+    text-align: center;
+    font-size: 2vw;
+    font-weight: bold;
+
+    span {
+        color: $color-gold-light;
+    }
 }
 
 .bank-price {
-  position: absolute;
-  top: 265px;
-  font-size: 2rem;
-  
-  &:hover {
-    color: $color-gold-light;
-  }
-  
-  &:active {
-    color: $color-gold-light;
-    background: $color-gold-light;
-  }
+    position: absolute;
+    top: 13.25vw;
+    font-size: 2vw;
+
+    &:hover {
+        color: $color-gold-light;
+    }
+
+    &:active {
+        color: $color-gold-light;
+        background: $color-gold-light;
+    }
 }
 
 h2 {
-  text-align: center;
-  font-size: 1.8rem;
-  color: #3d2b00f2;
-  margin-bottom: 15px;
-  border-bottom: 2px dashed $color-gold-light;
-  padding-bottom: 5px;
+    text-align: center;
+    font-size: 1.8vw;
+    color: #3d2b00f2;
+    margin-bottom: 0.75vw;
+    border-bottom: 0.1vw dashed $color-gold-light;
+    padding-bottom: 0.25vw;
 }
 
 .balance-title {
-  position: absolute;
-  top: 193px;
-  right: 259px;
-  font-size: 2rem;
+    position: absolute;
+    top: 9.65vw;
+    right: 13vw;
+    font-size: 2vw;
 }
 
 .bank-message {
-  position: absolute;
-  font-size: 1rem;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: opacity 0.5s ease;
-  opacity: 0;
-  
-  &.bubble-conversation {
-    &.banker, &.player {
-      &.active {
-        opacity: 1 !important;
-      }
+    position: absolute;
+    font-size: 1vw;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: opacity 0.5s ease;
+    opacity: 0;
+
+    &.bubble-conversation {
+
+        &.banker,
+        &.player {
+            &.active {
+                opacity: 1 !important;
+            }
+        }
+
+        &.player {
+right: 30.25vw;
+    width: 18.55vw;
+    height: 12.15vw;
+    top: 4.05vw;
+            background-image: url('/images/bubble-think.png');
+
+            span {
+                font-size: 0.9vw;
+                padding: 2.85vw 4.5vw 0 3.75vw;
+                display: inline-block;
+                text-align: center;
+            }
+
+            .bank-person {
+                position: absolute;
+                top: -0.75vw;
+                left: calc(50% - 1vw);
+                transform: translateX(-50%);
+                width: calc(initial - 50%);
+                background-color: rgb(77, 27, 27);
+                color: #ffffff;
+                font-size: 1vw;
+                text-align: center;
+                padding: 0.25vw 0.5vw;
+                border-radius: 0.25vw;
+            }
+        }
+
+        &.banker {
+    left: 28.75vw;
+    width: 17.55vw;
+    height: 11.15vw;
+    top: -2.15vw;
+            background-image: url('/images/bubble-message.png');
+
+            span {
+                font-size: 1vw;
+                padding: 2.5vw 4.15vw 0 2.15vw;
+                display: inline-block;
+                text-align: center;
+            }
+
+            .bank-person {
+                position: absolute;
+                top: -0.5vw;
+                left: calc(50% - 1vw);
+                transform: translateX(-50%);
+                width: calc(initial - 50%);
+                background-color: rgb(77, 27, 27);
+                color: #ffffff;
+                font-size: 1vw;
+                text-align: center;
+                padding: 0.25vw 0.5vw;
+                border-radius: 0.25vw;
+            }
+        }
     }
-    
-    &.player {
-      right: 585px;
-      width: 271px;
-      height: 203px;
-      top: 181px;
-      background-image: url('/images/bubble-think.png');
-      
-      span {
-        font-size: 0.9rem;
-        padding: 57px 70px 0 55px;
-        display: inline-block;
-        text-align: center;
-      }
-      
-      .bank-person {
-        position: absolute;
-        top: 5px;
-        left: calc(50% - 20px);
-        transform: translateX(-50%);
-        width: calc(initial - 50%);
-        background-color: rgb(77, 27, 27);
-        color: #ffffff;
-        font-size: 1rem;
-        text-align: center;
-        padding: 5px 10px;
-        border-radius: 5px;
-      }
-    }
-    
-    &.banker {
-      left: 575px;
-      width: 271px;
-      height: 203px;
-      top: -43px;
-      background-image: url('/images/bubble-message.png');
-      
-      span {
-        font-size: 1rem;
-        padding: 50px 83px 0 43px;
-        display: inline-block;
-        text-align: center;
-      }
-      
-      .bank-person {
-        position: absolute;
-        top: 10px;
-        left: calc(50% - 20px);
-        transform: translateX(-50%);
-        width: calc(initial - 50%);
-        background-color: rgb(77, 27, 27);
-        color: #ffffff;
-        font-size: 1rem;
-        text-align: center;
-        padding: 5px 10px;
-        border-radius: 5px;
-      }
-    }
-  }
 }
 
 .bank-conversation {
-  position: absolute;
-  bottom: 1.5vw;
-  left: 50%;
-  transform: translateX(-50%);
-  
-  .bubble {
-    background-color: #00000096;
-    color: #ffffff;
-    font-family: $font-family-primary;
-    font-size: 1vw;
-    text-align: center;
-    padding: 1vw;
-    border-radius: 50px;
-    cursor: pointer;
-    font-style: italic;
-    margin-top: 0.5vw;
-  }
+    position: absolute;
+    bottom: 1.5vw;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .bubble {
+        background-color: #00000096;
+        color: #ffffff;
+        font-family: $font-family-primary;
+        font-size: 1vw;
+        text-align: center;
+        padding: 1vw;
+        border-radius: 2.5vw;
+        cursor: pointer;
+        font-style: italic;
+        margin-top: 0.5vw;
+    }
 }
 
 .balance {
-  position: absolute;
-  top: 192px;
-  right: 106px;
-  font-size: 2rem;
-  font-weight: bold;
-  color: $color-gold;
+    position: absolute;
+    top: 9.6vw;
+    right: 5.3vw;
+    font-size: 2vw;
+    font-weight: bold;
+    color: $color-gold;
 }
 
 .balance-amount {
-  position: absolute;
-  top: 255px;
-  left: 25px;
-  width: 275px;
-  height: 35px;
-  font-size: 1.4em;
-  text-align: end;
-  color: black;
+    position: absolute;
+    top: 12.75vw;
+    left: 1.25vw;
+    width: 13.75vw;
+    height: 1.75vw;
+    font-size: 1.2vw;
+    text-align: end;
+    color: black;
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .fake-input {
-  font-weight: bold;
-  font-size: 2rem;
-  position: absolute;
-  top: 255px;
-  right: 101px;
-  width: 120px;
-  height: 35px;
-  font-family: $font-family-primary;
-  color: #2c4873;
-  text-align: right;
-  border-radius: 5px;
-  padding: 5px;
-  outline: none;
-  cursor: pointer;
-  
-  span {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    cursor: pointer;
-    outline: none;
-    z-index: 1;
-    position: relative;
-    
-    &.error {
-      color: rgb(150, 17, 17);
-    }
-    
-    &:after {
-      content: '';
-      box-shadow: 0px 1px 35px 6px #000000;
-      width: 100%;
-      height: 0px;
-      display: none;
-    }
-  }
-  
-  .placeholder {
-    color: #666666a3;
+    font-weight: bold;
+    font-size: 2vw;
     position: absolute;
-    top: 6px;
-    right: 5px;
-  }
+    top: 12.75vw;
+    right: 5.05vw;
+    width: 6vw;
+    height: 1.75vw;
+    font-family: $font-family-primary;
+    color: #2c4873;
+    text-align: right;
+    border-radius: 0.25vw;
+    padding: 0.25vw;
+    outline: none;
+    cursor: pointer;
+
+    span {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        cursor: pointer;
+        outline: none;
+        z-index: 1;
+        position: relative;
+
+        &.error {
+            color: rgb(150, 17, 17);
+        }
+
+        &:after {
+            content: '';
+            box-shadow: 0 0.05vw 1.75vw 0.3vw #000000;
+            width: 100%;
+            height: 0;
+            display: none;
+        }
+    }
+
+    .placeholder {
+        color: #666666a3;
+        position: absolute;
+        top: 0.3vw;
+        right: 0.25vw;
+    }
 }
 
 .actions {
-  display: flex;
-  gap: 10px;
-  width: 90%;
-  position: absolute;
-  top: 335px;
-  right: 5%;
+    display: flex;
+    gap: 0.5vw;
+    width: 90%;
+    position: absolute;
+    top: 16.75vw;
+    right: 5%;
 }
 
 .close {
-  background: $color-red;
-  color: $color-text-light;
-  font-weight: bold;
-  padding: 10px;
-  font-family: $font-family-primary;
-  cursor: pointer;
-  position: absolute;
-  top: -20px;
-  right: -20px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50px;
-  border: none;
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  transition: all 0.2s ease-in-out;
-  z-index: 1000;
-  
-  &:hover {
-    background: $color-red-hover;
-  }
+    background: $color-red;
+    color: $color-text-light;
+    font-weight: bold;
+    padding: 0.5vw;
+    font-family: $font-family-primary;
+    cursor: pointer;
+    position: absolute;
+    top: -1vw;
+    right: -1vw;
+    width: 2.5vw;
+    height: 2.5vw;
+    border-radius: 2.5vw;
+    border: none;
+    font-size: 1.5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0.5vw rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease-in-out;
+    z-index: 1000;
+
+    &:hover {
+        background: $color-red-hover;
+    }
 }
 
 .btn-western {
-  flex: 1;
-  padding: 12px 18px;
-  font-family: $font-family-primary;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff6dc;
-  background: linear-gradient(145deg, #4d3521, #2b1c12);
-  border: 3px solid #c9a96e;
-  border-radius: 10px;
-  box-shadow:
-      inset 0 1px 0 #f3e3b0,
-      0 4px 8px rgba(0, 0, 0, 0.6);
-  text-shadow: 0 1px 0 #000;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
-  position: relative;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  
-  &:hover {
-    background: linear-gradient(145deg, #5f422c, #3a2617);
-    border-color: #e2c87d;
-    color: #ffefbb;
+    flex: 1;
+    padding: 0.6vw 0.9vw;
+    font-family: $font-family-primary;
+    font-size: 1vw;
+    font-weight: bold;
+    color: #fff6dc;
+    background: linear-gradient(145deg, #4d3521, #2b1c12);
+    border: 0.15vw solid #c9a96e;
+    border-radius: 0.5vw;
     box-shadow:
-        inset 0 1px 0 #fff5d2,
-        0 4px 12px rgba(0, 0, 0, 0.8),
-        0 0 6px #e6c47c;
-  }
-  
-  &:active {
-    transform: translateY(2px);
-    box-shadow:
-        inset 0 2px 4px #1e1208,
-        0 1px 2px rgba(0, 0, 0, 0.5);
-  }
+        inset 0 0.05vw 0 #f3e3b0,
+        0 0.2vw 0.4vw rgba(0, 0, 0, 0.6);
+    text-shadow: 0 0.05vw 0 #000;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    position: relative;
+    letter-spacing: 0.025vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4vw;
+
+    &:hover {
+        background: linear-gradient(145deg, #5f422c, #3a2617);
+        border-color: #e2c87d;
+        color: #ffefbb;
+        box-shadow:
+            inset 0 0.05vw 0 #fff5d2,
+            0 0.2vw 0.6vw rgba(0, 0, 0, 0.8),
+            0 0 0.3vw #e6c47c;
+    }
+
+    &:active {
+        transform: translateY(0.1vw);
+        box-shadow:
+            inset 0 0.1vw 0.2vw #1e1208,
+            0 0.05vw 0.1vw rgba(0, 0, 0, 0.5);
+    }
 }
 
 .deposit {
-  background: linear-gradient(145deg, #3d301f, #261b10);
-  border-color: #a9915d;
+    background: linear-gradient(145deg, #3d301f, #261b10);
+    border-color: #a9915d;
 }
 
 .withdraw {
-  background: linear-gradient(145deg, #6d2f1a, #3b170d);
-  border-color: #c0745c;
-  
-  &:hover {
-    background: linear-gradient(145deg, #8a3b23, #4d1f12);
-    border-color: #ffb29e;
-    box-shadow:
-        inset 0 1px 0 #ffd9ca,
-        0 4px 12px rgba(0, 0, 0, 0.8),
-        0 0 6px #ffb29e;
-  }
+    background: linear-gradient(145deg, #6d2f1a, #3b170d);
+    border-color: #c0745c;
+
+    &:hover {
+        background: linear-gradient(145deg, #8a3b23, #4d1f12);
+        border-color: #ffb29e;
+        box-shadow:
+            inset 0 0.05vw 0 #ffd9ca,
+            0 0.2vw 0.6vw rgba(0, 0, 0, 0.8),
+            0 0 0.3vw #ffb29e;
+    }
 }
 
 .vault {
-  position: absolute;
-  top: calc(50% - 23vw);
-  right: 4vw;
-  width: 25vw;
-  height: 40vw;
-  background-image: url(/images/bank/bank-vault.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+    position: absolute;
+    top: calc(50% - 23vw);
+    right: 4vw;
+    width: 25vw;
+    height: 40vw;
+    background-image: url(/images/bank/bank-vault.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    .emplacements {
+        position: absolute;
+        bottom: 8vw;
+        left: 3vw;
+        width: 19vw;
+        height: 6vw;
+
+        ul {
+            height: 100%;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1vw;
+
+            li {
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.24);
+                box-shadow: inset 0 0 0.5vw 0.1vw rgba(0, 0, 0, 0.59);
+                border: 0.05vw solid rgba(255, 215, 0, 0.2);
+                border-radius: 0.25vw;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                cursor: pointer;
+
+                &:hover {
+                    box-shadow: 0 0 0.5vw 0.1vw rgba(255, 215, 0, 0.3);
+                    border-color: rgba(255, 215, 0, 0.4);
+                }
+
+                img {
+                    width: 80%;
+                    height: 80%;
+                    object-fit: contain;
+                }
+            }
+        }
+    }
+
+    .information {
+        position: absolute;
+        bottom: 3vw;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 0.9vw;
+        color: #d9bb74;
+        text-shadow: 0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.8);
+    }
 }
 
 .bag {
-  position: absolute;
-  top: calc(50% - 23vw);
-  left: 4vw;
-  width: 31vw;
-  height: 40vw;
-  background-image: url(/images/player/player-inventory.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-
-  .inventory {
     position: absolute;
-    top: 9vw;
-    left: 1vw;
-    right: 1vw;
-    bottom: 1vw;
-    max-width: 100%;
-    max-height: 100%;
-    overflow: hidden;
-        
-    /* Masque haut/bas */
-    mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
-    -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+    top: calc(50% - 23vw);
+    left: 4vw;
+    width: 31vw;
+    height: 40vw;
+    background-image: url(/images/player/player-inventory.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 
-    .ps {
-      max-height: 100%;
-    }
-    
-    ul {
-      max-height: 100%;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 1vw;
-      padding: 1vw;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-
-      li {
-        width: 100%;
-        height: 100%;
-        background-image: url(/images/player/player-inventory-bg_item.png);
-        background-size: cover;
-        background-repeat: repeat;
-        background-position: center;
+    .inventory {
+        position: absolute;
+        top: 9vw;
+        left: 1vw;
+        right: 1vw;
+        bottom: 1vw;
+        max-width: 100%;
+        max-height: 100%;
         overflow: hidden;
-        box-shadow: inset 0px -1px 4px 1px rgb(0 0 0 / 59%);
-        border-radius: 5px;
-        aspect-ratio: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
 
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-fit: contain;
+        /* Masque haut/bas */
+        mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+        -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+
+        .ps {
+            max-height: 100%;
         }
-      }
+
+        ul {
+            max-height: 100%;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.8vw;
+            padding: 1vw;
+
+            li {
+                width: 100%;
+                height: 100%;
+                background-image: url(/images/player/player-inventory-bg_item.png);
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+                box-shadow: inset 0 -0.05vw 0.2vw 0.05vw rgba(0, 0, 0, 0.59);
+                border-radius: 0.25vw;
+                aspect-ratio: 1;
+                transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+                cursor: pointer;
+
+                &:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 0 0.4vw 0.1vw rgba(255, 215, 0, 0.3);
+                }
+
+                &:active {
+                    transform: scale(0.95);
+                }
+            }
+        }
     }
-  }
+}
+
+.global-tooltip {
+    position: absolute;
+    z-index: 100000;
+
+    &:before {
+        display: none;
+        content: '';
+        position: absolute;
+        left: -0.5vw;
+        top: 30%;
+        border-width: 0.5vw 0.5vw 0.5vw 0;
+        border-style: solid;
+        border-color: transparent rgba(0, 0, 0, 0.85) transparent transparent;
+    }
+
+    .bottom {
+        width: 14vw;
+        background-color: rgba(0, 0, 0, 0.85);
+        border: 0.05vw solid rgba(255, 215, 0, 0.4);
+        color: #f5e6c9;
+        padding: 1vw;
+        border-radius: 0.25vw;
+        z-index: 100000;
+        box-shadow: 0 0 0.5vw rgba(0, 0, 0, 0.5);
+        font-family: "Special Elite", serif;
+        pointer-events: none;
+        position: relative;
+
+        .tooltip-title {
+            font-size: 1.2vw;
+            font-weight: bold;
+            color: #d9bb74;
+            margin-bottom: 0.5vw;
+            text-shadow: 0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.8);
+            border-bottom: 0.05vw solid rgba(255, 215, 0, 0.2);
+            padding-bottom: 0.3vw;
+        }
+
+        .tooltip-description {
+            font-size: 1vw;
+            margin-bottom: 1vw;
+            line-height: 1.4;
+            font-weight: 100;
+            color: #f5e6c9;
+        }
+
+        .tooltip-stats {
+            margin-bottom: 0.5vw;
+
+            .stat {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.2vw;
+
+                .stat-label {
+                    font-size: 0.7vw;
+                    color: #a8854d;
+                }
+
+                .stat-value {
+                    font-size: 0.7vw;
+                    color: white;
+                }
+            }
+        }
+
+        .tooltip-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3vw;
+
+            .tag {
+                font-size: 1vw;
+                background-color: $color-red;
+                color: #ffffff;
+                padding: 0.35vw 0.4vw 0.1vw 0.4vw;
+                border-radius: 0.15vw;
+            }
+        }
+    }
 }
 
 @media (min-width: 2500px) {
-  .bank {
-    width: 800px;
-    height: 580px;
-  }
-
-  .bank-account {
-    width: 800px;
-    height: 580px;
-  }
-
-  .balance-title {
-    font-size: 2.5rem;
-    top: 291px;
-    right: 400px;
-  }
-
-  .balance-amount {
-    font-size: 2.1rem;
-    top: 391px;
-    right: 164px;
-    width: 436px;
-  }
-
-  .balance {
-    font-size: 2.5rem;
-    top: 293px;
-    right: 164px;
-  }
-
-  .fake-input {
-    font-size: 2.5rem;
-    top: 395px;
-    right: 159px;
-    width: 150px;
-    
-    .placeholder {
-      font-size: 2.5rem;
-      top: 2px;
-      right: 5px;
+/*
+    .bank-account {
+        width: 40vw;
+        height: 29vw;
     }
-  }
 
-  .actions {
-    top: 503px;
-    right: 45px;
-    
-    .btn-western {
-      font-size: 2.5rem;
-      padding: 20px 18px;
+    .balance-title {
+        font-size: 2.5vw;
+        top: 14.55vw;
+        right: 20vw;
     }
-  }
 
-  .bank-open {
-    width: 800px;
-    height: 580px;
-  }
-
-  .bank-title {
-    font-size: 3rem;
-    top: 270px;
-    right: 150px;
-    left: 150px;
-  }
-
-  .bank-price {
-    font-size: 3rem;
-    top: 420px;
-  }
-
-  .bank-message.bubble-conversation {
-    &.player {
-      font-size: 1.5rem;
-      top: 210px;
-      right: 584px;
-      zoom: 1.5;
+    .balance-amount {
+        font-size: 2.1vw;
+        top: 19.55vw;
+        right: 8.2vw;
+        width: 21.8vw;
     }
-    
-    &.banker {
-      font-size: 1.5rem;
-      top: -80px;
-      right: 584px;
-      zoom: 1.5;
+
+    .balance {
+        font-size: 2.5vw;
+        top: 14.65vw;
+        right: 8.2vw;
     }
-  }
+
+    .fake-input {
+        font-size: 2.5vw;
+        top: 19.75vw;
+        right: 7.95vw;
+        width: 7.5vw;
+
+        .placeholder {
+            font-size: 2.5vw;
+            top: 0.1vw;
+            right: 0.25vw;
+        }
+    }
+
+    .actions {
+        top: 25.15vw;
+        right: 2.25vw;
+
+        .btn-western {
+            font-size: 2.5vw;
+            padding: 1vw 0.9vw;
+        }
+    }
+
+
+    .bank-title {
+        font-size: 3vw;
+        top: 13.5vw;
+        right: 7.5vw;
+        left: 7.5vw;
+    }
+
+    .bank-price {
+        font-size: 3vw;
+        top: 21vw;
+    }
+
+    .bank-message.bubble-conversation {
+        &.player {
+            font-size: 1.5vw;
+            top: 10.5vw;
+            right: 29.2vw;
+            zoom: 1.5;
+        }
+
+        &.banker {
+            font-size: 1.5vw;
+            top: -4vw;
+            right: 29.2vw;
+            zoom: 1.5;
+        }
+    }*/
 }
 
 @media (min-width: 3500px) {
-  .bank {
-    width: 1200px;
-    height: 880px;
-  }
-
-  .bank-account {
-    width: 1200px;
-    height: 880px;
-  }
-
-  .balance-title {
-    font-size: 4rem;
-    top: 434px;
-    right: 579px;
-  }
-
-  .balance-amount {
-    font-size: 3.1rem;
-    top: 573px;
-    right: 210px;
-    width: 653px;
-  }
-
-  .balance {
-    font-size: 4rem;
-    top: 431px;
-    right: 239px;
-  }
-
-  .fake-input {
-    font-size: 4rem;
-    top: 577px;
-    right: 239px;
-    width: 230px;
-    height: 75px;
-    
-    .placeholder {
-      font-size: 4rem;
-      top: 10px;
-      right: 5px;
+/*
+    .bank-account {
+        width: 60vw;
+        height: 44vw;
     }
-  }
 
-  .actions {
-    top: 765px;
-    right: 55px;
-    
-    .btn-western {
-      font-size: 2rem;
-      padding: 25px 18px;
+    .balance-title {
+        font-size: 4vw;
+        top: 21.7vw;
+        right: 29vw;
     }
-  }
 
-  .bank-open {
-    width: 1200px;
-    height: 880px;
-  }
-
-  .bank-title {
-    font-size: 4rem;
-    top: 400px;
-    right: 250px;
-    left: 250px;
-  }
-
-  .bank-price {
-    font-size: 4rem;
-    top: 620px;
-  }
-
-  .bank-message.bubble-conversation {
-    &.player {
-      font-size: 1.5rem;
-      top: 394px;
-      left: -279px;
-      zoom: 1.5;
+    .balance-amount {
+        font-size: 3.1vw;
+        top: 28.65vw;
+        right: 10.5vw;
+        width: 32.65vw;
     }
-    
-    &.banker {
-      font-size: 1.5rem;
-      top: -80px;
-      left: 856px;
-      zoom: 1.5;
+
+    .balance {
+        font-size: 4vw;
+        top: 21.55vw;
+        right: 12vw;
     }
-  }
+
+    .fake-input {
+        font-size: 4vw;
+        top: 28.85vw;
+        right: 12vw;
+        width: 11.5vw;
+        height: 3.75vw;
+
+        .placeholder {
+            font-size: 4vw;
+            top: 0.5vw;
+            right: 0.25vw;
+        }
+    }
+
+    .actions {
+        top: 38.25vw;
+        right: 2.75vw;
+
+        .btn-western {
+            font-size: 2vw;
+            padding: 1.25vw 0.9vw;
+        }
+    }
+
+
+    .bank-title {
+        font-size: 4vw;
+        top: 20vw;
+        right: 12.5vw;
+        left: 12.5vw;
+    }
+
+    .bank-price {
+        font-size: 4vw;
+        top: 31vw;
+    }
+
+    .bank-message.bubble-conversation {
+        &.player {
+            font-size: 1.5vw;
+            top: 19.7vw;
+            left: -14vw;
+            zoom: 1.5;
+        }
+
+        &.banker {
+            font-size: 1.5vw;
+            top: -4vw;
+            left: 42.8vw;
+            zoom: 1.5;
+        }
+    }*/
 }
 </style>

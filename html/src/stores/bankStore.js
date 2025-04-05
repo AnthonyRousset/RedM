@@ -19,14 +19,6 @@ export const useBankStore = defineStore('bank', {
                 category: 0
             },
             {
-                id: 'coca_seeds',
-                quantity: 2,
-                quality: 100,
-                weight: 1,
-                tags: [],
-                category: 0
-            },
-            {
                 id: 'cocaine',
                 quantity: 2,
                 quality: 100,

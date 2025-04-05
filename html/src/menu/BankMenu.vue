@@ -177,6 +177,20 @@ const createBank = () => {
     sendNui('bank-createAccount-' + bankStore.id, { id: bankStore.id })
 }
 
+//bank-stock-add-{ID}
+//bank-stock-remove-{ID}
+
+const stockAdd = (id) => {
+    console.log('bank-stock-add-' + id)
+    sendNui('bank-stock-add-' + id, { id: id })
+}
+
+const stockRemove = (id) => {
+    console.log('bank-stock-remove-' + id)
+    sendNui('bank-stock-remove-' + id, { id: id })
+}
+
+
 
 const switchBank = (bank) => {
     // switch the bank view 
@@ -184,7 +198,7 @@ const switchBank = (bank) => {
     setTimeout(() => {
         bankView.value = bank;
         isSwitching.value = false;
-    }, 1000);
+    }, 100);
 }
 
 setTimeout(() => {
@@ -251,14 +265,9 @@ setTimeout(() => {
                     <div class="vault">
                         <div class="emplacements">
                             <ul>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
-                                </li>
-                                <li>
-                                    <img src="/images/items/pickaxe.png" alt="">
+                                <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }">
+                                    <img v-if="bankStore.stock && bankStore.stock[index - 1]"
+                                        :src="'/images/items/' + bankStore.stock[index - 1].id + '.png'" alt="">
                                 </li>
                             </ul>
                         </div>
@@ -267,6 +276,24 @@ setTimeout(() => {
                         </div>
                     </div>
                     <div class="bag">
+                        <div class="filter">
+                            <div class="filter-container">
+                                <div class="filter-button">Armes</div>
+                                <div class="filter-button">Munitions</div>
+                                <div class="filter-button">Consommables</div>
+                                <div class="filter-button">Objets</div>
+                                <div class="filter-button">Autres</div>
+                            </div>
+                        </div>
+                        <div class="filter">
+                            <div class="filter-container">
+                                <div class="filter-button">Poids</div>
+                                <div class="filter-button">Quantité</div>
+                            </div>
+                            <div class="filter-container">
+                                <input type="text" placeholder="Rechercher" class="search-input">
+                            </div>
+                        </div>
                         <div class="inventory">
                             <PerfectScrollbar>
                                 <ul>
@@ -289,12 +316,8 @@ setTimeout(() => {
         </div>
     </div>
     <div class="bank-conversation" v-else-if="uiStore.isClosing">
-        <div class="bubble">
-            Au revoir, m'sieur le banquier !
-        </div>
-        <div class="bank-person">Moi</div><span> Au revoir, m'sieur le banquier ! </span>
-    </div>
 
+    </div>
     <div class="bank-conversation" v-else>
         <div class="bubble" @click="switchBank('account')" v-if="bankView === 'vault'">
             Hé là, m'sieur le banquier ! J'viens voir mes économies !
@@ -302,17 +325,42 @@ setTimeout(() => {
         <div class="bubble" @click="switchBank('vault')" v-if="bankView === 'account'">
             J'aimerais jeter un œil à mon coffre, si vous l'permettez.
         </div>
+        <div class="bubble" @click="close">
+            Au revoir, m'sieur le banquier !
+        </div>
     </div>
 
     <!-- Tooltip global -->
-    <div class="global-tooltip" v-if="tooltipData" :style="{left: tooltipPosition.x + 'vw', top: tooltipPosition.y + 'vh'}">
+    <div class="global-tooltip" v-if="tooltipData"
+        :style="{ left: tooltipPosition.x + 'vw', top: tooltipPosition.y + 'vh' }">
         <div class="bottom">
             <div class="tooltip-title">{{ tooltipData.itemDetails.name }}</div>
             <div class="tooltip-description">{{ tooltipData.itemDetails.description }}</div>
+            <div class="tooltip-bonus" v-if="tooltipData.itemDetails.bonus && tooltipData.itemDetails.bonus.length > 0">
+                <div class="bonus-value" v-for="bonus in tooltipData.itemDetails.bonus" :key="bonus.name">
+                    <div>{{ bonus.name }} : <span>{{ bonus.value }}</span></div>
+                    <div class="bonus-duration" v-if="bonus.duration"><span>{{ bonus.duration }} </span> s</div>
+                </div>
+            </div>
+            <div class="tooltip-malus" v-if="tooltipData.itemDetails.malus && tooltipData.itemDetails.malus.length > 0">
+                <div class="malus-value" v-for="malus in tooltipData.itemDetails.malus" :key="malus.name">
+                    <div>{{ malus.name }} : <span>{{ malus.value }}</span></div>
+                    <div class="malus-duration" v-if="malus.duration"><span>{{ malus.duration }} </span> s</div>
+                </div>
+            </div>
             <div class="tooltip-stats" v-if="tooltipData.item.quality">
                 <div class="stat">
                     <div class="stat-label">Qualité</div>
-                    <div class="stat-value">{{ tooltipData.item.quality }}%</div>
+                    <div class="stat-value"><span>{{ tooltipData.item.quality }} </span> %</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Poids</div>
+                    <div class="stat-value"><span>{{ tooltipData.itemDetails.weight / 1000 }} </span> kg</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label"></div>
+                    <div class="stat-value">Total <span>{{ tooltipData.itemDetails.weight / 1000 * tooltipData.item.quantity
+                            }} </span> kg</div>
                 </div>
             </div>
             <div class="tooltip-tags" v-if="tooltipData.item.tags && tooltipData.item.tags.length > 0">
@@ -537,10 +585,10 @@ h2 {
         }
 
         &.player {
-right: 30.25vw;
-    width: 18.55vw;
-    height: 12.15vw;
-    top: 4.05vw;
+            right: 30.25vw;
+            width: 18.55vw;
+            height: 12.15vw;
+            top: 4.05vw;
             background-image: url('/images/bubble-think.png');
 
             span {
@@ -566,10 +614,10 @@ right: 30.25vw;
         }
 
         &.banker {
-    left: 28.75vw;
-    width: 17.55vw;
-    height: 11.15vw;
-    top: -2.15vw;
+            left: 28.75vw;
+            width: 17.55vw;
+            height: 11.15vw;
+            top: -2.15vw;
             background-image: url('/images/bubble-message.png');
 
             span {
@@ -601,6 +649,9 @@ right: 30.25vw;
     bottom: 1.5vw;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     .bubble {
         background-color: #00000096;
@@ -788,10 +839,11 @@ right: 30.25vw;
 
 .vault {
     position: absolute;
+    position: absolute;
     top: calc(50% - 23vw);
     right: 4vw;
-    width: 25vw;
-    height: 40vw;
+    width: 21vw;
+    height: 33vw;
     background-image: url(/images/bank/bank-vault.png);
     background-size: cover;
     background-repeat: no-repeat;
@@ -799,23 +851,18 @@ right: 30.25vw;
 
     .emplacements {
         position: absolute;
-        bottom: 8vw;
-        left: 3vw;
-        width: 19vw;
-        height: 6vw;
+        bottom: 6vw;
 
         ul {
             height: 100%;
             list-style: none;
-            margin: 0;
+            margin: 0 2vw;
             padding: 0;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1vw;
 
             li {
-                width: 100%;
-                height: 100%;
                 background-color: rgba(0, 0, 0, 0.24);
                 box-shadow: inset 0 0 0.5vw 0.1vw rgba(0, 0, 0, 0.59);
                 border: 0.05vw solid rgba(255, 215, 0, 0.2);
@@ -824,11 +871,15 @@ right: 30.25vw;
                 align-items: center;
                 justify-content: center;
                 transition: all 0.2s ease;
-                cursor: pointer;
+                aspect-ratio: 1;
 
-                &:hover {
-                    box-shadow: 0 0 0.5vw 0.1vw rgba(255, 215, 0, 0.3);
-                    border-color: rgba(255, 215, 0, 0.4);
+                &:not(.empty) {
+                    cursor: pointer;
+
+                    &:hover {
+                        box-shadow: 0 0 0.5vw 0.1vw rgba(255, 215, 0, 0.3);
+                        border-color: rgba(255, 215, 0, 0.4);
+                    }
                 }
 
                 img {
@@ -856,16 +907,57 @@ right: 30.25vw;
     position: absolute;
     top: calc(50% - 23vw);
     left: 4vw;
-    width: 31vw;
-    height: 40vw;
+    width: 26vw;
+    height: 34vw;
     background-image: url(/images/player/player-inventory.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
 
+    .filter {
+        display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 5vw;
+            left: 1vw;
+            right: 1vw;
+    }
+
+    .filter-container {
+        background-color: #291b12;
+        border: 3px solid #4b2d17;
+        border-radius: 500px;
+        display: flex;
+        gap: 0.5vw;
+        box-shadow: inset 0 0px 2px 2px rgb(0 0 0 / 30%), 0 0px 2px 2px rgb(0 0 0 / 30%);
+    }
+
+    .filter-button {
+        background-color: transparent;
+        border: none;
+        border-radius: 50%;
+        width: 2vw;
+        height: 2vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .filter-button:hover {
+        background-color: transparent;
+    }
+
+    .filter-button i {
+        color: #f3e2c7;
+        font-size: 16px;
+    }
+
     .inventory {
         position: absolute;
-        top: 9vw;
+        top: 8vw;
         left: 1vw;
         right: 1vw;
         bottom: 1vw;
@@ -885,11 +977,10 @@ right: 30.25vw;
             max-height: 100%;
             list-style: none;
             margin: 0;
-            padding: 0;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 0.8vw;
-            padding: 1vw;
+            padding: 1.5vw 1vw 2vw;
 
             li {
                 width: 100%;
@@ -944,6 +1035,10 @@ right: 30.25vw;
         font-family: "Special Elite", serif;
         pointer-events: none;
         position: relative;
+        background-image: url(/images/player/player-inventory-bg_item.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
 
         .tooltip-title {
             font-size: 1.2vw;
@@ -963,6 +1058,48 @@ right: 30.25vw;
             color: #f5e6c9;
         }
 
+        .tooltip-bonus {
+            margin-bottom: 0.5vw;
+
+            .bonus-value {
+                font-size: 0.7vw;
+                color: #a8854d;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                span {
+                    color: #00ff00;
+                }
+            }
+
+            .bonus-duration {
+                font-size: 0.7vw;
+                color: #fff;
+            }
+        }
+
+        .tooltip-malus {
+            margin-bottom: 0.5vw;
+
+            .malus-value {
+                font-size: 0.7vw;
+                color: #a8854d;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                span {
+                    color: #ff0000;
+                }
+            }
+
+            .malus-duration {
+                font-size: 0.7vw;
+                color: #fff;
+            }
+        }
+
         .tooltip-stats {
             margin-bottom: 0.5vw;
 
@@ -978,7 +1115,11 @@ right: 30.25vw;
 
                 .stat-value {
                     font-size: 0.7vw;
-                    color: white;
+                    color: #bb9a66;
+
+                    span {
+                        color: white;
+                    }
                 }
             }
         }
@@ -997,164 +1138,5 @@ right: 30.25vw;
             }
         }
     }
-}
-
-@media (min-width: 2500px) {
-/*
-    .bank-account {
-        width: 40vw;
-        height: 29vw;
-    }
-
-    .balance-title {
-        font-size: 2.5vw;
-        top: 14.55vw;
-        right: 20vw;
-    }
-
-    .balance-amount {
-        font-size: 2.1vw;
-        top: 19.55vw;
-        right: 8.2vw;
-        width: 21.8vw;
-    }
-
-    .balance {
-        font-size: 2.5vw;
-        top: 14.65vw;
-        right: 8.2vw;
-    }
-
-    .fake-input {
-        font-size: 2.5vw;
-        top: 19.75vw;
-        right: 7.95vw;
-        width: 7.5vw;
-
-        .placeholder {
-            font-size: 2.5vw;
-            top: 0.1vw;
-            right: 0.25vw;
-        }
-    }
-
-    .actions {
-        top: 25.15vw;
-        right: 2.25vw;
-
-        .btn-western {
-            font-size: 2.5vw;
-            padding: 1vw 0.9vw;
-        }
-    }
-
-
-    .bank-title {
-        font-size: 3vw;
-        top: 13.5vw;
-        right: 7.5vw;
-        left: 7.5vw;
-    }
-
-    .bank-price {
-        font-size: 3vw;
-        top: 21vw;
-    }
-
-    .bank-message.bubble-conversation {
-        &.player {
-            font-size: 1.5vw;
-            top: 10.5vw;
-            right: 29.2vw;
-            zoom: 1.5;
-        }
-
-        &.banker {
-            font-size: 1.5vw;
-            top: -4vw;
-            right: 29.2vw;
-            zoom: 1.5;
-        }
-    }*/
-}
-
-@media (min-width: 3500px) {
-/*
-    .bank-account {
-        width: 60vw;
-        height: 44vw;
-    }
-
-    .balance-title {
-        font-size: 4vw;
-        top: 21.7vw;
-        right: 29vw;
-    }
-
-    .balance-amount {
-        font-size: 3.1vw;
-        top: 28.65vw;
-        right: 10.5vw;
-        width: 32.65vw;
-    }
-
-    .balance {
-        font-size: 4vw;
-        top: 21.55vw;
-        right: 12vw;
-    }
-
-    .fake-input {
-        font-size: 4vw;
-        top: 28.85vw;
-        right: 12vw;
-        width: 11.5vw;
-        height: 3.75vw;
-
-        .placeholder {
-            font-size: 4vw;
-            top: 0.5vw;
-            right: 0.25vw;
-        }
-    }
-
-    .actions {
-        top: 38.25vw;
-        right: 2.75vw;
-
-        .btn-western {
-            font-size: 2vw;
-            padding: 1.25vw 0.9vw;
-        }
-    }
-
-
-    .bank-title {
-        font-size: 4vw;
-        top: 20vw;
-        right: 12.5vw;
-        left: 12.5vw;
-    }
-
-    .bank-price {
-        font-size: 4vw;
-        top: 31vw;
-    }
-
-    .bank-message.bubble-conversation {
-        &.player {
-            font-size: 1.5vw;
-            top: 19.7vw;
-            left: -14vw;
-            zoom: 1.5;
-        }
-
-        &.banker {
-            font-size: 1.5vw;
-            top: -4vw;
-            left: 42.8vw;
-            zoom: 1.5;
-        }
-    }*/
 }
 </style>

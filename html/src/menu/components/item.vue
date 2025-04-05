@@ -70,14 +70,15 @@ const handleMouseLeave = () => {
 
         .quantity {
             position: absolute;
-            bottom: 5%;
-            right: 5%;
-            background-color: rgba(0, 0, 0, 0.7);
+            bottom: 0;
+            left: 0;
+            background-color: rgb(0 0 0 / 28%);
             color: white;
             padding: 0.1vw 0.3vw;
             border-radius: 0.15vw;
-            font-size: 0.8vw;
+            font-size: 1vw;
             font-weight: bold;
+            font-family: sans-serif;
         }
     }
 
@@ -85,8 +86,8 @@ const handleMouseLeave = () => {
         width: 65%;
         height: 65%;
         position: absolute;
-        bottom: -0.45vw;
-        right: -0.45vw;
+        top: -0.75vw;
+        right: -0.75vw;
 
         img {
             width: 100%;

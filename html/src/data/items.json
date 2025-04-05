@@ -4,16 +4,28 @@
       "name": "Gourde",
       "id": "water_bottle",
       "category": 2,
-      "weight": 1,
+      "weight": 1000,
       "tags": ["food"],
+      "bonus": [
+        {
+          "name": "Soif",
+          "value": "+50"
+        }
+      ],
       "description": "Une gourde pour transporter de l'eau. Essentielle pour survivre dans le désert."
     },
     {
       "name": "Pain Rustique",
       "id": "rustic_bread",
       "category": 1,
-      "weight": 0.5,
+      "weight": 500,
       "tags": ["food"],
+      "bonus": [
+        {
+          "name": "Hunger",
+          "value": "+10"
+        }
+      ],
       "description": "Un pain fraîchement cuit. Restaure votre faim."
     },
     {
@@ -100,7 +112,7 @@
       "name": "Graines de Canne à Sucre",
       "id": "sugarcane_seeds",
       "category": 4,
-      "weight": 10,
+      "weight": 100,
       "tags": ["crafting"],
       "description": "Des graines de canne à sucre pour la culture."
     },
@@ -110,6 +122,12 @@
       "category": 1,
       "weight": 1000,
       "tags": ["crafting", "food", "animals"],
+      "bonus": [
+        {
+          "name": "Hunger",
+          "value": "+20"
+        }
+      ],
       "description": "De la viande de cerf cuite. Restaure votre faim."
     },
     {
@@ -118,7 +136,24 @@
       "category": 4,
       "weight": 200,
       "tags": ["drug"],
-      "description": "De la cocaïne pure. Substance illégale."
+      "description": "De la cocaïne pure. Substance illégale.",
+      "bonus": [
+        {
+          "name": "Energie",
+          "value": "illimité",
+          "duration": 60
+        }
+      ],
+      "malus": [
+        {
+          "name": "Soif",
+          "value": "-10"
+        },
+        {
+          "name": "Faim",
+          "value": "-10"
+        }
+      ]
     },
     {
       "name": "Graines de Coca",

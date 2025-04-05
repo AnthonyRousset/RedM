@@ -13,6 +13,7 @@
         "vue": "*"
     },
     "dependencies": {
+        "@vueform/multiselect": "^2.6.11",
         "pinia": "^3.0.1",
         "vue3-perfect-scrollbar": "^2.0.0",
         "vuedraggable": "^4.1.0"

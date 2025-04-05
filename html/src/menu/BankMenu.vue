@@ -6,6 +6,8 @@ import { usePlayerStore } from '../stores/playerStore'
 import { useBankStore } from '../stores/bankStore'
 import Item from './components/item.vue'
 import itemsData from '../data/items.json'
+import Multiselect from '@vueform/multiselect'
+import '@vueform/multiselect/themes/default.css'
 
 const playerStore = usePlayerStore()
 const bankStore = useBankStore()
@@ -22,10 +24,25 @@ const playerMessage = ref('');
 const bankMessage = ref('');
 const bankView = ref('account');
 const isSwitching = ref(false);
+const selectedFilter = ref('all');
 
 // Gestion du tooltip global
 const tooltipData = ref(null)
 const tooltipPosition = ref({ x: 0, y: 0 })
+
+const filterOptions = [
+    { value: 'all', label: 'TOUS', icon: '/images/player/player-inventory-all.svg' },
+    { value: 'weapons', label: 'ARMES', icon: '/images/player/player-inventory-weapons.svg' },
+    { value: 'food', label: 'NOURRITURE', icon: '/images/player/player-inventory-food.svg' },
+    { value: 'medical', label: 'MÉDICAL', icon: '/images/player/player-inventory-medical.svg' },
+    { value: 'drug', label: 'DROGUES', icon: '/images/player/player-inventory-drug.svg' },
+    { value: 'crafting', label: 'ARTISANAT', icon: '/images/player/player-inventory-crafting.svg' },
+    { value: 'animals', label: 'ANIMAUX', icon: '/images/player/player-inventory-animals.svg' },
+    { value: 'tools', label: 'OUTILS', icon: '/images/player/player-inventory-tools.svg' },
+    { value: 'clothes', label: 'VÊTEMENTS' },
+    { value: 'documents', label: 'DOCUMENTS' },
+    { value: 'quest', label: 'QUEST' }
+];
 
 // Afficher le tooltip
 const showTooltip = (data) => {
@@ -180,17 +197,15 @@ const createBank = () => {
 //bank-stock-add-{ID}
 //bank-stock-remove-{ID}
 
-const stockAdd = (id) => {
+const stockAdd = (id, complexId = null) => {
     console.log('bank-stock-add-' + id)
-    sendNui('bank-stock-add-' + id, { id: id })
+    sendNui('bank-stock-add-' + id, { id: id, complexId: complexId })
 }
 
-const stockRemove = (id) => {
+const stockRemove = (id, complexId = null) => {
     console.log('bank-stock-remove-' + id)
-    sendNui('bank-stock-remove-' + id, { id: id })
+    sendNui('bank-stock-remove-' + id, { id: id, complexId: complexId })
 }
-
-
 
 const switchBank = (bank) => {
     // switch the bank view 
@@ -200,6 +215,26 @@ const switchBank = (bank) => {
         isSwitching.value = false;
     }, 100);
 }
+
+// Fonction de filtrage
+const filter = (value) => {
+    selectedFilter.value = value;
+    // Ajoutez ici la logique de filtrage si nécessaire
+};
+
+const sortByWeight = (order) => {
+    playerStore.inventory.sort((a, b) => {
+        const weightA = a.details.weight * a.quantity;
+        const weightB = b.details.weight * b.quantity;
+        return order === 'asc' ? weightA - weightB : weightB - weightA;
+    });
+};
+
+const sortByQuantity = (order) => {
+    playerStore.inventory.sort((a, b) => {
+        return order === 'asc' ? a.quantity - b.quantity : b.quantity - a.quantity;
+    });
+};
 
 setTimeout(() => {
     bankStore.isLoading = false;
@@ -213,59 +248,59 @@ setTimeout(() => {
         <div class="bank-container" :class="{ '__closing': uiStore.isClosing || isSwitching }">
             <div class="bank-loading" v-if="bankStore.isLoading">
                 <div class="loading">
-                    <span class="one">.</span>
-                    <span class="two">.</span>
-                    <span class="three">.</span>
-                </div>
-                <button class="close" @click="close">X</button>
+                <span class="one">.</span>
+                <span class="two">.</span>
+                <span class="three">.</span>
             </div>
+            <button class="close" @click="close">X</button>
+        </div>
             <div class="bank-open" v-else-if="!bankStore.getBankAccountIsCreated">
-                <!-- Voulez vous ouvrir une banque ? -->
-                <div class="bank-title"> Voulez vous ouvrir un coffre-fort pour <span>10$</span> ? </div>
+            <!-- Voulez vous ouvrir une banque ? -->
+            <div class="bank-title"> Voulez vous ouvrir un coffre-fort pour <span>10$</span> ? </div>
 
-                <div class="form">
-                    <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
-                </div>
-                <button class="close" @click="close">X</button>
+            <div class="form">
+                <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
             </div>
+            <button class="close" @click="close">X</button>
+        </div>
             <div class="container" v-else>
                 <div class="bank-account" v-if="bankView === 'account'">
-                    <div class="balance-title"> {{ playerStore.name }} </div>
+            <div class="balance-title"> {{ playerStore.name }} </div>
 
-                    <div class="balance">{{ bankStore.getBalanceDollars }}</div>
+            <div class="balance">{{ bankStore.getBalanceDollars }}</div>
 
-                    <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
+            <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
 
 
-                    <div class="bank-message bubble-conversation player" :class="{ active: playerMessage }">
-                        <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>
-                    </div>
+            <div class="bank-message bubble-conversation player" :class="{ active: playerMessage }">
+                <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>
+            </div>
 
-                    <div class="bank-message bubble-conversation banker" :class="{ active: bankMessage }">
-                        <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span>
-                    </div>
+            <div class="bank-message bubble-conversation banker" :class="{ active: bankMessage }">
+                <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span>
+            </div>
 
-                    <div class="form">
-                        <div class="fake-input">
+            <div class="form">
+                <div class="fake-input">
                             <span contenteditable="true" @keydown="handleKeyDown" @input="updateAmount"
                                 @blur="updateAmount" ref="editableSpan"
                                 :class="{ error: playerMessage || bankMessage }"></span>
-                            <div v-if="showPlaceholder" class="placeholder">0</div>
-                        </div>
-                    </div>
+                    <div v-if="showPlaceholder" class="placeholder">0</div>
+                </div>
+            </div>
 
-                    <div class="actions">
-                        <button class="btn-western deposit" @click="deposit">Déposer</button>
-                        <button class="btn-western withdraw" @click="withdraw">Retirer</button>
-                    </div>
+            <div class="actions">
+                <button class="btn-western deposit" @click="deposit">Déposer</button>
+                <button class="btn-western withdraw" @click="withdraw">Retirer</button>
+            </div>
 
-                    <button class="close" @click="close">X</button>
+            <button class="close" @click="close">X</button>
                 </div>
                 <div class="bank-vault" v-else-if="bankView === 'vault'">
                     <div class="vault">
                         <div class="emplacements">
                             <ul>
-                                <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }">
+                                <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }" @click="stockRemove(bankStore.stock[index - 1].id, bankStore.stock[index - 1].complexId)">
                                     <img v-if="bankStore.stock && bankStore.stock[index - 1]"
                                         :src="'/images/items/' + bankStore.stock[index - 1].id + '.png'" alt="">
                                 </li>
@@ -277,18 +312,59 @@ setTimeout(() => {
                     </div>
                     <div class="bag">
                         <div class="filter">
-                            <div class="filter-container">
-                                <div class="filter-button">Armes</div>
-                                <div class="filter-button">Munitions</div>
-                                <div class="filter-button">Consommables</div>
-                                <div class="filter-button">Objets</div>
-                                <div class="filter-button">Autres</div>
+                            <div class="select-container">
+                                <Multiselect
+                                    v-model="selectedFilter"
+                                    :options="filterOptions"
+                                    :searchable="false"
+                                    :close-on-select="true"
+                                    :preserve-search="false"
+                                    placeholder="Sélectionner un filtre"
+                                    track-by="value"
+                                    label="label"
+                                    @change="filter"
+                                >
+                                    <template #option="{ option }">
+                                        <div class="option-content">
+                                            <img v-if="option.icon" :src="option.icon" :alt="option.label" class="option-icon">
+                                            <span>{{ option.label }}</span>
+                                        </div>
+                                    </template>
+                                </Multiselect>
                             </div>
                         </div>
-                        <div class="filter">
+                        <div class="filter1">
                             <div class="filter-container">
-                                <div class="filter-button">Poids</div>
-                                <div class="filter-button">Quantité</div>
+                                <div class="filter-group">
+                                    <div class="filter-label">Poids</div>
+                                    <div class="filter-buttons">
+                                        <button class="filter-button" @click="sortByWeight('asc')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M7 14l5-5 5 5z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="filter-button" @click="sortByWeight('desc')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M7 10l5 5 5-5z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="filter-group">
+                                    <div class="filter-label">Quantité</div>
+                                    <div class="filter-buttons">
+                                        <button class="filter-button" @click="sortByQuantity('asc')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M7 14l5-5 5 5z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="filter-button" @click="sortByQuantity('desc')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M7 10l5 5 5-5z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="filter-container">
                                 <input type="text" placeholder="Rechercher" class="search-input">
@@ -297,15 +373,15 @@ setTimeout(() => {
                         <div class="inventory">
                             <PerfectScrollbar>
                                 <ul>
-                                    <li v-for="(item, index) in playerStore.inventory" :key="index">
+                                    <li v-for="(item, index) in playerStore.inventory" :key="index" @click="stockAdd(item.id, item.complexId)">
                                         <Item :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
                                     </li>
                                 </ul>
                             </PerfectScrollbar>
                         </div>
-                    </div>
+        </div>
 
-                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -317,11 +393,11 @@ setTimeout(() => {
     </div>
     <div class="bank-conversation" v-else-if="uiStore.isClosing">
 
-    </div>
-    <div class="bank-conversation" v-else>
+        </div>
+        <div class="bank-conversation" v-else>
         <div class="bubble" @click="switchBank('account')" v-if="bankView === 'vault'">
             Hé là, m'sieur le banquier ! J'viens voir mes économies !
-        </div>
+            </div>
         <div class="bubble" @click="switchBank('vault')" v-if="bankView === 'account'">
             J'aimerais jeter un œil à mon coffre, si vous l'permettez.
         </div>
@@ -432,22 +508,22 @@ $animation-timing: 0.6s ease-out;
 
     span {
         font-size: 4vw;
-        font-weight: bold;
+    font-weight: bold;
         color: $color-gold;
 
         &.one {
-            animation: blink 1.5s infinite;
-            animation-delay: 0.5s;
-        }
+    animation: blink 1.5s infinite;
+    animation-delay: 0.5s;
+}
 
         &.two {
-            animation: blink 1.5s infinite;
-            animation-delay: 1s;
-        }
+    animation: blink 1.5s infinite;
+    animation-delay: 1s;
+}
 
         &.three {
-            animation: blink 1.5s infinite;
-            animation-delay: 1.5s;
+    animation: blink 1.5s infinite;
+    animation-delay: 1.5s;
         }
     }
 }
@@ -580,7 +656,7 @@ h2 {
         &.banker,
         &.player {
             &.active {
-                opacity: 1 !important;
+    opacity: 1 !important;
             }
         }
 
@@ -589,25 +665,25 @@ h2 {
             width: 18.55vw;
             height: 12.15vw;
             top: 4.05vw;
-            background-image: url('/images/bubble-think.png');
+    background-image: url('/images/bubble-think.png');
 
             span {
                 font-size: 0.9vw;
                 padding: 2.85vw 4.5vw 0 3.75vw;
-                display: inline-block;
-                text-align: center;
-            }
+    display: inline-block;
+    text-align: center;
+}
 
             .bank-person {
-                position: absolute;
+    position: absolute;
                 top: -0.75vw;
                 left: calc(50% - 1vw);
-                transform: translateX(-50%);
-                width: calc(initial - 50%);
-                background-color: rgb(77, 27, 27);
-                color: #ffffff;
+    transform: translateX(-50%);
+    width: calc(initial - 50%);
+    background-color: rgb(77, 27, 27);
+    color: #ffffff;
                 font-size: 1vw;
-                text-align: center;
+    text-align: center;
                 padding: 0.25vw 0.5vw;
                 border-radius: 0.25vw;
             }
@@ -618,25 +694,25 @@ h2 {
             width: 17.55vw;
             height: 11.15vw;
             top: -2.15vw;
-            background-image: url('/images/bubble-message.png');
+    background-image: url('/images/bubble-message.png');
 
             span {
                 font-size: 1vw;
                 padding: 2.5vw 4.15vw 0 2.15vw;
-                display: inline-block;
-                text-align: center;
-            }
+    display: inline-block;
+    text-align: center;
+}
 
             .bank-person {
-                position: absolute;
+    position: absolute;
                 top: -0.5vw;
                 left: calc(50% - 1vw);
-                transform: translateX(-50%);
-                width: calc(initial - 50%);
-                background-color: rgb(77, 27, 27);
-                color: #ffffff;
+    transform: translateX(-50%);
+    width: calc(initial - 50%);
+    background-color: rgb(77, 27, 27);
+    color: #ffffff;
                 font-size: 1vw;
-                text-align: center;
+    text-align: center;
                 padding: 0.25vw 0.5vw;
                 border-radius: 0.25vw;
             }
@@ -710,32 +786,32 @@ h2 {
     cursor: pointer;
 
     span {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        cursor: pointer;
-        outline: none;
-        z-index: 1;
-        position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+    outline: none;
+    z-index: 1;
+    position: relative;
 
         &.error {
-            color: rgb(150, 17, 17);
-        }
+    color: rgb(150, 17, 17);
+}
 
         &:after {
-            content: '';
+    content: '';
             box-shadow: 0 0.05vw 1.75vw 0.3vw #000000;
-            width: 100%;
+    width: 100%;
             height: 0;
-            display: none;
+    display: none;
         }
-    }
+}
 
     .placeholder {
-        color: #666666a3;
-        position: absolute;
+    color: #666666a3;
+    position: absolute;
         top: 0.3vw;
         right: 0.25vw;
     }
@@ -801,10 +877,10 @@ h2 {
     gap: 0.4vw;
 
     &:hover {
-        background: linear-gradient(145deg, #5f422c, #3a2617);
-        border-color: #e2c87d;
-        color: #ffefbb;
-        box-shadow:
+    background: linear-gradient(145deg, #5f422c, #3a2617);
+    border-color: #e2c87d;
+    color: #ffefbb;
+    box-shadow:
             inset 0 0.05vw 0 #fff5d2,
             0 0.2vw 0.6vw rgba(0, 0, 0, 0.8),
             0 0 0.3vw #e6c47c;
@@ -812,7 +888,7 @@ h2 {
 
     &:active {
         transform: translateY(0.1vw);
-        box-shadow:
+    box-shadow:
             inset 0 0.1vw 0.2vw #1e1208,
             0 0.05vw 0.1vw rgba(0, 0, 0, 0.5);
     }
@@ -828,9 +904,9 @@ h2 {
     border-color: #c0745c;
 
     &:hover {
-        background: linear-gradient(145deg, #8a3b23, #4d1f12);
-        border-color: #ffb29e;
-        box-shadow:
+    background: linear-gradient(145deg, #8a3b23, #4d1f12);
+    border-color: #ffb29e;
+    box-shadow:
             inset 0 0.05vw 0 #ffd9ca,
             0 0.2vw 0.6vw rgba(0, 0, 0, 0.8),
             0 0 0.3vw #ffb29e;
@@ -916,12 +992,19 @@ h2 {
 
     .filter {
         display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 5vw;
-            left: 1vw;
-            right: 1vw;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 5vw;
+        left: 1vw;
+        right: 1vw;
+    }
+
+    .select-container {
+        position: relative;
+        width: auto;
+        min-width: 12vw;
+        max-width: 15vw;
     }
 
     .filter-container {
@@ -943,7 +1026,70 @@ h2 {
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: background 0.2s;
+        transition: all 0.3s ease;
+        position: relative;
+
+        svg {
+            color: #d9bb74;
+        }
+        
+        &:hover {
+            background-color: rgba(168, 133, 77, 0.2);
+            .tooltip {
+                opacity: 1;
+            }
+        }
+        
+        &.active {
+            background-color: rgba(168, 133, 77, 0.4);
+            box-shadow: 0 0 0.4vw rgba(255, 215, 0, 0.5);
+        }
+        
+        .tooltip {
+            position: absolute;
+            bottom: -2.2vw;
+            left: 50%;
+            transform: translateX(-50%) translateY(-0.5vw);
+            min-width: 5vw;
+            background-color: rgba(30, 20, 10, 0.9);
+            color: #d9bb74;
+            font-size: 0.7vw;
+            padding: 0.3vw 0.6vw;
+            border-radius: 0.2vw;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            font-family: $font-family-primary;
+            text-align: center;
+            white-space: nowrap;
+            z-index: 1000;
+            border: 0.05vw solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 0.4vw rgba(0, 0, 0, 0.5);
+            text-shadow: 0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.8);
+            
+            &:before {
+                content: '';
+                position: absolute;
+                top: -0.4vw;
+                left: 50%;
+                transform: translateX(-50%);
+                border-width: 0.2vw;
+                border-style: solid;
+                border-color: transparent transparent rgba(30, 20, 10, 0.9) transparent;
+            }
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+            
+            &:hover {
+                opacity: 1;
+            }
+        }
     }
 
     .filter-button:hover {
@@ -1135,6 +1281,256 @@ h2 {
                 color: #ffffff;
                 padding: 0.35vw 0.4vw 0.1vw 0.4vw;
                 border-radius: 0.15vw;
+            }
+        }
+    }
+}
+
+.select-container {
+    position: relative;
+    width: 100%;
+    
+    .custom-select {
+        width: 100%;
+        padding: 0.5vw 2vw 0.5vw 1vw;
+        font-family: $font-family-primary;
+        font-size: 1vw;
+        color: #d9bb74;
+        background-color: #291b12;
+        border: 0.15vw solid #4b2d17;
+        border-radius: 0.5vw;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d9bb74'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.5vw center;
+        background-size: 1.5vw;
+        box-shadow: inset 0 0.05vw 0.2vw rgba(0, 0, 0, 0.3);
+        
+        &:hover {
+            border-color: #6d3d27;
+            background-color: #3a2318;
+        }
+        
+        &:focus {
+            outline: none;
+            border-color: #d9bb74;
+            box-shadow: 0 0 0.2vw rgba(217, 187, 116, 0.5);
+        }
+        
+        option {
+            background-color: #291b12;
+            color: #d9bb74;
+            padding: 0.5vw;
+            
+            &:hover {
+                background-color: #3a2318;
+            }
+        }
+    }
+}
+
+// Styles personnalisés pour Multiselect
+:deep(.multiselect) {
+    width: 100%;
+    background-color: #291b12;
+    border: 0.15vw solid #4b2d17;
+    border-radius: 0.5vw;
+    min-height: 2.5vw;
+    font-family: $font-family-primary;
+    font-size: 1vw;
+    color: #d9bb74;
+    box-shadow: inset 0 0.05vw 0.2vw rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+        border-color: #6d3d27;
+        background-color: #3a2318;
+    }
+
+    &.is-active {
+        border-color: #d9bb74;
+        box-shadow: 0 0 0.2vw rgba(217, 187, 116, 0.5);
+    }
+
+    .multiselect-dropdown {
+        background-color: #291b12;
+        border: 0.15vw solid #4b2d17;
+        border-radius: 0.5vw;
+        box-shadow: 0 0.2vw 0.5vw rgba(0, 0, 0, 0.5);
+        margin-top: 0.2vw;
+
+        // Style de la barre de défilement
+        &::-webkit-scrollbar {
+            width: 0.4vw;
+            background-color: #291b12;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #4b2d17, #6d3d27);
+            border-radius: 0.2vw;
+            border: 0.05vw solid #291b12;
+            box-shadow: inset 0 0 0.2vw rgba(0, 0, 0, 0.5);
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: #291b12;
+            border-radius: 0.2vw;
+            box-shadow: inset 0 0 0.2vw rgba(0, 0, 0, 0.3);
+        }
+
+        // Pour Firefox
+        scrollbar-width: thin;
+        scrollbar-color: #4b2d17 #291b12;
+    }
+
+    .multiselect-option {
+        padding: 0.5vw 1vw;
+        color: #d9bb74;
+        font-family: $font-family-primary;
+        font-size: 1vw;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: #3a2318;
+        }
+
+        &.is-selected {
+            background-color: rgba(168, 133, 77, 0.4);
+            color: #fff6dc;
+        }
+
+        .option-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+
+            .option-icon {
+                width: 1.2vw;
+                height: 1.2vw;
+                object-fit: contain;
+            }
+        }
+    }
+
+    .multiselect-search {
+        background-color: #291b12;
+        border: 0.15vw solid #4b2d17;
+        color: #d9bb74;
+        font-family: $font-family-primary;
+        font-size: 1vw;
+        padding: 0.5vw;
+        margin: 0.5vw;
+        width: calc(100% - 1vw);
+        border-radius: 0.25vw;
+
+        &:focus {
+            outline: none;
+            border-color: #d9bb74;
+            box-shadow: 0 0 0.2vw rgba(217, 187, 116, 0.5);
+        }
+    }
+
+    .multiselect-single-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5vw;
+        padding: 0.5vw;
+
+        img {
+            width: 1.2vw;
+            height: 1.2vw;
+            object-fit: contain;
+        }
+    }
+
+    .multiselect-caret {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d9bb74'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 1.5vw;
+        width: 1.5vw;
+        height: 1.5vw;
+        margin-right: 0.5vw;
+    }
+}
+
+.filter1 {
+    position: absolute;
+    top: 8vw;
+    left: 1vw;
+    right: 1vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1vw;
+
+    .filter-container {
+        background-color: #291b12;
+        border: 0.15vw solid #4b2d17;
+        border-radius: 0.5vw;
+        padding: 0.5vw;
+        display: flex;
+        gap: 1vw;
+        box-shadow: inset 0 0.05vw 0.2vw rgba(0, 0, 0, 0.3);
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+
+            .filter-label {
+                color: #d9bb74;
+                font-family: $font-family-primary;
+                font-size: 0.9vw;
+            }
+
+            .filter-buttons {
+                display: flex;
+                gap: 0.2vw;
+
+                .filter-button {
+                    background: none;
+                    border: none;
+                    padding: 0.2vw;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s ease;
+
+                    svg {
+                        width: 1vw;
+                        height: 1vw;
+                        color: #d9bb74;
+                    }
+
+                    &:hover {
+                        svg {
+                            color: #fff6dc;
+                        }
+                    }
+                }
+            }
+        }
+
+        .search-input {
+            background: none;
+            border: none;
+            color: #d9bb74;
+            font-family: $font-family-primary;
+            font-size: 0.9vw;
+            width: 8vw;
+            padding: 0.2vw 0.5vw;
+
+            &::placeholder {
+                color: #a8854d;
+            }
+
+            &:focus {
+                outline: none;
             }
         }
     }

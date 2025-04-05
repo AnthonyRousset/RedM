@@ -59,15 +59,23 @@ function showOptions(e, item) {
 function doAction(action) {
   switch (action) {
     case 'equip':
-      sendNui('inventory-request-equip', { id: currentItem.value.id })
+      sendNui('inventory-request-equip', { id: currentItem.value.id, complexid: currentItem.value.complexid })
       playerStore.itemEquipedId = currentItem.value.id
       break
     case 'unequip':
-      sendNui('inventory-request-unequip', { id: currentItem.value.id })
+      sendNui('inventory-request-unequip', { id: currentItem.value.id, complexid: currentItem.value.complexid })
       playerStore.itemEquipedId = null
       break
     case 'use':
-      sendNui('inventory-request-use', { id: currentItem.value.id })
+      let complexid = null  
+      switch (currentItem.value.category) {
+        case '3': // consumable
+          complexid = currentItem.value.complexid
+          break
+        default:
+          complexid = null
+      }
+      sendNui('inventory-request-use', { id: currentItem.value.id, complexid: complexid })
       playerStore.useItem(currentItem.value.id)
       break
     case 'give':
@@ -84,16 +92,63 @@ function doAction(action) {
 }
 
 function doGive() {
-  // When target is selected, send action with target and item  
-  sendNui('inventory-request-give', { id: currentItem.value.id, quantity: quantity.value, target: target.value })
+  let id = currentItem.value.id
+  let complexid = null
+  switch (currentItem.value.category) {
+    case '1': // weapon
+      complexid = currentItem.value.complexid
+      break
+    case '4': // tool
+      complexid = currentItem.value.complexid
+      break 
+    case '5': // quest item
+      complexid = currentItem.value.complexid
+      break   
+    case '6': // clothing
+      complexid = currentItem.value.complexid
+      break
+    case '7': // document
+      complexid = currentItem.value.complexid
+      break   
+    case '8': // reusable
+      complexid = currentItem.value.complexid
+      break
+    default:
+  }
+
+  sendNui('inventory-request-give', { id: id, complexid: complexid, quantity: quantity.value, target: target.value })
   giveWindow.value = false
   target.value = ''
   quantity.value = 1
 }
 
 function doDrop() {
-  // Open window with quantity input
-  sendNui('inventory-request-drop', { id: currentItem.value.id, quantity: quantity.value })
+  let id = currentItem.value.id
+  let complexid = null
+  switch (currentItem.value.category) {
+    case '1': // weapon
+      complexid = currentItem.value.complexid
+      break
+    case '4': // tool
+      complexid = currentItem.value.complexid
+      break 
+    case '5': // quest item
+      complexid = currentItem.value.complexid
+      break
+    case '6': // clothing
+      complexid = currentItem.value.complexid
+      break 
+    case '7': // document
+      complexid = currentItem.value.complexid
+      break
+    case '8': // reusable
+      complexid = currentItem.value.complexid
+      break 
+    default:
+      complexid = null
+  }
+
+  sendNui('inventory-request-drop', { id: id, complexid: complexid, quantity: quantity.value })
   dropWindow.value = false
   quantity.value = 1
 }
@@ -364,13 +419,13 @@ function simulationPost() {
                 <template #item="{ element: item, index }">
                   <li @click="(e) => showOptions(e, item)">
                     <div class="item">
-                      <img :src="'./images/items/' + item.id + '.png'" alt="Item">
+                    <img :src="'./images/items/' + item.id + '.png'" alt="Item">
                       <div class="quantity" v-if="item.quantity > 1">{{ item.quantity }}</div>
-                    </div>
-                    <div class="status" v-for="tag in item.tags" :key="tag">
+                  </div>
+                  <div class="status" v-for="tag in item.tags" :key="tag">
                       <img v-if="tags[tag]" :src="'./images/items/_' + tags[tag]?.image + '.png'" alt="Tag">
-                    </div>
-                  </li>
+                  </div>
+                </li>
                 </template>
               </draggable>
 

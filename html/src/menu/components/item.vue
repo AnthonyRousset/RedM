@@ -15,14 +15,14 @@ const props = defineProps({
 const emit = defineEmits(['showTooltip', 'hideTooltip'])
 
 // Trouver l'item correspondant dans itemsData pour afficher son nom et sa description
-const itemDetails = items.value.find(i => i.id === props.item.id) || { name: 'Inconnu', description: 'Aucune description disponible' }
+const itemJSON = items.value.find(i => i.id === props.item.id) || { name: 'Inconnu', description: 'Aucune description disponible' }
 
 // Fonction pour afficher le tooltip
 const handleMouseEnter = (event) => {
     const rect = event.currentTarget.getBoundingClientRect()
     emit('showTooltip', {
         item: props.item,
-        itemDetails,
+        itemJSON,
         position: {
             x: rect.x + rect.width,
             y: rect.y

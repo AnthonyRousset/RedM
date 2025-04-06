@@ -152,7 +152,7 @@
       "category": 0,
       "filter": "drug",
       "weight": 100,
-      "tags": ["drug"],
+      "tags": ["plant"],
       "description": "Des graines de canne à sucre pour la culture."
     },
     {
@@ -161,7 +161,7 @@
       "category": 3,
       "filter": "food",
       "weight": 1000,
-      "tags": ["crafting", "food", "animals"],
+      "tags": ["crafting", "food", "animal"],
       "bonus": [
         {
           "name": "Hunger",
@@ -211,7 +211,7 @@
       "category": 3,
       "filter": "food",
       "weight": 1000,
-      "tags": ["crafting", "food", "animals"],
+      "tags": ["crafting", "food", "animal"],
       "description": "De la viande de cerf crue. À cuisiner avant consommation."
     },
     {
@@ -220,7 +220,7 @@
       "category": 0,
       "filter": "crafting",
       "weight": 500,
-      "tags": ["crafting", "animals"],
+      "tags": ["crafting", "animal"],
       "description": "Une peau de cerf. Utile pour l'artisanat."
     },
     {
@@ -229,7 +229,7 @@
       "category": 0,
       "filter": "crafting",
       "weight": 300,
-      "tags": ["crafting", "animals"],
+      "tags": ["crafting", "animal"],
       "description": "Une peau de lapin. Utile pour l'artisanat."
     },
     {
@@ -238,7 +238,7 @@
       "category": 3,
       "filter": "food",
       "weight": 500,
-      "tags": ["crafting", "food", "animals"],
+      "tags": ["crafting", "food", "animal"],
       "description": "De la viande de lapin crue. À cuisiner avant consommation."
     },
     {
@@ -247,7 +247,7 @@
       "category": 0,
       "filter": "crafting",
       "weight": 1,
-      "tags": ["crafting", "animals"],
+      "tags": ["crafting", "animal"],
       "description": "Une peau de crocodile. Très recherchée pour l'artisanat."
     },
     {
@@ -256,7 +256,7 @@
       "category": 3,
       "filter": "food",
       "weight": 1.5,
-      "tags": ["crafting", "food", "animals"],
+      "tags": ["crafting", "food", "animal"],
       "description": "De la viande de crocodile crue. À cuisiner avant consommation."
     },
     {
@@ -265,7 +265,7 @@
       "category": 3,
       "filter": "food",
       "weight": 1.2,
-      "tags": ["crafting", "food", "animals"],
+      "tags": ["crafting", "food", "animal"],
       "description": "De la viande de sanglier crue. À cuisiner avant consommation."
     },
     {
@@ -274,7 +274,7 @@
       "category": 3,
       "filter": "food",
       "weight": 1000,
-      "tags": ["crafting", "food", "animals"],
+      "tags": ["crafting", "food", "animal"],
       "description": "De la viande de cochon crue. À cuisiner avant consommation."
     },
     {
@@ -283,7 +283,7 @@
       "category": 4,  
       "filter": "crafting",
       "weight": 600,
-      "tags": ["crafting", "animals"],
+      "tags": ["crafting", "animal"],
       "description": "Une peau de loup. Très recherchée pour l'artisanat."
     },
     {
@@ -292,7 +292,7 @@
       "category": 1,
       "filter": "food",
       "weight": 800,
-      "tags": ["crafting", "food", "animals"],
+      "tags": ["crafting", "food", "animal"],
       "description": "De la viande de loup crue. À cuisiner avant consommation."
     },
     {
@@ -301,7 +301,7 @@
       "category": 0,
       "filter": "crafting",
       "weight": 2500,
-      "tags": ["crafting", "animals"],
+      "tags": ["crafting", "animal"],
       "description": "Une peau d'ours. Très recherchée pour l'artisanat."
     },
     {
@@ -310,23 +310,67 @@
       "category": 3,
       "filter": "food",
       "weight": 2500,
-      "tags": ["crafting", "food", "animals"],
+      "tags": ["crafting", "food", "animal"],
       "description": "De la viande d'ours crue. À cuisiner avant consommation."
     }
   ],
-  "filters": {
-    "all": "Tout",
-    "weapon": "Armes & Munitions",
-    "food": "Nourriture",
-    "medical": "Médical",
-    "drug": "Drogue",
-    "crafting": "Artisanat",
-    "animal": "Animaux",
-    "tool": "Outils",
-    "clothe": "Vêtements",
-    "document": "Documents",
-    "quest": "Quest"
-  },
+  "filters": [  
+    {
+      "value": "",
+      "name": "Tous",
+      "icon": "/images/player/player-inventory-all.png"
+    },
+    {
+      "value": "weapon",
+      "name": "Armes & Munitions",
+      "icon": "/images/player/player-inventory-weapons.png"
+    },
+    {
+      "value": "food",
+      "name": "Nourriture",
+      "icon": "/images/player/player-inventory-food.png"
+    },
+    {
+      "value": "medical",
+      "name": "Médical",
+      "icon": "/images/player/player-inventory-medic.png"
+    },
+    {
+      "value": "drug",
+      "name": "Drogue",
+      "icon": "/images/player/player-inventory-drugs.png"
+    },
+    {
+      "value": "crafting",
+      "name": "Artisanat",
+      "icon": "/images/player/player-inventory-craft.png"
+    },
+    {
+      "value": "animal",
+      "name": "Animaux",
+      "icon": "/images/player/player-inventory-animal.png"
+    },
+    {
+      "value": "tool",
+      "name": "Outils",
+      "icon": "/images/player/player-inventory-tool.png"
+    },
+    {
+      "value": "clothe",
+      "name": "Vêtements",
+      "icon": "/images/player/player-inventory-clothes.png"
+    },
+    {
+      "value": "document",
+      "name": "Documents",
+      "icon": "/images/player/player-inventory-documents.png"
+    },
+    {
+      "value": "quest",
+      "name": "Quêtes",
+      "icon": "/images/player/player-inventory-quest.png"
+    }
+  ],
   "categories": {
     "0": "Neutral",
     "1": "Weapon",

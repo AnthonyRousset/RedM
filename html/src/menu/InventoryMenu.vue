@@ -174,7 +174,7 @@ function simulationPost() {
         id: 'weapon_lancaster_rifle',
         quantity: 2000,
         quality: 100,
-        weight: 100,
+        weight: 3000,
         tags: [0],
         category: 1,
         durability: 12
@@ -183,7 +183,7 @@ function simulationPost() {
         id: 'plant_seeds_coca',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 1012120,
-        weight: 100,
+        weight: 10,
         tags: [],
         category: 0
       },
@@ -191,7 +191,7 @@ function simulationPost() {
         id: 'drug_cocaine',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 104450,
-        weight: 100 ,
+        weight: 200,
         tags: [2],
         category: 0
       },
@@ -199,15 +199,14 @@ function simulationPost() {
         id: 'food_bread',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
-        tags: [1],
+        weight: 500,
         category: 0
       },
       {
         id: 'animal_deer_skin',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 1045450,
-        weight: 1,
+        weight: 500,
         tags: [],
         category: 0
       },
@@ -215,7 +214,7 @@ function simulationPost() {
         id: 'animal_deer_meat_cooked',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 1000,
         tags: [],
         category: 0
       },
@@ -223,7 +222,7 @@ function simulationPost() {
         id: 'tool_pickaxe',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 1045450,
-        weight: 1,
+        weight: 2000,
         tags: [],
         category: 4,
         durability: 75
@@ -232,7 +231,7 @@ function simulationPost() {
         id: 'tool_rake',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 1454500,
-        weight: 1,
+        weight: 1500,
         tags: [],
         category: 4,
         durability: 45
@@ -241,7 +240,7 @@ function simulationPost() {
         id: 'tool_axe',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 25,
-        weight: 1,
+        weight: 2000,
         tags: [],
         category: 4,
         durability: 100
@@ -250,7 +249,7 @@ function simulationPost() {
         id: 'weapon_bow',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 2000,
         tags: [],
         category: 1,
         durability: 80
@@ -259,7 +258,7 @@ function simulationPost() {
         id: 'tool_watering_can',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 1000,
         tags: [],
         category: 8,
         durability: 100
@@ -268,15 +267,14 @@ function simulationPost() {
         id: 'plant_seeds_hemp',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
-        tags: [1],
+        weight: 10,
         category: 0
       },
       {
         id: 'plant_seeds_sugarcane',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 100,
         tags: [],
         category: 0
       },
@@ -284,7 +282,7 @@ function simulationPost() {
         id: 'plant_seeds_coca',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 10,
         tags: [2],
         category: 0
       },
@@ -292,7 +290,7 @@ function simulationPost() {
         id: 'plant_fertilizer',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 500,
         tags: [],
         category: 0
       },
@@ -300,14 +298,14 @@ function simulationPost() {
         id: 'animal_deer_meat_cooked',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 1000,
         tags: []
       },
       {
         id: 'weapon_lancaster_rifle',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 3000,
         tags: [],
         category: 1,
         durability: 100
@@ -316,7 +314,7 @@ function simulationPost() {
         id: 'tool_shovel',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 2000,
         category: 4,
         tags: [0],
         durability: 100
@@ -325,7 +323,7 @@ function simulationPost() {
         id: 'item_water_bottle',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 1000,
         category: 8,
         tags: []
       },
@@ -333,7 +331,7 @@ function simulationPost() {
         id: 'weapon_lancaster_rifle',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
-        weight: 1,
+        weight: 3000,
         tags: [],
         category: 1,
         durability: 100

@@ -1,45 +1,78 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 
-import { usePlayerStore } from '../../stores/playerStore'
 import Multiselect from '@vueform/multiselect'
 import Item from './item.vue'
 import itemsData from '../../data/items.json'
 
 
-defineProps({
+const props = defineProps({
+    inventory: {
+        type: Array,
+        required: true
+    },
     type: {
         type: String,
         required: true
     }
 })
 
-const playerStore = usePlayerStore()
 const items = ref(itemsData.items)
 const tags = ref(itemsData.tags)
+const JSONfilters = ref(itemsData.filters)
+
+
 const selectedFilter = ref('');
+const weightOrder = ref('asc');
+const quantityOrder = ref('asc');
+const refreshKey = ref(0); // Clé de rafraîchissement pour forcer le rendu
+const isReordering = ref(false); // Pour bloquer temporairement les tooltips
+const searchValue = ref('');
+
+// Copie locale de l'inventaire pour éviter de modifier le tableau original
+const localInventory = ref([]);
+
+// Initialiser la copie locale
+onMounted(() => {
+    localInventory.value = [...props.inventory];
+});
+
+// Mettre à jour la copie locale lorsque l'inventaire change
+watch(() => props.inventory, (newInventory) => {
+    localInventory.value = [...newInventory];
+}, { deep: true });
+
+// Inventaire filtré
+const filteredInventory = computed(() => {
+    return localInventory.value.filter(item => {
+
+        // Vérifier le filtre
+        const itemData = items.value.find(i => i.id === item.id);
+        const itemFilter = itemData?.tags;
+        
+        const filterMatch = selectedFilter.value === '' || 
+            (Array.isArray(itemFilter) 
+                ? itemFilter.includes(selectedFilter.value)
+                : itemFilter === selectedFilter.value);
+                
+        // Vérifier la recherche
+        const searchMatch = searchValue.value === '' || 
+            (itemData?.name.toLowerCase().includes(searchValue.value.toLowerCase()));
+            
+        return filterMatch && searchMatch;
+    });
+});
 
 // Gestion du tooltip global
 const tooltipData = ref(null)
 const tooltipPosition = ref({ x: 0, y: 0 })
 
-const filterOptions = [
-    { value: '', label: 'TOUS', icon: '/images/player/player-inventory-all.svg' },
-    { value: 'weapon', label: 'ARMES', icon: '/images/player/player-inventory-weapons.svg' },
-    { value: 'food', label: 'NOURRITURES', icon: '/images/player/player-inventory-food.svg' },
-    { value: 'medical', label: 'MÉDICAL', icon: '/images/player/player-inventory-medical.svg' },
-    { value: 'drug', label: 'DROGUES', icon: '/images/player/player-inventory-drug.svg' },
-    { value: 'crafting', label: 'ARTISANAT', icon: '/images/player/player-inventory-crafting.svg' },
-    { value: 'animal', label: 'ANIMAUX', icon: '/images/player/player-inventory-animals.svg' },
-    { value: 'tool', label: 'OUTILS', icon: '/images/player/player-inventory-tools.svg' },
-    { value: 'clothe', label: 'VÊTEMENTS' },
-    { value: 'document', label: 'DOCUMENTS' },
-    { value: 'quest', label: 'QUEST' }
-];
-
 
 // Afficher le tooltip
 const showTooltip = (data) => {
+    // Ne pas afficher le tooltip pendant le réordonnancement
+    if (isReordering.value) return;
+    
     tooltipData.value = data
 
     // Ajuster la position pour éviter que le tooltip sorte de l'écran
@@ -77,28 +110,102 @@ const hideTooltip = () => {
     tooltipData.value = null
 }
 
+// Forcer la disparition du tooltip
+const forceHideTooltip = () => {
+    tooltipData.value = null
+    // Attendre un court instant pour empêcher la réapparition immédiate
+    setTimeout(() => {
+        tooltipData.value = null
+    }, 100)
+}
+
 // Fonction de filtrage
 const filter = (value) => {
+    forceHideTooltip()
     console.log('filter', value)
     selectedFilter.value = value;
 };
 
-const sortByWeight = (order) => {
-    playerStore.inventory.sort((a, b) => {
-        const weightA = a.details.weight * a.quantity;
-        const weightB = b.details.weight * b.quantity;
-        return order === 'asc' ? weightA - weightB : weightB - weightA;
-    });
+const sortByWeight = (items) => {
+    // Forcer la disparition du tooltip avant le tri
+    forceHideTooltip()
+    
+    // Bloquer les tooltips pendant le tri
+    isReordering.value = true;
+    
+    quantityOrder.value = '';
+    switch (weightOrder.value) {
+        case 'desc':
+            // poids total du plus leger au plus lourd
+            localInventory.value.sort((a, b) => {
+                const itemA = items.find(item => item.id === a.id);
+                const itemB = items.find(item => item.id === b.id);
+                const weightA = (itemA?.weight/1000 || 0) * a.quantity;
+                const weightB = (itemB?.weight/1000 || 0) * b.quantity;
+                return weightA - weightB;
+            });
+            weightOrder.value = 'asc';
+            break;
+        default:
+            // poids total du plus lourd au plus leger
+            localInventory.value.sort((a, b) => {
+                const itemA = items.find(item => item.id === a.id);
+                const itemB = items.find(item => item.id === b.id);
+                const weightA = (itemA?.weight/1000 || 0) * a.quantity;
+                const weightB = (itemB?.weight/1000 || 0) * b.quantity;
+                return weightB - weightA;
+            });
+            weightOrder.value = 'desc';
+            break;
+    }
+    
+    // Incrémenter la clé de rafraîchissement pour forcer le rendu
+    refreshKey.value++;
+    
+    // Réactiver les tooltips après un court délai
+    setTimeout(() => {
+        isReordering.value = false;
+    }, 300);
 };
 
-const sortByQuantity = (order) => {
-    playerStore.inventory.sort((a, b) => {
-        return order === 'asc' ? a.quantity - b.quantity : b.quantity - a.quantity;
-    });
+const sortByQuantity = () => {
+    // Forcer la disparition du tooltip avant le tri
+    forceHideTooltip()
+    
+    // Bloquer les tooltips pendant le tri
+    isReordering.value = true;
+    
+    weightOrder.value = '';
+    switch (quantityOrder.value) {
+        case 'desc':
+            console.log('desc')
+            // quantite total du plus grand au plus petit
+            localInventory.value.sort((a, b) => {
+                return b.quantity - a.quantity;
+            });
+            quantityOrder.value = 'asc';
+            break;
+        default:
+            console.log('asc')
+            // quantite total du plus petit au plus grand
+            localInventory.value.sort((a, b) => {
+                return a.quantity - b.quantity;
+            });
+            quantityOrder.value = 'desc';
+            break;
+    }
+    
+    // Incrémenter la clé de rafraîchissement pour forcer le rendu
+    refreshKey.value++;
+    
+    // Réactiver les tooltips après un court délai
+    setTimeout(() => {
+        isReordering.value = false;
+    }, 300);
 };
 
 function search() {
-    console.log(search.value)
+    refreshKey.value++
 }
 
 const clickItem = (typeId, item, quantity) => {
@@ -118,75 +225,113 @@ const clickItem = (typeId, item, quantity) => {
     }
 }
 
+// Gestionnaire de clic global pour masquer le tooltip
+const handleGlobalClick = () => {
+    if (tooltipData.value) {
+        forceHideTooltip()
+    }
+}
 
-</script>
+// Ajouter/supprimer l'écouteur d'événement global
+onMounted(() => {
+    document.addEventListener('click', handleGlobalClick)
+})
+
+onUnmounted(() => {
+    document.removeEventListener('click', handleGlobalClick)
+})
+
+</script>   
 
 <template>
 
-    <div class="bag">
-        <div class="filter">
-            <div class="select-container">
-                <Multiselect v-model="selectedFilter" :options="filterOptions" :searchable="false"
+<div class="bag">
+        <div class="filter categories">
+            <div class="filter-container">
+                <div class="filter-group">
+                    <div class="filter-label" v-for="filter in JSONfilters" :key="filter.value" @click="selectedFilter = filter.value">
+                        <img :src="filter.icon" :alt="filter.name" class="filter-icon" :class="{ 'active': selectedFilter === filter.value }">
+                        <span class="tooltip-text">{{ filter.name }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="filter1" v-if="false">
+
+        <div class="select-container">
+                <Multiselect v-model="selectedFilter" :options="JSONfilters" :searchable="false"
                     :close-on-select="true" :preserve-search="false" placeholder="Catégorie" track-by="value"
                     label="label" @change="filter">
-                    <template #option="{ option }">
-                        <div class="option-content">
+                <template #option="{ option }">
+                    <div class="option-content">
                             <img v-if="option.icon" :src="option.icon" :alt="option.label" class="option-icon">
-                            <span>{{ option.label }}</span>
-                        </div>
-                    </template>
-                </Multiselect>
-            </div>
-        </div>
-        <div class="filter1">
-            <div class="filter-container">
-                <div class="filter-group">
-                    <div class="filter-label">Poids</div>
-                    <div class="filter-buttons">
-                        <button class="filter-button" @click="sortByWeight('asc')">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7 14l5-5 5 5z" />
-                            </svg>
-                        </button>
-                        <button class="filter-button" @click="sortByWeight('desc')">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7 10l5 5 5-5z" />
-                            </svg>
-                        </button>
+                        <span>{{ option.label }}</span>
                     </div>
-                </div>
-                <div class="filter-group">
-                    <div class="filter-label">Quantité</div>
-                    <div class="filter-buttons">
-                        <button class="filter-button" @click="sortByQuantity('asc')">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7 14l5-5 5 5z" />
-                            </svg>
-                        </button>
-                        <button class="filter-button" @click="sortByQuantity('desc')">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7 10l5 5 5-5z" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="filter-container">
-                <input type="text" placeholder="Rechercher" class="search-input" @input="search">
-            </div>
-        </div>
-        <div class="inventory">
-            <PerfectScrollbar>
-                <ul>
-                    <li v-for="(inventoryItem, index) in playerStore.inventory.filter(item =>
-                        selectedFilter === '' || items.find(i => i.id === item.id)?.filter === selectedFilter
-                    )" :key="index" @click="clickItem(props.type, inventoryItem, 1)">
-                        <Item :item="inventoryItem" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
-                    </li>
-                </ul>
-            </PerfectScrollbar>
+                </template>
+            </Multiselect>
         </div>
     </div>
+        <div class="filter sort">
+        <div class="filter-container">
+                <div class="filter-group" @click="sortByWeight(items)">
+                    <div class="filter-label">  
+                        <img src="/images/player/player-inventory-weight.png" alt="Poids" class="filter-icon">
+                    </div>
+                <div class="filter-buttons">
+                        <button class="filter-button" v-if="weightOrder === 'asc'">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </button>
+                        <button class="filter-button" v-else-if="weightOrder === 'desc'">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 14l5-5 5 5z" />
+                        </svg>
+                    </button>
+                        <button class="filter-button" v-else>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="12" cy="12" r="4" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+                <div class="filter-group" @click="sortByQuantity(items)">
+                    <div class="filter-label">
+                        <img src="/images/player/player-inventory-quantity.png" alt="Quantité" class="filter-icon">
+                    </div>
+                <div class="filter-buttons">
+                        <button class="filter-button" v-if="quantityOrder === 'asc'">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </button>
+                        <button class="filter-button" v-else-if="quantityOrder === 'desc'">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 14l5-5 5 5z" />
+                        </svg>
+                    </button>
+                        <button class="filter-button" v-else>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <circle cx="12" cy="12" r="4" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+            <div class="filter-container search">
+                <input type="text" placeholder="Rechercher" class="search-input" @input="search" v-model="searchValue">
+            </div>
+    </div>
+    <div class="inventory">
+        <PerfectScrollbar>
+            <ul>
+                    <li v-for="(inventoryItem, index) in filteredInventory" :key="inventoryItem.id + '-' + index + '-' + refreshKey" @click="clickItem(props.type, inventoryItem, 1)">
+                    <Item :item="inventoryItem" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
+                </li>
+            </ul>
+        </PerfectScrollbar>
+    </div>
+</div>
 
 
 
@@ -195,16 +340,16 @@ const clickItem = (typeId, item, quantity) => {
     <div class="global-tooltip" v-if="tooltipData"
         :style="{ left: tooltipPosition.x + 'vw', top: tooltipPosition.y + 'vh' }">
         <div class="bottom">
-            <div class="tooltip-title">{{ tooltipData.itemDetails.name }}</div>
-            <div class="tooltip-description">{{ tooltipData.itemDetails.description }}</div>
-            <div class="tooltip-bonus" v-if="tooltipData.itemDetails.bonus && tooltipData.itemDetails.bonus.length > 0">
-                <div class="bonus-value" v-for="bonus in tooltipData.itemDetails.bonus" :key="bonus.name">
+            <div class="tooltip-title">{{ tooltipData.itemJSON.name }}</div>
+            <div class="tooltip-description">{{ tooltipData.itemJSON.description }}</div>
+            <div class="tooltip-bonus" v-if="tooltipData.itemJSON.bonus && tooltipData.itemJSON.bonus.length > 0">
+                <div class="bonus-value" v-for="bonus in tooltipData.itemJSON.bonus" :key="bonus.name">
                     <div>{{ bonus.name }} : <span>{{ bonus.value }}</span></div>
                     <div class="bonus-duration" v-if="bonus.duration"><span>{{ bonus.duration }} </span> s</div>
                 </div>
             </div>
-            <div class="tooltip-malus" v-if="tooltipData.itemDetails.malus && tooltipData.itemDetails.malus.length > 0">
-                <div class="malus-value" v-for="malus in tooltipData.itemDetails.malus" :key="malus.name">
+            <div class="tooltip-malus" v-if="tooltipData.itemJSON.malus && tooltipData.itemJSON.malus.length > 0">
+                <div class="malus-value" v-for="malus in tooltipData.itemJSON.malus" :key="malus.name">
                     <div>{{ malus.name }} : <span>{{ malus.value }}</span></div>
                     <div class="malus-duration" v-if="malus.duration"><span>{{ malus.duration }} </span> s</div>
                 </div>
@@ -220,11 +365,11 @@ const clickItem = (typeId, item, quantity) => {
                 </div>
                 <div class="stat">
                     <div class="stat-label">Poids</div>
-                    <div class="stat-value"><span>{{ tooltipData.itemDetails.weight / 1000 }} </span> kg</div>
+                    <div class="stat-value"><span>{{ tooltipData.itemJSON.weight / 1000 }} </span> kg</div>
                 </div>
                 <div class="stat">
                     <div class="stat-label"></div>
-                    <div class="stat-value">Total <span>{{ (tooltipData.itemDetails.weight / 1000 *
+                    <div class="stat-value">Total <span>{{ (tooltipData.itemJSON.weight / 1000 *
                         tooltipData.item.quantity).toFixed(2) }} </span> kg</div>
                 </div>
             </div>
@@ -236,9 +381,10 @@ const clickItem = (typeId, item, quantity) => {
         </div>
     </div>
 
-</template>
+</template> 
 
 <style lang="scss" scoped>
+// Variables
 $font-family-primary: 'Special Elite', serif;
 $color-gold: #805f07;
 $color-gold-light: #a8854d;
@@ -248,6 +394,16 @@ $color-red-hover: #932020;
 $color-text-light: #f5e6c9;
 $animation-timing: 0.6s ease-out;
 
+// Mixins
+@mixin filter-container {
+    background-color: #291b12;
+    border: 0.15vw solid #4b2d17;
+    padding: 0.3vw;
+    display: flex;
+    box-shadow: inset 0 0.05vw 0.2vw rgba(0, 0, 0, 0.3);
+}
+
+// Main Container
 .bag {
     position: absolute;
     top: calc(50% - 23vw);
@@ -259,54 +415,152 @@ $animation-timing: 0.6s ease-out;
     background-repeat: no-repeat;
     background-position: center;
 
+    // Filter Components
     .filter {
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: space-between;
         position: absolute;
-        top: 5vw;
         left: 1vw;
         right: 1vw;
+
+        // Categories Filter
+        &.categories {
+            top: 1.5vw;
+            z-index: 1000;
+
+            .filter-container {
+                @include filter-container;
+                border-radius: 5vw;
+                width: 100%;
+
+                .filter-group {
+                    display: flex;
+                    width: 100%;
+                    justify-content: space-around;
+
+                    .filter-label {
+                        color: #d9bb74;
+                        font-family: $font-family-primary;
+                        font-size: 0.9vw;
+                        position: relative;
+                        cursor: pointer;
+                        transition: transform 0.2s ease;
+
+                        &:hover {
+                            
+                            .tooltip-text {
+                                visibility: visible;
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+                        }
+
+                        .tooltip-text {
+                            visibility: hidden;
+                            position: absolute;
+                            bottom: -2.5vw;
+                            left: 50%;
+                            transform: translateX(-50%) translateY(-0.5vw);
+                            background-color: rgba(30, 20, 10, 0.9);
+                            color: #d9bb74;
+                            font-size: 0.8vw;
+                            padding: 0.3vw 0.6vw;
+                            border-radius: 0.2vw;
+                            opacity: 0;
+                            transition: all 0.3s ease;
+                            white-space: nowrap;
+                            z-index: 1000;
+                            border: 0.05vw solid rgba(255, 215, 0, 0.3);
+                            box-shadow: 0 0 0.4vw rgba(0, 0, 0, 0.5);
+                            text-shadow: 0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.8);
+
+                            &:before {
+                                content: '';
+                                position: absolute;
+                                top: -0.4vw;
+                                left: 50%;
+                                transform: translateX(-50%);
+                                border-width: 0.2vw;
+                                border-style: solid;
+                                border-color: transparent transparent rgba(30, 20, 10, 0.9) transparent;
+                            }
+                        }
+
+                        img {
+                            display: block;
+                            width: 2vw;
+                            height: 2vw;
+                            color: #d9bb74;
+                            transition: all 0.2s ease;
+                            
+                            &.active {
+                                filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Sort Filter
+        &.sort {
+            top: 5vw;
+
+            .filter-container {
+                @include filter-container;
+                border-radius: 500px;
+                /*
+                box-shadow: inset 0 0 2px 2px rgb(0 0 0 / 30%), 0 0 2px 2px rgb(0 0 0 / 30%);
+                */
+
+                .filter-group {
+                    display: flex;
+                    align-items: center;
+
+                    &:first-child {
+                        border-right: 0.1vw solid #4b2d17;
+                    }
+
+                    .filter-label {
+                        img {
+                            display: block;
+                            width: 2vw;
+                            height: 2vw;
+                        }
+                    }
+                }
+            }
+
+            .filter-container.search {
+                border-radius: 500px;
+                border: 0.2vw solid #4b2d17;
+                padding: 0.65vw;
+                width: 100%;
+            }
+        }
     }
 
-    .select-container {
-        position: relative;
-        width: auto;
-        min-width: 12vw;
-        max-width: 15vw;
-    }
-
-    .filter-container {
-        background-color: #291b12;
-        border: 3px solid #4b2d17;
-        border-radius: 500px;
-        display: flex;
-        gap: 0.5vw;
-        box-shadow: inset 0 0px 2px 2px rgb(0 0 0 / 30%), 0 0px 2px 2px rgb(0 0 0 / 30%);
-    }
-
+    // Filter Buttons
     .filter-button {
-        background-color: transparent;
+        background: none;
         border: none;
-        border-radius: 50%;
-        width: 2vw;
-        height: 2vw;
+        padding: 0.2vw;
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
+        transition: all 0.2s ease;
 
         svg {
+            width: 1.5vw;
+            height: 1.5vw;
             color: #d9bb74;
         }
 
         &:hover {
-            background-color: rgba(168, 133, 77, 0.2);
-
-            .tooltip {
-                opacity: 1;
+            svg {
+                color: #fff6dc;
             }
         }
 
@@ -314,63 +568,9 @@ $animation-timing: 0.6s ease-out;
             background-color: rgba(168, 133, 77, 0.4);
             box-shadow: 0 0 0.4vw rgba(255, 215, 0, 0.5);
         }
-
-        .tooltip {
-            position: absolute;
-            bottom: -2.2vw;
-            left: 50%;
-            transform: translateX(-50%) translateY(-0.5vw);
-            min-width: 5vw;
-            background-color: rgba(30, 20, 10, 0.9);
-            color: #d9bb74;
-            font-size: 0.7vw;
-            padding: 0.3vw 0.6vw;
-            border-radius: 0.2vw;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-            font-family: $font-family-primary;
-            text-align: center;
-            white-space: nowrap;
-            z-index: 1000;
-            border: 0.05vw solid rgba(255, 215, 0, 0.3);
-            box-shadow: 0 0 0.4vw rgba(0, 0, 0, 0.5);
-            text-shadow: 0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.8);
-
-            &:before {
-                content: '';
-                position: absolute;
-                top: -0.4vw;
-                left: 50%;
-                transform: translateX(-50%);
-                border-width: 0.2vw;
-                border-style: solid;
-                border-color: transparent transparent rgba(30, 20, 10, 0.9) transparent;
-            }
-        }
-
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            opacity: 0.8;
-            transition: all 0.3s ease;
-
-            &:hover {
-                opacity: 1;
-            }
-        }
     }
 
-    .filter-button:hover {
-        background-color: transparent;
-    }
-
-    .filter-button i {
-        color: #f3e2c7;
-        font-size: 16px;
-    }
-
+    // Inventory Grid
     .inventory {
         position: absolute;
         top: 8vw;
@@ -380,8 +580,6 @@ $animation-timing: 0.6s ease-out;
         max-width: 100%;
         max-height: 100%;
         overflow: hidden;
-
-        /* Masque haut/bas */
         mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
         -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
 
@@ -399,7 +597,6 @@ $animation-timing: 0.6s ease-out;
             padding: 1.5vw 1vw 2vw;
 
             li {
-
                 width: 100%;
                 height: 100%;
                 background-image: url(/images/player/player-inventory-bg_item.png);
@@ -420,8 +617,25 @@ $animation-timing: 0.6s ease-out;
                 &:active {
                     transform: scale(0.95);
                 }
-
             }
+        }
+    }
+
+    // Search Input
+    .search-input {
+        background: none;
+        border: none;
+        color: #d9bb74;
+        font-family: $font-family-primary;
+        font-size: 0.9vw;
+        padding: 0.2vw 0.5vw;
+
+        &::placeholder {
+            color: #a8854d;
+        }
+
+        &:focus {
+            outline: none;
         }
     }
 }
@@ -609,8 +823,8 @@ $animation-timing: 0.6s ease-out;
     width: 100%;
     background-color: #291b12;
     border: 0.15vw solid #4b2d17;
-    border-radius: 0.5vw;
-    min-height: 2.5vw;
+    border-radius: 50vw;
+    min-height: 2vw;
     font-family: $font-family-primary;
     font-size: 1vw;
     color: #d9bb74;
@@ -727,84 +941,9 @@ $animation-timing: 0.6s ease-out;
         height: 1.5vw;
         margin-right: 0.5vw;
     }
-}
 
-.filter1 {
-    position: absolute;
-    top: 8vw;
-    left: 1vw;
-    right: 1vw;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1vw;
-
-    .filter-container {
-        background-color: #291b12;
-        border: 0.15vw solid #4b2d17;
-        border-radius: 0.5vw;
-        padding: 0.5vw;
-        display: flex;
-        gap: 1vw;
-        box-shadow: inset 0 0.05vw 0.2vw rgba(0, 0, 0, 0.3);
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5vw;
-
-            .filter-label {
-                color: #d9bb74;
-                font-family: $font-family-primary;
-                font-size: 0.9vw;
-            }
-
-            .filter-buttons {
-                display: flex;
-                gap: 0.2vw;
-
-                .filter-button {
-                    background: none;
-                    border: none;
-                    padding: 0.2vw;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    transition: all 0.2s ease;
-
-                    svg {
-                        width: 1vw;
-                        height: 1vw;
-                        color: #d9bb74;
-                    }
-
-                    &:hover {
-                        svg {
-                            color: #fff6dc;
-                        }
-                    }
-                }
-            }
-        }
-
-        .search-input {
-            background: none;
-            border: none;
-            color: #d9bb74;
-            font-family: $font-family-primary;
-            font-size: 0.9vw;
-            width: 8vw;
-            padding: 0.2vw 0.5vw;
-
-            &::placeholder {
-                color: #a8854d;
-            }
-
-            &:focus {
-                outline: none;
-            }
-        }
+    .multiselect-clear {
+        padding: 0.3vw;
     }
 }
 </style>

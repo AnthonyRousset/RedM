@@ -199,12 +199,12 @@ const createBank = () => {
 
 const stockAdd = (bankId, item, quantity) => {
     console.log('bank-stock-add-' + bankId, item)
-    sendNui('bank-stock-add-' + bankId, { id: item.id, complexId: item.complexId, idItem: item.id, quantity: quantity })
+    sendNui('bank-stock-add-' + bankId, { id: bankId, complexId: item.complexId, idItem: item.id, quantity: quantity })
 }
 
 const stockRemove = (bankId, item, quantity) => {
     console.log('bank-stock-remove-' + bankId, item)
-    sendNui('bank-stock-remove-' + bankId, { id: item.id, complexId: item.complexId, idItem: item.id, quantity: quantity })
+    sendNui('bank-stock-remove-' + bankId, { id: bankId, complexId: item.complexId, idItem: item.id, quantity: quantity })
 }
 
 const switchBank = (bank) => {

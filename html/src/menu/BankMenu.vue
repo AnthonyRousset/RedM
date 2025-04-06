@@ -31,16 +31,16 @@ const tooltipData = ref(null)
 const tooltipPosition = ref({ x: 0, y: 0 })
 
 const filterOptions = [
-    { value: 'all', label: 'TOUS', icon: '/images/player/player-inventory-all.svg' },
-    { value: 'weapons', label: 'ARMES', icon: '/images/player/player-inventory-weapons.svg' },
-    { value: 'food', label: 'NOURRITURE', icon: '/images/player/player-inventory-food.svg' },
+    { value: '', label: 'TOUS', icon: '/images/player/player-inventory-all.svg' },
+    { value: 'weapon', label: 'ARMES', icon: '/images/player/player-inventory-weapons.svg' },
+    { value: 'food', label: 'NOURRITURES', icon: '/images/player/player-inventory-food.svg' },
     { value: 'medical', label: 'MÉDICAL', icon: '/images/player/player-inventory-medical.svg' },
     { value: 'drug', label: 'DROGUES', icon: '/images/player/player-inventory-drug.svg' },
     { value: 'crafting', label: 'ARTISANAT', icon: '/images/player/player-inventory-crafting.svg' },
-    { value: 'animals', label: 'ANIMAUX', icon: '/images/player/player-inventory-animals.svg' },
-    { value: 'tools', label: 'OUTILS', icon: '/images/player/player-inventory-tools.svg' },
-    { value: 'clothes', label: 'VÊTEMENTS' },
-    { value: 'documents', label: 'DOCUMENTS' },
+    { value: 'animal', label: 'ANIMAUX', icon: '/images/player/player-inventory-animals.svg' },
+    { value: 'tool', label: 'OUTILS', icon: '/images/player/player-inventory-tools.svg' },
+    { value: 'clothe', label: 'VÊTEMENTS' },
+    { value: 'document', label: 'DOCUMENTS' },
     { value: 'quest', label: 'QUEST' }
 ];
 
@@ -220,6 +220,8 @@ const switchBank = (bank) => {
 const filter = (value) => {
     selectedFilter.value = value;
     // Ajoutez ici la logique de filtrage si nécessaire
+
+    console.log('playerStore.inventory', playerStore.inventory)
 };
 
 const sortByWeight = (order) => {
@@ -248,53 +250,53 @@ setTimeout(() => {
         <div class="bank-container" :class="{ '__closing': uiStore.isClosing || isSwitching }">
             <div class="bank-loading" v-if="bankStore.isLoading">
                 <div class="loading">
-                    <span class="one">.</span>
-                    <span class="two">.</span>
-                    <span class="three">.</span>
-                </div>
-                <button class="close" @click="close">X</button>
+                <span class="one">.</span>
+                <span class="two">.</span>
+                <span class="three">.</span>
             </div>
+            <button class="close" @click="close">X</button>
+        </div>
             <div class="bank-open" v-else-if="!bankStore.getBankAccountIsCreated">
-                <!-- Voulez vous ouvrir une banque ? -->
-                <div class="bank-title"> Voulez vous ouvrir un coffre-fort pour <span>10$</span> ? </div>
+            <!-- Voulez vous ouvrir une banque ? -->
+            <div class="bank-title"> Voulez vous ouvrir un coffre-fort pour <span>10$</span> ? </div>
 
-                <div class="form">
-                    <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
-                </div>
-                <button class="close" @click="close">X</button>
+            <div class="form">
+                <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
             </div>
+            <button class="close" @click="close">X</button>
+        </div>
             <div class="container" v-else>
                 <div class="bank-account" v-if="bankView === 'account'">
-                    <div class="balance-title"> {{ playerStore.name }} </div>
+            <div class="balance-title"> {{ playerStore.name }} </div>
 
-                    <div class="balance">{{ bankStore.getBalanceDollars }}</div>
+            <div class="balance">{{ bankStore.getBalanceDollars }}</div>
 
-                    <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
+            <div class="balance-amount"> Indiquez le montant à déposer ou retirer </div>
 
 
-                    <div class="bank-message bubble-conversation player" :class="{ active: playerMessage }">
-                        <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>
-                    </div>
+            <div class="bank-message bubble-conversation player" :class="{ active: playerMessage }">
+                <div class="bank-person">Moi</div><span> {{ playerMessage }} </span>
+            </div>
 
-                    <div class="bank-message bubble-conversation banker" :class="{ active: bankMessage }">
-                        <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span>
-                    </div>
+            <div class="bank-message bubble-conversation banker" :class="{ active: bankMessage }">
+                <div class="bank-person">Banquier</div><span> {{ bankMessage }} </span>
+            </div>
 
-                    <div class="form">
-                        <div class="fake-input">
+            <div class="form">
+                <div class="fake-input">
                             <span contenteditable="true" @keydown="handleKeyDown" @input="updateAmount"
                                 @blur="updateAmount" ref="editableSpan"
                                 :class="{ error: playerMessage || bankMessage }"></span>
-                            <div v-if="showPlaceholder" class="placeholder">0</div>
-                        </div>
-                    </div>
+                    <div v-if="showPlaceholder" class="placeholder">0</div>
+                </div>
+            </div>
 
-                    <div class="actions">
-                        <button class="btn-western deposit" @click="deposit">Déposer</button>
-                        <button class="btn-western withdraw" @click="withdraw">Retirer</button>
-                    </div>
+            <div class="actions">
+                <button class="btn-western deposit" @click="deposit">Déposer</button>
+                <button class="btn-western withdraw" @click="withdraw">Retirer</button>
+            </div>
 
-                    <button class="close" @click="close">X</button>
+            <button class="close" @click="close">X</button>
                 </div>
                 <div class="bank-vault" v-else-if="bankView === 'vault'">
                     <div class="vault">
@@ -372,16 +374,18 @@ setTimeout(() => {
                         <div class="inventory">
                             <PerfectScrollbar>
                                 <ul>
-                                    <li v-for="(item, index) in playerStore.inventory" :key="index"
-                                        @click="stockAdd(bankStore.id, item, 1)">
-                                        <Item :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
+                                    <li v-for="(inventoryItem, index) in playerStore.inventory" :key="index" 
+                                        vif="inventoryItem && (selectedFilter === '' || (items.find(item => item.id === inventoryItem.id) && items.find(item => item.id === inventoryItem.id).filter === selectedFilter))"
+                                        @click="stockAdd(bankStore.id, inventoryItem, 1)">
+                                        [[{{ inventoryItem }}]] {{ items.find(item => item.id === inventoryItem.id).filter === selectedFilter}}
+                                        <Item :item="inventoryItem" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
                                     </li>
                                 </ul>
                             </PerfectScrollbar>
                         </div>
-                    </div>
+        </div>
 
-                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -393,11 +397,11 @@ setTimeout(() => {
     </div>
     <div class="bank-conversation" v-else-if="uiStore.isClosing">
 
-    </div>
-    <div class="bank-conversation" v-else>
+        </div>
+        <div class="bank-conversation" v-else>
         <div class="bubble" @click="switchBank('account')" v-if="bankView === 'vault'">
             Hé là, m'sieur le banquier ! J'viens voir mes économies !
-        </div>
+            </div>
         <div class="bubble" @click="switchBank('vault')" v-if="bankView === 'account'">
             J'aimerais jeter un œil à mon coffre, si vous l'permettez.
         </div>
@@ -509,22 +513,22 @@ $animation-timing: 0.6s ease-out;
 
     span {
         font-size: 4vw;
-        font-weight: bold;
+    font-weight: bold;
         color: $color-gold;
 
         &.one {
-            animation: blink 1.5s infinite;
-            animation-delay: 0.5s;
-        }
+    animation: blink 1.5s infinite;
+    animation-delay: 0.5s;
+}
 
         &.two {
-            animation: blink 1.5s infinite;
-            animation-delay: 1s;
-        }
+    animation: blink 1.5s infinite;
+    animation-delay: 1s;
+}
 
         &.three {
-            animation: blink 1.5s infinite;
-            animation-delay: 1.5s;
+    animation: blink 1.5s infinite;
+    animation-delay: 1.5s;
         }
     }
 }
@@ -657,7 +661,7 @@ h2 {
         &.banker,
         &.player {
             &.active {
-                opacity: 1 !important;
+    opacity: 1 !important;
             }
         }
 
@@ -666,25 +670,25 @@ h2 {
             width: 18.55vw;
             height: 12.15vw;
             top: 4.05vw;
-            background-image: url('/images/bubble-think.png');
+    background-image: url('/images/bubble-think.png');
 
             span {
                 font-size: 0.9vw;
                 padding: 2.85vw 4.5vw 0 3.75vw;
-                display: inline-block;
-                text-align: center;
-            }
+    display: inline-block;
+    text-align: center;
+}
 
             .bank-person {
-                position: absolute;
+    position: absolute;
                 top: -0.75vw;
                 left: calc(50% - 1vw);
-                transform: translateX(-50%);
-                width: calc(initial - 50%);
-                background-color: rgb(77, 27, 27);
-                color: #ffffff;
+    transform: translateX(-50%);
+    width: calc(initial - 50%);
+    background-color: rgb(77, 27, 27);
+    color: #ffffff;
                 font-size: 1vw;
-                text-align: center;
+    text-align: center;
                 padding: 0.25vw 0.5vw;
                 border-radius: 0.25vw;
             }
@@ -695,25 +699,25 @@ h2 {
             width: 17.55vw;
             height: 11.15vw;
             top: -2.15vw;
-            background-image: url('/images/bubble-message.png');
+    background-image: url('/images/bubble-message.png');
 
             span {
                 font-size: 1vw;
                 padding: 2.5vw 4.15vw 0 2.15vw;
-                display: inline-block;
-                text-align: center;
-            }
+    display: inline-block;
+    text-align: center;
+}
 
             .bank-person {
-                position: absolute;
+    position: absolute;
                 top: -0.5vw;
                 left: calc(50% - 1vw);
-                transform: translateX(-50%);
-                width: calc(initial - 50%);
-                background-color: rgb(77, 27, 27);
-                color: #ffffff;
+    transform: translateX(-50%);
+    width: calc(initial - 50%);
+    background-color: rgb(77, 27, 27);
+    color: #ffffff;
                 font-size: 1vw;
-                text-align: center;
+    text-align: center;
                 padding: 0.25vw 0.5vw;
                 border-radius: 0.25vw;
             }
@@ -787,32 +791,32 @@ h2 {
     cursor: pointer;
 
     span {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        cursor: pointer;
-        outline: none;
-        z-index: 1;
-        position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+    outline: none;
+    z-index: 1;
+    position: relative;
 
         &.error {
-            color: rgb(150, 17, 17);
-        }
+    color: rgb(150, 17, 17);
+}
 
         &:after {
-            content: '';
+    content: '';
             box-shadow: 0 0.05vw 1.75vw 0.3vw #000000;
-            width: 100%;
+    width: 100%;
             height: 0;
-            display: none;
+    display: none;
         }
-    }
+}
 
     .placeholder {
-        color: #666666a3;
-        position: absolute;
+    color: #666666a3;
+    position: absolute;
         top: 0.3vw;
         right: 0.25vw;
     }
@@ -878,10 +882,10 @@ h2 {
     gap: 0.4vw;
 
     &:hover {
-        background: linear-gradient(145deg, #5f422c, #3a2617);
-        border-color: #e2c87d;
-        color: #ffefbb;
-        box-shadow:
+    background: linear-gradient(145deg, #5f422c, #3a2617);
+    border-color: #e2c87d;
+    color: #ffefbb;
+    box-shadow:
             inset 0 0.05vw 0 #fff5d2,
             0 0.2vw 0.6vw rgba(0, 0, 0, 0.8),
             0 0 0.3vw #e6c47c;
@@ -889,7 +893,7 @@ h2 {
 
     &:active {
         transform: translateY(0.1vw);
-        box-shadow:
+    box-shadow:
             inset 0 0.1vw 0.2vw #1e1208,
             0 0.05vw 0.1vw rgba(0, 0, 0, 0.5);
     }
@@ -905,9 +909,9 @@ h2 {
     border-color: #c0745c;
 
     &:hover {
-        background: linear-gradient(145deg, #8a3b23, #4d1f12);
-        border-color: #ffb29e;
-        box-shadow:
+    background: linear-gradient(145deg, #8a3b23, #4d1f12);
+    border-color: #ffb29e;
+    box-shadow:
             inset 0 0.05vw 0 #ffd9ca,
             0 0.2vw 0.6vw rgba(0, 0, 0, 0.8),
             0 0 0.3vw #ffb29e;

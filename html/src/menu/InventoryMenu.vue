@@ -163,7 +163,7 @@ function simulationPost() {
         id: 'lancaster_rifle',
         quantity: 2000,
         quality: 100,
-        weight: 1,
+        weight: 100,
         tags: [0],
         category: 0
       },
@@ -171,7 +171,7 @@ function simulationPost() {
         id: 'coca_seeds',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 1012120,
-        weight: 1,
+        weight: 100,
         tags: [],
         category: 0
       },
@@ -179,7 +179,7 @@ function simulationPost() {
         id: 'cocaine',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 104450,
-        weight: 1,
+        weight: 100 ,
         tags: [2],
         category: 0
       },

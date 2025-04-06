@@ -2,8 +2,8 @@
   "items": [
     {
       "name": "Gourde",
-      "id": "water_bottle",
-      "category": 2,  
+      "id": "item_water_bottle",
+      "category": 8,  
       "weight": 1000,
       "filter": "food",
       "tags": ["food"],
@@ -17,8 +17,8 @@
     },
     {
       "name": "Pain Rustique",
-      "id": "rustic_bread",
-      "category": 1,
+      "id": "food_bread",
+      "category": 3,
       "weight": 500,
       "tags": ["food"],
       "bonus": [
@@ -30,9 +30,36 @@
       "description": "Un pain fraîchement cuit. Restaure votre faim."
     },
     {
+      "name": "Fusil à Répétition",
+      "id": "weapon_repeater_carbine",
+      "category": 1,
+      "filter": "weapon",
+      "weight": 3000,
+      "tags": ["weapon"],
+      "description": "Un fusil à répétition de haute qualité. Arme redoutable à moyenne portée."
+    },
+    {
+      "name": "Couteau",
+      "id": "weapon_melee_knife",
+      "category": 1,
+      "filter": "weapon",
+      "weight": 3000,
+      "tags": ["weapon"],
+      "description": "Un couteau de haute qualité. Arme redoutable à moyenne portée."
+    },
+    {
+      "name": "Lasso",
+      "id": "weapon_lasso",
+      "category": 1,
+      "filter": "weapon",
+      "weight": 3000,
+      "tags": ["weapon"],
+      "description": "Un lasso de haute qualité. Arme redoutable à moyenne portée."
+    },
+    {
       "name": "Fusil Lancaster",
-      "id": "lancaster_rifle",
-      "category": 3,
+      "id": "weapon_lancaster_rifle",
+      "category": 1,
       "filter": "weapon",
       "weight": 3000,
       "tags": ["weapon"],
@@ -41,7 +68,7 @@
     {
       "name": "Fusil à Répétition",
       "id": "weapon_repeater_carbine",
-      "category": 3,
+      "category": 1,
       "filter": "weapon",
       "weight": 3000,
       "tags": ["weapon"],
@@ -50,7 +77,7 @@
     {
       "name": "Arc",
       "id": "weapon_bow",
-      "category": 3,
+      "category": 1,
       "filter": "weapon",
       "weight": 2000,
       "tags": ["weapon"],
@@ -58,8 +85,8 @@
     },
     {
       "name": "Pioche",
-      "id": "pickaxe",
-      "category": 5,
+      "id": "tool_pickaxe",
+      "category": 4,
       "filter": "tool",
       "weight": 2000,
       "tags": ["tool"],
@@ -67,8 +94,8 @@
     },
     {
       "name": "Pelle",
-      "id": "shovel",
-      "category": 5,
+      "id": "tool_shovel",
+      "category": 4,
       "filter": "tool",
       "weight": 2000,
       "tags": ["tool"],
@@ -76,8 +103,8 @@
     },
     {
       "name": "Râteau",
-      "id": "rake",
-      "category": 5,
+      "id": "tool_rake",
+      "category": 4,
       "filter": "tool",
       "weight": 1500,
       "tags": ["tool"],
@@ -85,8 +112,8 @@
     },
     {
       "name": "Arrosoir",
-      "id": "watering_can",
-      "category": 5,
+      "id": "tool_watering_can",
+      "category": 4,
       "filter": "tool",
       "weight": 1000,
       "tags": ["tool"],
@@ -94,8 +121,8 @@
     },
     {
       "name": "Engrais",
-      "id": "fertilizer",
-      "category": 4,
+      "id": "plant_fertilizer",
+      "category": 0,
       "filter": "tool",
       "weight": 500,
       "tags": [],
@@ -103,8 +130,8 @@
     },
     {
       "name": "Hache",
-      "id": "axe",
-      "category": 5,
+      "id": "tool_axe",
+      "category": 4,
       "filter": "tool",
       "weight": 2,
       "tags": ["tool", "woodcutting", "common"],
@@ -112,8 +139,8 @@
     },
     {
       "name": "Graines de Cannabis",
-      "id": "cannabis_seeds",
-      "category": 4,
+      "id": "plant_seeds_hemp",
+      "category": 0,
       "filter": "drug",
       "weight": 10,
       "tags": ["drug"],
@@ -121,8 +148,8 @@
     },
     {
       "name": "Graines de Canne à Sucre",
-      "id": "sugarcane_seeds",
-      "category": 4,
+      "id": "plant_seeds_sugarcane",
+      "category": 0,
       "filter": "drug",
       "weight": 100,
       "tags": ["drug"],
@@ -130,8 +157,8 @@
     },
     {
       "name": "Viande de Cerf Cuite",
-      "id": "cooked_deer_meat",
-      "category": 1,
+      "id": "animal_deer_meat_cooked",
+      "category": 3,
       "filter": "food",
       "weight": 1000,
       "tags": ["crafting", "food", "animals"],
@@ -145,8 +172,8 @@
     },
     {
       "name": "Cocaïne",
-      "id": "cocaine",
-      "category": 4,
+      "id": "drug_cocaine",
+      "category": 3,
       "filter": "drug",
       "weight": 200,
       "tags": ["drug"],
@@ -171,8 +198,8 @@
     },
     {
       "name": "Graines de Coca",
-      "id": "coca_seeds",
-      "category": 4,
+      "id": "plant_seeds_coca",
+      "category": 0,
       "filter": "drug",
       "weight": 10,
       "tags": ["drug"],
@@ -180,8 +207,8 @@
     },
     {
       "name": "Viande de Cerf",
-      "id": "raw_deer_meat",
-      "category": 1,
+      "id": "animal_deer_meat_raw",
+      "category": 3,
       "filter": "food",
       "weight": 1000,
       "tags": ["crafting", "food", "animals"],
@@ -189,8 +216,8 @@
     },
     {
       "name": "Peau de Cerf",
-      "id": "deer_skin",
-      "category": 4,
+      "id": "animal_deer_skin",
+      "category": 0,
       "filter": "crafting",
       "weight": 500,
       "tags": ["crafting", "animals"],
@@ -198,8 +225,8 @@
     },
     {
       "name": "Peau de Lapin",
-      "id": "rabbit_skin",
-      "category": 4,
+      "id": "animal_rabbit_skin",
+      "category": 0,
       "filter": "crafting",
       "weight": 300,
       "tags": ["crafting", "animals"],
@@ -207,8 +234,8 @@
     },
     {
       "name": "Viande de Lapin",
-      "id": "raw_rabbit_meat",
-      "category": 1,
+      "id": "animal_rabbit_meat_raw",
+      "category": 3,
       "filter": "food",
       "weight": 500,
       "tags": ["crafting", "food", "animals"],
@@ -216,8 +243,8 @@
     },
     {
       "name": "Peau de Crocodile",
-      "id": "crocodile_skin",
-      "category": 4,
+      "id": "animal_crocodile_skin",
+      "category": 0,
       "filter": "crafting",
       "weight": 1,
       "tags": ["crafting", "animals"],
@@ -225,8 +252,8 @@
     },
     {
       "name": "Viande de Crocodile",
-      "id": "crocodile_meat",
-      "category": 1,
+      "id": "animal_crocodile_meat_raw",
+      "category": 3,
       "filter": "food",
       "weight": 1.5,
       "tags": ["crafting", "food", "animals"],
@@ -234,8 +261,8 @@
     },
     {
       "name": "Viande de Sanglier",
-      "id": "raw_deer_meat",
-      "category": 1,
+      "id": "animal_deer_meat_raw",
+      "category": 3,
       "filter": "food",
       "weight": 1.2,
       "tags": ["crafting", "food", "animals"],
@@ -243,8 +270,8 @@
     },
     {
       "name": "Viande de Cochon",
-      "id": "raw_pig_meat",
-      "category": 1,
+      "id": "animal_pig_meat_raw",
+      "category": 3,
       "filter": "food",
       "weight": 1000,
       "tags": ["crafting", "food", "animals"],
@@ -252,7 +279,7 @@
     },
     {
       "name": "Peau de Loup",
-      "id": "wolf_skin",
+      "id": "animal_wolf_skin",
       "category": 4,  
       "filter": "crafting",
       "weight": 600,
@@ -261,7 +288,7 @@
     },
     {
       "name": "Viande de Loup",
-      "id": "raw_wolf_meat",
+      "id": "animal_wolf_meat_raw",
       "category": 1,
       "filter": "food",
       "weight": 800,
@@ -270,8 +297,8 @@
     },
     {
       "name": "Peau d'Ours",
-      "id": "bear_skin",
-      "category": 4,
+      "id": "animal_bear_skin",
+      "category": 0,
       "filter": "crafting",
       "weight": 2500,
       "tags": ["crafting", "animals"],
@@ -279,8 +306,8 @@
     },
     {
       "name": "Viande d'Ours",
-      "id": "raw_bear_meat",
-      "category": 1,
+      "id": "animal_bear_meat_raw",
+      "category": 3,
       "filter": "food",
       "weight": 2500,
       "tags": ["crafting", "food", "animals"],

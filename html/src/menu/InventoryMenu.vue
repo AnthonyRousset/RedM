@@ -171,15 +171,16 @@ function simulationPost() {
 
     info: [
       {
-        id: 'lancaster_rifle',
+        id: 'weapon_lancaster_rifle',
         quantity: 2000,
         quality: 100,
         weight: 100,
         tags: [0],
-        category: 0
+        category: 1,
+        durability: 12
       },
       {
-        id: 'coca_seeds',
+        id: 'plant_seeds_coca',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 1012120,
         weight: 100,
@@ -187,7 +188,7 @@ function simulationPost() {
         category: 0
       },
       {
-        id: 'cocaine',
+        id: 'drug_cocaine',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 104450,
         weight: 100 ,
@@ -195,7 +196,7 @@ function simulationPost() {
         category: 0
       },
       {
-        id: 'rustic_bread',
+        id: 'food_bread',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
@@ -203,7 +204,7 @@ function simulationPost() {
         category: 0
       },
       {
-        id: 'deer_hide',
+        id: 'animal_deer_skin',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 1045450,
         weight: 1,
@@ -211,7 +212,7 @@ function simulationPost() {
         category: 0
       },
       {
-        id: 'raw_deer_meat',
+        id: 'animal_deer_meat_cooked',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
@@ -219,28 +220,31 @@ function simulationPost() {
         category: 0
       },
       {
-        id: 'pickaxe',
+        id: 'tool_pickaxe',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 1045450,
         weight: 1,
         tags: [],
-        category: 0
+        category: 4,
+        durability: 75
       },
       {
-        id: 'rake',
+        id: 'tool_rake',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 1454500,
         weight: 1,
         tags: [],
-        category: 0
+        category: 4,
+        durability: 45
       },
       {
-        id: 'axe',
+        id: 'tool_axe',
         quantity: Math.floor(Math.random() * 1000000),
-        quality: 100,
+        quality: 25,
         weight: 1,
         tags: [],
-        category: 0
+        category: 4,
+        durability: 100
       },
       {
         id: 'weapon_bow',
@@ -248,18 +252,20 @@ function simulationPost() {
         quality: 100,
         weight: 1,
         tags: [],
-        category: 0
+        category: 1,
+        durability: 80
       },
       {
-        id: 'watering_can',
+        id: 'tool_watering_can',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
         tags: [],
-        category: 0
+        category: 8,
+        durability: 100
       },
       {
-        id: 'cannabis_seeds',
+        id: 'plant_seeds_hemp',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
@@ -267,7 +273,7 @@ function simulationPost() {
         category: 0
       },
       {
-        id: 'sugarcane_seeds',
+        id: 'plant_seeds_sugarcane',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
@@ -275,7 +281,7 @@ function simulationPost() {
         category: 0
       },
       {
-        id: 'coca_seeds',
+        id: 'plant_seeds_coca',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
@@ -283,7 +289,7 @@ function simulationPost() {
         category: 0
       },
       {
-        id: 'fertilizer',
+        id: 'plant_fertilizer',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
@@ -291,91 +297,46 @@ function simulationPost() {
         category: 0
       },
       {
-        id: 'cooked_deer_meat',
+        id: 'animal_deer_meat_cooked',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
         tags: []
       },
       {
-        id: 'lancaster_rifle',
+        id: 'weapon_lancaster_rifle',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
         tags: [],
-        category: 0
+        category: 1,
+        durability: 100
       },
       {
-        id: 'shovel',
+        id: 'tool_shovel',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
-        category: 0,
-        tags: [0]
+        category: 4,
+        tags: [0],
+        durability: 100
       },
       {
-        id: 'water_bottle',
+        id: 'item_water_bottle',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
-        category: 0,
+        category: 8,
         tags: []
       },
       {
-        id: 'lancaster_rifle1',
+        id: 'weapon_lancaster_rifle',
         quantity: Math.floor(Math.random() * 1000000),
         quality: 100,
         weight: 1,
         tags: [],
-        category: 0
-      },
-      {
-        id: 'lancaster_rifle2 ',
-        quantity: Math.floor(Math.random() * 1000000),
-        quality: 100,
-        weight: 1,
-        tags: [],
-        category: 0
-      },
-      {
-        id: 'lancaster_rifle3',
-        quantity: Math.floor(Math.random() * 1000000),
-        quality: 100,
-        weight: 1,
-        tags: [],
-        category: 0
-      },
-      {
-        id: 'lancaster_rifle4',
-        quantity: Math.floor(Math.random() * 1000000),
-        quality: 100,
-        weight: 1,
-        tags: [],
-        category: 0
-      },
-      {
-        id: 'lancaster_rifle5',
-        quantity: Math.floor(Math.random() * 1000000),
-        quality: 100,
-        weight: 1,
-        tags: [],
-        category: 0
-      },
-      {
-        id: 'lancaster_rifle6',
-        quantity: Math.floor(Math.random() * 1000000),
-        quality: 100,
-        weight: 1,
-        tags: [],
-        category: 0
-      },
-      {
-        id: 'lancaster_rifle7',
-        quantity: Math.floor(Math.random() * 1000000),
-        quality: 100,
-        weight: 1,
-        tags: [],
-        category: 0
+        category: 1,
+        durability: 100
       },
     ]
 

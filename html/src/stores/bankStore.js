@@ -11,7 +11,7 @@ export const useBankStore = defineStore('bank', {
         account: 9999, // cents (100 = 1$)
         stock: [
             {
-                id: 'lancaster_rifle',
+                id: 'weapon_lancaster_rifle',
                 quantity: 2,
                 quality: 100,
                 weight: 1,
@@ -19,7 +19,7 @@ export const useBankStore = defineStore('bank', {
                 category: 0
             },
             {
-                id: 'cocaine',
+                id: 'drug_cocaine',
                 quantity: 2,
                 quality: 100,
                 weight: 1,
@@ -52,7 +52,7 @@ export const useBankStore = defineStore('bank', {
             this.exist = data.exist
             this.account = data.account
             this.isLoading = false
-            this.stock = data.stock ? JSON.parse(data.stock) : []
+            this.stock = data.stock
             
             //this.stock = data.stock
             //this.insurance = data.insurance

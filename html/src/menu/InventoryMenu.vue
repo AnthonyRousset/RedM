@@ -154,6 +154,17 @@ function doDrop() {
 }
 
 
+// i close inventory menu only if uiStore.menu is inventory
+function closeInventory() {
+  if (uiStore.menu === 'inventory') {
+    sendNui('ui-close')
+    uiStore.closeMenu()
+  }
+}
+
+window.addEventListener('keydown', closeInventory) 
+
+
 function simulationPost() {
   window.postMessage({
     action: 'inventory:update',

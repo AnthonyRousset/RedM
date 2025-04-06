@@ -52,7 +52,7 @@ export const useBankStore = defineStore('bank', {
             this.exist = data.exist
             this.account = data.account
             this.isLoading = false
-            this.stock = data.stock
+            this.stock = data.stock ? JSON.parse(data.stock) : []
             
             //this.stock = data.stock
             //this.insurance = data.insurance

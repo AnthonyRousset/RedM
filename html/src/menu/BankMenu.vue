@@ -197,14 +197,14 @@ const createBank = () => {
 //bank-stock-add-{ID}
 //bank-stock-remove-{ID}
 
-const stockAdd = (id, complexId = null) => {
-    console.log('bank-stock-add-' + id)
-    sendNui('bank-stock-add-' + id, { id: id, complexId: complexId })
+const stockAdd = (bankId, item, quantity) => {
+    console.log('bank-stock-add-' + bankId, item)
+    sendNui('bank-stock-add-' + bankId, { id: item.id, complexId: item.complexId, idItem: item.id, quantity: quantity })
 }
 
-const stockRemove = (id, complexId = null) => {
-    console.log('bank-stock-remove-' + id)
-    sendNui('bank-stock-remove-' + id, { id: id, complexId: complexId })
+const stockRemove = (bankId, item, quantity) => {
+    console.log('bank-stock-remove-' + bankId, item)
+    sendNui('bank-stock-remove-' + bankId, { id: item.id, complexId: item.complexId, idItem: item.id, quantity: quantity })
 }
 
 const switchBank = (bank) => {
@@ -301,7 +301,7 @@ setTimeout(() => {
                         <div class="emplacements">
                             <ul>
                                 <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }"
-                                    @click="stockRemove(bankStore.stock[index - 1].id, bankStore.stock[index - 1].complexId)">
+                                    @click="stockRemove(bankStore.id, bankStore.stock[index - 1], 1)">
                                     <img v-if="bankStore.stock && bankStore.stock[index - 1]"
                                         :src="'/images/items/' + bankStore.stock[index - 1].id + '.png'" alt="">
                                 </li>
@@ -316,7 +316,7 @@ setTimeout(() => {
                             <div class="select-container">
                                 <Multiselect v-model="selectedFilter" :options="filterOptions" :searchable="false"
                                     :close-on-select="true" :preserve-search="false"
-                                    placeholder="Sélectionner un filtre" track-by="value" label="label"
+                                    placeholder="Catégorie" track-by="value" label="label"
                                     @change="filter">
                                     <template #option="{ option }">
                                         <div class="option-content">
@@ -373,7 +373,7 @@ setTimeout(() => {
                             <PerfectScrollbar>
                                 <ul>
                                     <li v-for="(item, index) in playerStore.inventory" :key="index"
-                                        @click="stockAdd(item.id, item.complexId)">
+                                        @click="stockAdd(bankStore.id, item, 1)">
                                         <Item :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
                                     </li>
                                 </ul>

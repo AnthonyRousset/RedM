@@ -4,7 +4,7 @@ import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import Multiselect from '@vueform/multiselect'
 import Item from './item.vue'
 import itemsData from '../../data/items.json'
-import { sendNui } from '../../utils/nui'   
+import { sendNui } from '../../utils/nui'
 
 
 
@@ -34,6 +34,9 @@ const quantityOrder = ref('asc');
 const refreshKey = ref(0); // Clé de rafraîchissement pour forcer le rendu
 const isReordering = ref(false); // Pour bloquer temporairement les tooltips
 const searchValue = ref('');
+const quantityModal = ref(false);
+const quantity = ref(1);
+const selectedItem = ref(null);
 
 // Copie locale de l'inventaire pour éviter de modifier le tableau original
 const localInventory = ref([]);
@@ -214,8 +217,41 @@ function search() {
     refreshKey.value++
 }
 
-const clickItem = (item, quantity) => {
-    console.log('clickItem', props.type, props.idEntity, item, quantity)
+const clickItem = (item) => {
+    console.log('clickItem', item)
+    // si la quantité est supérieure à 1, oui
+    if (item.quantity > 1) {
+        // open menu quantity modal
+        selectedItem.value = item;
+        quantityModal.value = true;
+        quantity.value = 1;
+    } else {
+        // send item
+        sendItem(item, item.quantity)
+    }
+}
+
+const validateQuantity = () => {
+    // S'assurer que la quantité est un nombre valide
+    let val = parseInt(quantity.value);
+    if (isNaN(val) || val < 1) {
+        quantity.value = 1;
+    } else if (val > selectedItem.value.quantity) {
+        quantity.value = selectedItem.value.quantity;
+    }
+}
+
+const sendQuantity = () => {
+    if (selectedItem.value) {
+        validateQuantity();
+        sendItem(selectedItem.value, quantity.value);
+        quantityModal.value = false;
+        selectedItem.value = null;
+    }
+}
+
+const sendItem = (item, quantity) => {
+    console.log('sendItem', item, quantity)
     switch (props.type) {
         case 'bank':
             console.log('bank-stock-add-' + props.idEntity, item)
@@ -247,11 +283,11 @@ onUnmounted(() => {
     document.removeEventListener('click', handleGlobalClick)
 })
 
-</script>   
+</script>
 
 <template>
 
-<div class="bag">
+    <div class="bag">
         <div class="filter categories">
             <div class="filter-container">
                 <div class="filter-group">
@@ -264,27 +300,29 @@ onUnmounted(() => {
                 </div>
             </div>
         </div>
+        <!--
         <div class="filter1" v-if="false">
-
-        <div class="select-container">
+            <div class="select-container">
                 <Multiselect v-model="selectedFilter" :options="JSONfilters" :searchable="false" :close-on-select="true"
                     :preserve-search="false" placeholder="Catégorie" track-by="value" label="label" @change="filter">
-                <template #option="{ option }">
-                    <div class="option-content">
+                    <template #option="{ option }">
+                        <div class="option-content">
                             <img v-if="option.icon" :src="option.icon" :alt="option.label" class="option-icon">
-                        <span>{{ option.label }}</span>
-                    </div>
-                </template>
-            </Multiselect>
+                            <span>{{ option.label }}</span>
+                        </div>
+                    </template>
+                </Multiselect>
+            </div>
         </div>
-    </div>
+        -->
         <div class="filter sort">
-        <div class="filter-container">
-                <div class="filter-group" @click="sortByWeight(items)" >
+            <div class="filter-container">
+                <div class="filter-group" @click="sortByWeight(items)">
                     <div class="filter-label">
-                        <img src="/images/player/player-inventory-weight.png" :class="{ 'active': weightOrder !== '' }" alt="Poids" class="filter-icon">
+                        <img src="/images/player/player-inventory-weight.png" :class="{ 'active': weightOrder !== '' }"
+                            alt="Poids" class="filter-icon">
                     </div>
-                <div class="filter-buttons">
+                    <div class="filter-buttons">
                         <button class="filter-button" v-if="weightOrder === 'asc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M7 10l5 5 5-5z" />
@@ -292,21 +330,22 @@ onUnmounted(() => {
                         </button>
                         <button class="filter-button" v-else-if="weightOrder === 'desc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M7 14l5-5 5 5z" />
-                        </svg>
-                    </button>
+                                <path d="M7 14l5-5 5 5z" />
+                            </svg>
+                        </button>
                         <button class="filter-button" v-else>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <circle cx="12" cy="12" r="4" />
-                        </svg>
-                    </button>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </div>
                 <div class="filter-group" @click="sortByQuantity(items)">
                     <div class="filter-label">
-                        <img src="/images/player/player-inventory-quantity.png" :class="{ 'active': quantityOrder !== '' }" alt="Quantité" class="filter-icon">
+                        <img src="/images/player/player-inventory-quantity.png"
+                            :class="{ 'active': quantityOrder !== '' }" alt="Quantité" class="filter-icon">
                     </div>
-                <div class="filter-buttons">
+                    <div class="filter-buttons">
                         <button class="filter-button" v-if="quantityOrder === 'asc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M7 10l5 5 5-5z" />
@@ -314,34 +353,54 @@ onUnmounted(() => {
                         </button>
                         <button class="filter-button" v-else-if="quantityOrder === 'desc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M7 14l5-5 5 5z" />
-                        </svg>
-                    </button>
+                                <path d="M7 14l5-5 5 5z" />
+                            </svg>
+                        </button>
                         <button class="filter-button" v-else>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <circle cx="12" cy="12" r="4" />
-                        </svg>
-                    </button>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
             <div class="filter-container search">
                 <input type="text" placeholder="Rechercher" class="search-input" @input="search" v-model="searchValue">
+            </div>
+        </div>
+        <div class="inventory">
+            <PerfectScrollbar>
+                <ul>
+                    <li v-for="(item, index) in filteredInventory"
+                        :key="item.id + '-' + index + '-' + refreshKey" @click="clickItem(item)">
+                        <Item :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
+                    </li>
+                </ul>
+            </PerfectScrollbar>
         </div>
     </div>
-    <div class="inventory">
-        <PerfectScrollbar>
-            <ul>
-                    <li v-for="(inventoryItem, index) in filteredInventory"
-                        :key="inventoryItem.id + '-' + index + '-' + refreshKey"
-                        @click="clickItem(inventoryItem, 1)">
-                    <Item :item="inventoryItem" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
-                </li>
-            </ul>
-        </PerfectScrollbar>
-    </div>
-</div>
 
+
+    <!-- quantity modal -->
+    <div class="quantity-modal" v-if="quantityModal">
+        <div class="quantity-modal-content">
+            <div class="quantity-modal-title">Quantité</div>
+            <div class="quantity-modal-input">
+                <input 
+                    type="number" 
+                    v-model="quantity" 
+                    :max="selectedItem?.quantity" 
+                    min="1"
+                    @input="validateQuantity"
+                />
+                <div class="quantity-max">/ {{ selectedItem?.quantity }}</div>
+            </div>
+            <div class="quantity-modal-buttons">
+                <button @click="sendQuantity">Envoyer</button>
+                <button @click="quantityModal = false">Annuler</button>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -387,10 +446,10 @@ onUnmounted(() => {
                     {{ tags[tagId]?.name }}
                 </div>
             </div>
+        </div>
     </div>
-</div>
 
-</template> 
+</template>
 
 <style lang="scss" scoped>
 // Variables
@@ -506,7 +565,7 @@ $animation-timing: 0.6s ease-out;
                             transition: all 0.2s ease;
 
                             &.active {
-                                filter: brightness(1.3) drop-shadow(0 0 0.2vw    rgba(255, 215, 0, 0.7));
+                                filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
                                 -webkit-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
                                 -moz-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
                                 -ms-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
@@ -665,6 +724,118 @@ $animation-timing: 0.6s ease-out;
 
 
 }
+
+
+.quantity-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 15vw;
+    background: radial-gradient(circle, #291b12 60%, #1e130c 100%);
+    border: 0.2vw solid #805f07;
+    border-radius: 0.8vw;
+    z-index: 100000;
+    box-shadow: 0 0 1vw rgba(0, 0, 0, 0.5), inset 0 0 0.5vw rgba(0, 0, 0, 0.5);
+    padding: 1.5vw;
+
+    .quantity-modal-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1vw;
+
+        .quantity-modal-title {
+            font-family: 'Special Elite', serif;
+            font-size: 1.2vw;
+            color: #f5e6c9;
+            text-align: center;
+            text-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.8);
+            letter-spacing: 0.1vw;
+            
+            &:after {
+                content: '';
+                display: block;
+                width: 100%;
+                height: 0.15vw;
+                background: linear-gradient(to right, transparent, #805f07, transparent);
+                margin: 0.4vw auto 0;
+            }
+        }
+
+        .quantity-modal-input {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8vw;
+            width: 13vw;
+            padding: 0.6vw 1vw 0.3vw;
+            background: rgba(0, 0, 0, 0.4);
+            border: 0.15vw solid #805f07;
+            border-radius: 0.4vw;
+            
+            input {
+                width: 4vw;
+                background: none;
+                border: none;
+                color: #f5e6c9;
+                font-family: 'Special Elite', serif;
+                font-size: 1vw;
+                text-align: right;
+                outline: none;
+
+                &::-webkit-inner-spin-button,
+                &::-webkit-outer-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+                
+                &[type=number] {
+                    -moz-appearance: textfield;
+                }
+            }
+
+            .quantity-max {
+                color: #805f07;
+                font-family: 'Special Elite', serif;
+                font-size: 1vw;
+            }
+        }
+
+        .quantity-modal-buttons {
+            display: flex;
+            gap: 0.8vw;
+            margin-top: 0.8vw;
+            width: 100%;
+
+            button {
+                flex: 1;
+                padding: 0.6vw;
+                background: radial-gradient(circle, #291b12 0%, #1e130c 100%);
+                border: 0.15vw solid #805f07;
+                border-radius: 0.4vw;
+                color: #f5e6c9;
+                font-family: 'Special Elite', serif;
+                font-size: 1vw;
+                text-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.8);
+                cursor: pointer;
+                transition: all 0.3s ease-out;
+
+                &:hover {
+                    border-color: #a8854d;
+                    filter: brightness(1.2);
+                }
+
+                &:active {
+                    transform: scale(0.98);
+                }
+            }
+        }
+    }
+}
+
 
 .global-tooltip {
     position: absolute;

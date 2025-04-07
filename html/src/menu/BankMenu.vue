@@ -719,8 +719,8 @@ h2 {
     position: absolute;
     top: calc(50% - 23vw);
     right: 4vw;
-    width: 21vw;
-    height: 33vw;
+    width: 21.5vw;
+    height: 34vw;
     background-image: url(/images/bank/bank-vault.png);
     background-size: cover;
     background-repeat: no-repeat;

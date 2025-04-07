@@ -4,6 +4,8 @@ import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import Multiselect from '@vueform/multiselect'
 import Item from './item.vue'
 import itemsData from '../../data/items.json'
+import { sendNui } from '../../utils/nui'   
+
 
 
 const props = defineProps({

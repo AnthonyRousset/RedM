@@ -50,7 +50,7 @@ onMounted(() => {
         error.value = ''
     }
     if (props.type === 'bank') {
-        error.value = 'la quantiter est supérieure à la quantiter max'
+        error.value = 'Pardi ! J\'ai pas assez de ces objets pour faire cette transaction !'
     }
     if (props.type === 'vendor') {
         error.value = 'la quantiter est supérieure à la quantiter max'
@@ -287,11 +287,11 @@ onUnmounted(() => {
     document.removeEventListener('click', handleGlobalClick)
 })
 
-</script>   
+</script>
 
 <template>
 
-<div class="bag">
+    <div class="bag">
         <div class="filter categories">
             <div class="filter-container">
                 <div class="filter-group">
@@ -315,18 +315,18 @@ onUnmounted(() => {
                         <span>{{ option.label }}</span>
                     </div>
                 </template>
-            </Multiselect>
-        </div>
-    </div>
+</Multiselect>
+</div>
+</div>
 -->
         <div class="filter sort">
-        <div class="filter-container">
+            <div class="filter-container">
                 <div class="filter-group" @click="sortByWeight(items)">
                     <div class="filter-label">
                         <img src="/images/player/player-inventory-weight.png" :class="{ 'active': weightOrder !== '' }"
                             alt="Poids" class="filter-icon">
                     </div>
-                <div class="filter-buttons">
+                    <div class="filter-buttons">
                         <button class="filter-button" v-if="weightOrder === 'asc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M7 10l5 5 5-5z" />
@@ -334,22 +334,22 @@ onUnmounted(() => {
                         </button>
                         <button class="filter-button" v-else-if="weightOrder === 'desc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M7 14l5-5 5 5z" />
-                        </svg>
-                    </button>
+                                <path d="M7 14l5-5 5 5z" />
+                            </svg>
+                        </button>
                         <button class="filter-button" v-else>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <circle cx="12" cy="12" r="4" />
-                        </svg>
-                    </button>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </div>
                 <div class="filter-group" @click="sortByQuantity(items)">
                     <div class="filter-label">
                         <img src="/images/player/player-inventory-quantity.png"
                             :class="{ 'active': quantityOrder !== '' }" alt="Quantité" class="filter-icon">
                     </div>
-                <div class="filter-buttons">
+                    <div class="filter-buttons">
                         <button class="filter-button" v-if="quantityOrder === 'asc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M7 10l5 5 5-5z" />
@@ -357,32 +357,32 @@ onUnmounted(() => {
                         </button>
                         <button class="filter-button" v-else-if="quantityOrder === 'desc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M7 14l5-5 5 5z" />
-                        </svg>
-                    </button>
+                                <path d="M7 14l5-5 5 5z" />
+                            </svg>
+                        </button>
                         <button class="filter-button" v-else>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <circle cx="12" cy="12" r="4" />
-                        </svg>
-                    </button>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
             <div class="filter-container search">
                 <input type="text" placeholder="Rechercher" class="search-input" @input="search" v-model="searchValue">
             </div>
-    </div>
-    <div class="inventory">
-        <PerfectScrollbar>
-            <ul>
+        </div>
+        <div class="inventory">
+            <PerfectScrollbar>
+                <ul>
                     <li v-for="(item, index) in filteredInventory" :key="item.id + '-' + index + '-' + refreshKey"
                         @click="handleItemClick(item)">
                         <Item :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
-                </li>
-            </ul>
-        </PerfectScrollbar>
+                    </li>
+                </ul>
+            </PerfectScrollbar>
+        </div>
     </div>
-</div>
 
 
     <!-- quantity modal -->
@@ -436,7 +436,7 @@ onUnmounted(() => {
         </div>
     </div>
 
-</template> 
+</template>
 
 <style lang="scss" scoped>
 // Variables
@@ -460,15 +460,14 @@ $animation-timing: 0.6s ease-out;
 
 // Main Container
 .bag {
-    position: absolute;
-    top: calc(50% - 23vw);
-    left: 4vw;
+    position: relative;
     width: 26vw;
     height: 34vw;
     background-image: url(/images/player/player-inventory.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    border-radius: 1.3vw;
 
     // Filter Components
     .filter {

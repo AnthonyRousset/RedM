@@ -249,12 +249,12 @@ setTimeout(() => {
                     <div class="vault">
                         <div class="emplacements">
                             <ul>
-                                <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }"
-                                    >
+                                <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }">
                                     <img v-if="bankStore.stock && bankStore.stock[index - 1]"
                                         @click="handleItemClick(bankStore.stock[index - 1])"
                                         :src="'/images/items/' + bankStore.stock[index - 1].id + '.png'" alt="">
-                                    <div v-if="bankStore.stock && bankStore.stock[index - 1]" class="quantity">{{ bankStore.stock[index - 1]?.quantity}}</div>
+                                    <div v-if="bankStore.stock && bankStore.stock[index - 1]" class="quantity">{{
+                                        bankStore.stock[index - 1]?.quantity}}</div>
                                 </li>
                             </ul>
                         </div>
@@ -262,7 +262,9 @@ setTimeout(() => {
                             Seulement 3 objets sont stockables dans le coffre-fort.
                         </div>
                     </div>
-                    <Inventory :type="'bank'" :idEntity="bankStore.id" :inventory="playerStore.inventory" />
+                    <div class="bag">
+                        <Inventory :type="'bank'" :idEntity="bankStore.id" :inventory="playerStore.inventory" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -288,16 +290,9 @@ setTimeout(() => {
         </div>
     </div>
 
-    <QuantityModal 
-        :type="'bank'"
-        v-model="quantityModal"
-        :max-quantity="selectedItem?.quantity || 0"
-        :person="'Banquier'"
-        :error="'Sacré tonnerre ! Vous demandez plus que ce que vous possédez, partenaire !'"
-        title="Quantité à retirer"
-        @confirm="handleQuantityConfirm"
-        @cancel="quantityModal = false"
-    />
+    <QuantityModal :type="'bank'" v-model="quantityModal" :max-quantity="selectedItem?.quantity || 0"
+        :person="'Banquier'" :error="'Sacré tonnerre ! Vous demandez plus que ce que vous possédez, partenaire !'"
+        title="Quantité à retirer" @confirm="handleQuantityConfirm" @cancel="quantityModal = false" />
 
 </template>
 
@@ -768,9 +763,8 @@ h2 {
 
 .vault {
     position: absolute;
-    position: absolute;
-    top: calc(50% - 23vw);
-    right: 4vw;
+    top: calc(50% - 16vw);
+    right: 21vw;
     width: 21.5vw;
     height: 34vw;
     background-image: url(/images/bank/bank-vault.png);
@@ -845,4 +839,9 @@ h2 {
     }
 }
 
+.bag {
+    position: absolute;
+    top: calc(50% - 16vw);
+    left: 16vw;
+}
 </style>

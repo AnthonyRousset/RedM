@@ -11,6 +11,10 @@ const props = defineProps({
         type: Array,
         required: true
     },
+    idEntity: {
+        type: String,
+        required: true
+    },
     type: {
         type: String,
         required: true
@@ -208,19 +212,19 @@ function search() {
     refreshKey.value++
 }
 
-const clickItem = (typeId, item, quantity) => {
-    console.log('clickItem', typeId, item, quantity)
+const clickItem = (item, quantity) => {
+    console.log('clickItem', props.type, props.idEntity, item, quantity)
     switch (props.type) {
         case 'bank':
-            console.log('bank-stock-add-' + typeId, item)
-            sendNui('bank-stock-add-' + typeId, { idBank: typeId, complexId: item.complexId, idItem: item.id, quantity: quantity })
+            console.log('bank-stock-add-' + props.idEntity, item)
+            sendNui('bank-stock-add-' + props.idEntity, { idBank: props.idEntity, complexId: item.complexId, idItem: item.id, quantity: quantity })
             break
         case 'vendor':
-            console.log('vendor-stock-add-' + typeId, item)
-            sendNui('vendor-stock-add-' + typeId, { idVendor: typeId, complexId: item.complexId, idItem: item.id, quantity: quantity })
+            console.log('vendor-stock-add-' + props.idEntity, item)
+            sendNui('vendor-stock-add-' + props.idEntity, { idVendor: props.idEntity, complexId: item.complexId, idItem: item.id, quantity: quantity })
             break
         case 'player':
-            console.log('player-stock-add-' + typeId, item)
+            console.log('player-stock-add-' + props.idEntity, item)
             break
     }
 }
@@ -328,7 +332,7 @@ onUnmounted(() => {
             <ul>
                     <li v-for="(inventoryItem, index) in filteredInventory"
                         :key="inventoryItem.id + '-' + index + '-' + refreshKey"
-                        @click="clickItem(props.type, inventoryItem, 1)">
+                        @click="clickItem(inventoryItem, 1)">
                     <Item :item="inventoryItem" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
                 </li>
             </ul>

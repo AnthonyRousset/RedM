@@ -221,7 +221,7 @@ setTimeout(() => {
                             Seulement 3 objets sont stockables dans le coffre-fort.
                         </div>
                     </div>
-                    <Inventory type="bank" :inventory="playerStore.inventory" />
+                    <Inventory :type="bank" :idEntity="bankStore.id" :inventory="playerStore.inventory" />
                 </div>
             </div>
         </div>

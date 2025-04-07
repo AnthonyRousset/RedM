@@ -356,7 +356,7 @@ $option-size: 5vw;
                 text-align: center;
                 
                 &:hover {
-                    border-color: lighten(#805f07, 10%);
+
                 }
                 
                 .option-text {

@@ -255,7 +255,7 @@ onUnmounted(() => {
                 <div class="filter-group">
                     <div class="filter-label" v-for="filter in JSONfilters" :key="filter.value"
                         @click="selectedFilter = filter.value">
-                        <img :src="filter.icon" :alt="filter.name" class="filter-icon"
+                        <img :src="'./images/player/' + filter.icon + '.png'" :alt="filter.name" class="filter-icon"
                             :class="{ 'active': selectedFilter === filter.value }">
                         <span class="tooltip-text">{{ filter.name }}</span>
                     </div>
@@ -504,7 +504,11 @@ $animation-timing: 0.6s ease-out;
                             transition: all 0.2s ease;
 
                             &.active {
-                                filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
+                                filter: brightness(1.3) drop-shadow(0 0 0.2vw    rgba(255, 215, 0, 0.7));
+                                -webkit-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
+                                -moz-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
+                                -ms-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
+                                -o-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
                             }
                         }
                     }
@@ -539,6 +543,10 @@ $animation-timing: 0.6s ease-out;
 
                             &.active {
                                 filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
+                                -webkit-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
+                                -moz-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
+                                -ms-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
+                                -o-filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
                             }
                         }
 

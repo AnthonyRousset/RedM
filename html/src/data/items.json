@@ -318,57 +318,57 @@
     {
       "value": "",
       "name": "Tous",
-      "icon": "/images/player/player-inventory-all.png"
+      "icon": "player-inventory-all"
     },
     {
       "value": "weapon",
       "name": "Armes & Munitions",
-      "icon": "/images/player/player-inventory-weapons.png"
+      "icon": "player-inventory-weapons"
     },
     {
       "value": "food",
       "name": "Nourriture",
-      "icon": "/images/player/player-inventory-food.png"
+      "icon": "player-inventory-food"
     },
     {
       "value": "medical",
       "name": "Médical",
-      "icon": "/images/player/player-inventory-medic.png"
+      "icon": "player-inventory-medic"
     },
     {
       "value": "drug",
       "name": "Drogue",
-      "icon": "/images/player/player-inventory-drugs.png"
+      "icon": "player-inventory-drugs"
     },
     {
       "value": "crafting",
       "name": "Artisanat",
-      "icon": "/images/player/player-inventory-craft.png"
+      "icon": "player-inventory-craft"
     },
     {
       "value": "animal",
       "name": "Animaux",
-      "icon": "/images/player/player-inventory-animal.png"
+      "icon": "player-inventory-animal"
     },
     {
       "value": "tool",
       "name": "Outils",
-      "icon": "/images/player/player-inventory-tool.png"
+      "icon": "player-inventory-tool"
     },
     {
       "value": "clothe",
       "name": "Vêtements",
-      "icon": "/images/player/player-inventory-clothes.png"
+      "icon": "player-inventory-clothes"
     },
     {
       "value": "document",
       "name": "Documents",
-      "icon": "/images/player/player-inventory-documents.png"
+      "icon": "player-inventory-documents"
     },
     {
       "value": "quest",
       "name": "Quêtes",
-      "icon": "/images/player/player-inventory-quest.png"
+      "icon": "player-inventory-quest"
     }
   ],
   "categories": {

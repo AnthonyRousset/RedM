@@ -771,9 +771,10 @@ h2 {
 
     .information {
         position: absolute;
-        bottom: 3vw;
+        bottom: 1.5vw;
         left: 0;
-        width: 100%;
+        padding: 0 3.5vw;
+        width: 14vw;
         text-align: center;
         font-size: 0.9vw;
         color: #d9bb74;

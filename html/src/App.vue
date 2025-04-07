@@ -4,6 +4,7 @@ import CharacterMenu from './menu/CharacterMenu.vue';
 import InventoryMenu from './menu/InventoryMenu.vue';
 import BankMenu from './menu/BankMenu.vue';
 import AdminMenu from './menu/AdminMenu.vue';
+import WheelMenu from './menu/WheelMenu.vue';
 import GameHud from './hud/Hud.vue';  
 import { useUiStore } from './stores/uiStore.js';
 import { sendNui } from './utils/nui.js';
@@ -37,11 +38,13 @@ document.addEventListener('keydown', (e) => {
   <BankMenu v-else-if="uiStore.menu === 'bank'" />
   <CharacterMenu v-else-if="uiStore.menu === 'character'" />
   <InventoryMenu v-else-if="uiStore.menu === 'inventory'" />
+  <WheelMenu v-else-if="uiStore.menu === 'roue'" />
   <div class="open-bank">
     <button @click="uiStore.openMenu('bank')">Open Bank</button>
     <button @click="uiStore.openMenu('character')">Open Character</button>
     <button @click="uiStore.openMenu('inventory')">Open Inventory</button>
     <button @click="uiStore.openMenu('admin')">Open Admin</button>
+    <button @click="uiStore.openMenu('roue')">Open alt</button>
   </div>
 </template>
 

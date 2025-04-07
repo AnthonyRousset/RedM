@@ -210,8 +210,9 @@ setTimeout(() => {
                         <div class="emplacements">
                             <ul>
                                 <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }"
-                                    @click="stockRemove(bankStore.id, bankStore.stock[index - 1], 1)">
+                                    >
                                     <img v-if="bankStore.stock && bankStore.stock[index - 1]"
+                                        @click="stockRemove(bankStore.id, bankStore.stock[index - 1], 1)"
                                         :src="'/images/items/' + bankStore.stock[index - 1].id + '.png'" alt="">
                                 </li>
                             </ul>

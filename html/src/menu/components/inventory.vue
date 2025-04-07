@@ -49,16 +49,16 @@ const filteredInventory = computed(() => {
         // Vérifier le filtre
         const itemData = items.value.find(i => i.id === item.id);
         const itemFilter = itemData?.tags;
-        
-        const filterMatch = selectedFilter.value === '' || 
-            (Array.isArray(itemFilter) 
+
+        const filterMatch = selectedFilter.value === '' ||
+            (Array.isArray(itemFilter)
                 ? itemFilter.includes(selectedFilter.value)
                 : itemFilter === selectedFilter.value);
-                
+
         // Vérifier la recherche
-        const searchMatch = searchValue.value === '' || 
+        const searchMatch = searchValue.value === '' ||
             (itemData?.name.toLowerCase().includes(searchValue.value.toLowerCase()));
-            
+
         return filterMatch && searchMatch;
     });
 });
@@ -72,7 +72,7 @@ const tooltipPosition = ref({ x: 0, y: 0 })
 const showTooltip = (data) => {
     // Ne pas afficher le tooltip pendant le réordonnancement
     if (isReordering.value) return;
-    
+
     tooltipData.value = data
 
     // Ajuster la position pour éviter que le tooltip sorte de l'écran
@@ -129,10 +129,10 @@ const filter = (value) => {
 const sortByWeight = (items) => {
     // Forcer la disparition du tooltip avant le tri
     forceHideTooltip()
-    
+
     // Bloquer les tooltips pendant le tri
     isReordering.value = true;
-    
+
     quantityOrder.value = '';
     switch (weightOrder.value) {
         case 'desc':
@@ -140,8 +140,8 @@ const sortByWeight = (items) => {
             localInventory.value.sort((a, b) => {
                 const itemA = items.find(item => item.id === a.id);
                 const itemB = items.find(item => item.id === b.id);
-                const weightA = (itemA?.weight/1000 || 0) * a.quantity;
-                const weightB = (itemB?.weight/1000 || 0) * b.quantity;
+                const weightA = (itemA?.weight / 1000 || 0) * a.quantity;
+                const weightB = (itemB?.weight / 1000 || 0) * b.quantity;
                 return weightA - weightB;
             });
             weightOrder.value = 'asc';
@@ -151,17 +151,17 @@ const sortByWeight = (items) => {
             localInventory.value.sort((a, b) => {
                 const itemA = items.find(item => item.id === a.id);
                 const itemB = items.find(item => item.id === b.id);
-                const weightA = (itemA?.weight/1000 || 0) * a.quantity;
-                const weightB = (itemB?.weight/1000 || 0) * b.quantity;
+                const weightA = (itemA?.weight / 1000 || 0) * a.quantity;
+                const weightB = (itemB?.weight / 1000 || 0) * b.quantity;
                 return weightB - weightA;
             });
             weightOrder.value = 'desc';
             break;
     }
-    
+
     // Incrémenter la clé de rafraîchissement pour forcer le rendu
     refreshKey.value++;
-    
+
     // Réactiver les tooltips après un court délai
     setTimeout(() => {
         isReordering.value = false;
@@ -171,10 +171,10 @@ const sortByWeight = (items) => {
 const sortByQuantity = () => {
     // Forcer la disparition du tooltip avant le tri
     forceHideTooltip()
-    
+
     // Bloquer les tooltips pendant le tri
     isReordering.value = true;
-    
+
     weightOrder.value = '';
     switch (quantityOrder.value) {
         case 'desc':
@@ -194,10 +194,10 @@ const sortByQuantity = () => {
             quantityOrder.value = 'desc';
             break;
     }
-    
+
     // Incrémenter la clé de rafraîchissement pour forcer le rendu
     refreshKey.value++;
-    
+
     // Réactiver les tooltips après un court délai
     setTimeout(() => {
         isReordering.value = false;
@@ -249,8 +249,10 @@ onUnmounted(() => {
         <div class="filter categories">
             <div class="filter-container">
                 <div class="filter-group">
-                    <div class="filter-label" v-for="filter in JSONfilters" :key="filter.value" @click="selectedFilter = filter.value">
-                        <img :src="filter.icon" :alt="filter.name" class="filter-icon" :class="{ 'active': selectedFilter === filter.value }">
+                    <div class="filter-label" v-for="filter in JSONfilters" :key="filter.value"
+                        @click="selectedFilter = filter.value">
+                        <img :src="filter.icon" :alt="filter.name" class="filter-icon"
+                            :class="{ 'active': selectedFilter === filter.value }">
                         <span class="tooltip-text">{{ filter.name }}</span>
                     </div>
                 </div>
@@ -259,9 +261,8 @@ onUnmounted(() => {
         <div class="filter1" v-if="false">
 
         <div class="select-container">
-                <Multiselect v-model="selectedFilter" :options="JSONfilters" :searchable="false"
-                    :close-on-select="true" :preserve-search="false" placeholder="Catégorie" track-by="value"
-                    label="label" @change="filter">
+                <Multiselect v-model="selectedFilter" :options="JSONfilters" :searchable="false" :close-on-select="true"
+                    :preserve-search="false" placeholder="Catégorie" track-by="value" label="label" @change="filter">
                 <template #option="{ option }">
                     <div class="option-content">
                             <img v-if="option.icon" :src="option.icon" :alt="option.label" class="option-icon">
@@ -273,9 +274,9 @@ onUnmounted(() => {
     </div>
         <div class="filter sort">
         <div class="filter-container">
-                <div class="filter-group" @click="sortByWeight(items)">
-                    <div class="filter-label">  
-                        <img src="/images/player/player-inventory-weight.png" alt="Poids" class="filter-icon">
+                <div class="filter-group" @click="sortByWeight(items)" >
+                    <div class="filter-label">
+                        <img src="/images/player/player-inventory-weight.png" :class="{ 'active': weightOrder !== '' }" alt="Poids" class="filter-icon">
                     </div>
                 <div class="filter-buttons">
                         <button class="filter-button" v-if="weightOrder === 'asc'">
@@ -297,7 +298,7 @@ onUnmounted(() => {
             </div>
                 <div class="filter-group" @click="sortByQuantity(items)">
                     <div class="filter-label">
-                        <img src="/images/player/player-inventory-quantity.png" alt="Quantité" class="filter-icon">
+                        <img src="/images/player/player-inventory-quantity.png" :class="{ 'active': quantityOrder !== '' }" alt="Quantité" class="filter-icon">
                     </div>
                 <div class="filter-buttons">
                         <button class="filter-button" v-if="quantityOrder === 'asc'">
@@ -320,12 +321,14 @@ onUnmounted(() => {
         </div>
             <div class="filter-container search">
                 <input type="text" placeholder="Rechercher" class="search-input" @input="search" v-model="searchValue">
-            </div>
+        </div>
     </div>
     <div class="inventory">
         <PerfectScrollbar>
             <ul>
-                    <li v-for="(inventoryItem, index) in filteredInventory" :key="inventoryItem.id + '-' + index + '-' + refreshKey" @click="clickItem(props.type, inventoryItem, 1)">
+                    <li v-for="(inventoryItem, index) in filteredInventory"
+                        :key="inventoryItem.id + '-' + index + '-' + refreshKey"
+                        @click="clickItem(props.type, inventoryItem, 1)">
                     <Item :item="inventoryItem" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
                 </li>
             </ul>
@@ -378,8 +381,8 @@ onUnmounted(() => {
                     {{ tags[tagId]?.name }}
                 </div>
             </div>
-        </div>
     </div>
+</div>
 
 </template> 
 
@@ -439,6 +442,8 @@ $animation-timing: 0.6s ease-out;
                     width: 100%;
                     justify-content: space-around;
 
+
+
                     .filter-label {
                         color: #d9bb74;
                         font-family: $font-family-primary;
@@ -448,7 +453,7 @@ $animation-timing: 0.6s ease-out;
                         transition: transform 0.2s ease;
 
                         &:hover {
-                            
+
                             .tooltip-text {
                                 visibility: visible;
                                 opacity: 1;
@@ -493,7 +498,7 @@ $animation-timing: 0.6s ease-out;
                             height: 2vw;
                             color: #d9bb74;
                             transition: all 0.2s ease;
-                            
+
                             &.active {
                                 filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
                             }
@@ -527,7 +532,12 @@ $animation-timing: 0.6s ease-out;
                             display: block;
                             width: 2vw;
                             height: 2vw;
+
+                            &.active {
+                                filter: brightness(1.3) drop-shadow(0 0 0.2vw rgba(255, 215, 0, 0.7));
+                            }
                         }
+
                     }
                 }
             }
@@ -535,8 +545,26 @@ $animation-timing: 0.6s ease-out;
             .filter-container.search {
                 border-radius: 500px;
                 border: 0.2vw solid #4b2d17;
-                padding: 0.65vw;
+                padding: 0.65vw 0;
                 width: 100%;
+
+                // Search Input
+                .search-input {
+                    background: none;
+                    border: none;
+                    color: #d9bb74;
+                    font-family: $font-family-primary;
+                    font-size: 0.9vw;
+                    padding: 0.4vw 1vw 0;
+
+                    &::placeholder {
+                        color: #a8854d;
+                    }
+
+                    &:focus {
+                        outline: none;
+                    }
+                }
             }
         }
     }
@@ -594,7 +622,7 @@ $animation-timing: 0.6s ease-out;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 0.8vw;
-            padding: 1.5vw 1vw 2vw;
+            padding: 1.5vw 0.5vw 1.5vw;
 
             li {
                 width: 100%;
@@ -621,23 +649,7 @@ $animation-timing: 0.6s ease-out;
         }
     }
 
-    // Search Input
-    .search-input {
-        background: none;
-        border: none;
-        color: #d9bb74;
-        font-family: $font-family-primary;
-        font-size: 0.9vw;
-        padding: 0.2vw 0.5vw;
 
-        &::placeholder {
-            color: #a8854d;
-        }
-
-        &:focus {
-            outline: none;
-        }
-    }
 }
 
 .global-tooltip {

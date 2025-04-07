@@ -15,7 +15,28 @@ export const usePlayerStore = defineStore('player', {
         activeBuffs: [], // buffs actifs
         nearUsers: [], // joueurs proches
         itemEquipedId: null, // item équipé
-        inventory: [] // inventaire
+        inventory: [
+            {
+                id: 'food_bread',
+                quantity: 100,
+                quality: 100,
+                weight: 100, // 100g
+                tags: [2], // Damage = 0, Stolen = 1, Illegal = 2, Hidden = 3
+                type: 'u', // s = stackable, u = unique
+                category: 1 // weapon
+            },
+            {
+                id: 'weapon_bow',
+                completeId: 'weapon_bow_624',
+                quantity: 1, // ml, munitions
+                durability: 77, // 0-100
+                weight: 100, // 100g
+                tags: [0], // Damage = 0, Stolen = 1, Illegal = 2, Hidden = 3
+                type: 'u', // s = stackable, u = unique
+                metadata: {}, // ???
+                category: 1 // weapon
+            }
+        ] // inventaire
     }),
     actions: {
         update(data) {

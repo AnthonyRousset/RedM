@@ -6,6 +6,7 @@ import { usePlayerStore } from '../stores/playerStore'
 import { useBankStore } from '../stores/bankStore'
 import '@vueform/multiselect/themes/default.css'
 import Inventory from './components/inventory.vue'
+import QuantityModal from './components/QuantityModal.vue'
 
 const playerStore = usePlayerStore()
 const bankStore = useBankStore()
@@ -18,6 +19,8 @@ const playerMessage = ref('');
 const bankMessage = ref('');
 const bankView = ref('account');
 const isSwitching = ref(false);
+const quantityModal = ref(false)
+const selectedItem = ref(null)
 
 const handleKeyDown = (event) => {
     const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
@@ -132,7 +135,12 @@ const createBank = () => {
 
 const stockRemove = (bankId, item, quantity) => {
     console.log('bank-stock-remove-' + bankId, item)
-    sendNui('bank-stock-remove-' + bankId, { idBank: bankId, complexId: item.complexId, idItem: item.id, quantity: quantity })
+    // if type is unique, we need to remove the item    
+    if (item.type === 'u') {
+        sendNui('bank-stock-remove-' + bankId, { idBank: bankId, complexId: item.complexId, idItem: item.id, quantity: quantity })
+    } else {
+        sendNui('bank-stock-remove-' + bankId, { idBank: bankId, idItem: item.id, quantity: quantity })
+    }
 }
 
 const switchBank = (bank) => {
@@ -144,6 +152,21 @@ const switchBank = (bank) => {
     }, 100);
 }
 
+const handleItemClick = (item) => {
+    if (item.quantity > 1) {
+        selectedItem.value = item
+        quantityModal.value = true
+    } else {
+        stockRemove(bankStore.id, item, 1)
+    }
+}
+
+const handleQuantityConfirm = (quantity) => {
+    if (selectedItem.value) {
+        stockRemove(bankStore.id, selectedItem.value, quantity)
+        selectedItem.value = null
+    }
+}
 
 setTimeout(() => {
     bankStore.isLoading = false;
@@ -212,7 +235,7 @@ setTimeout(() => {
                                 <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }"
                                     >
                                     <img v-if="bankStore.stock && bankStore.stock[index - 1]"
-                                        @click="stockRemove(bankStore.id, bankStore.stock[index - 1], 1)"
+                                        @click="handleItemClick(bankStore.stock[index - 1])"
                                         :src="'/images/items/' + bankStore.stock[index - 1].id + '.png'" alt="">
                                 </li>
                             </ul>
@@ -246,6 +269,14 @@ setTimeout(() => {
             Au revoir, m'sieur le banquier !
         </div>
     </div>
+
+    <QuantityModal 
+        v-model="quantityModal"
+        :max-quantity="selectedItem?.quantity || 0"
+        title="Quantité à retirer"
+        @confirm="handleQuantityConfirm"
+        @cancel="quantityModal = false"
+    />
 
 </template>
 

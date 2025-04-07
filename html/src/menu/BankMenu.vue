@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { sendNui } from '../utils/nui'
 import { useUiStore } from '../stores/uiStore'
 import { usePlayerStore } from '../stores/playerStore'
@@ -156,6 +156,10 @@ const handleItemClick = (item) => {
     if (item.quantity > 1) {
         selectedItem.value = item
         quantityModal.value = true
+        // Utiliser le uiStore pour fermer le modal de l'inventaire
+        uiStore.closeInventoryModal = true
+        // Déclencher un événement pour fermer le modal de l'inventaire
+        window.dispatchEvent(new Event('close-inventory-modal'))
     } else {
         stockRemove(bankStore.id, item, 1)
     }
@@ -167,6 +171,19 @@ const handleQuantityConfirm = (quantity) => {
         selectedItem.value = null
     }
 }
+
+// Écouter les événements pour fermer le modal
+onMounted(() => {
+    window.addEventListener('close-bank-modal', () => {
+        quantityModal.value = false
+    })
+})
+
+onUnmounted(() => {
+    window.removeEventListener('close-bank-modal', () => {
+        quantityModal.value = false
+    })
+})
 
 setTimeout(() => {
     bankStore.isLoading = false;
@@ -237,6 +254,7 @@ setTimeout(() => {
                                     <img v-if="bankStore.stock && bankStore.stock[index - 1]"
                                         @click="handleItemClick(bankStore.stock[index - 1])"
                                         :src="'/images/items/' + bankStore.stock[index - 1].id + '.png'" alt="">
+                                    <div v-if="bankStore.stock && bankStore.stock[index - 1]" class="quantity">{{ bankStore.stock[index - 1]?.quantity}}</div>
                                 </li>
                             </ul>
                         </div>
@@ -271,8 +289,11 @@ setTimeout(() => {
     </div>
 
     <QuantityModal 
+        :type="'bank'"
         v-model="quantityModal"
         :max-quantity="selectedItem?.quantity || 0"
+        :person="'Banquier'"
+        :error="'Sacré tonnerre ! Vous demandez plus que ce que vous possédez, partenaire !'"
         title="Quantité à retirer"
         @confirm="handleQuantityConfirm"
         @cancel="quantityModal = false"
@@ -777,7 +798,7 @@ h2 {
                 border: 0.05vw solid rgba(255, 215, 0, 0.2);
                 border-radius: 0.25vw;
                 display: flex;
-                align-items: center;
+                position: relative;
                 justify-content: center;
                 transition: all 0.2s ease;
                 aspect-ratio: 1;
@@ -793,8 +814,19 @@ h2 {
 
                 img {
                     width: 80%;
-                    height: 80%;
+                    height: 100%;
                     object-fit: contain;
+                }
+
+                .quantity {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    font-size: 0.8vw;
+                    color: #d9bb74;
+                    background: #0000008c;
+                    padding: 0.2vw 0.5vw;
+                    border-radius: 0.25vw;
                 }
             }
         }

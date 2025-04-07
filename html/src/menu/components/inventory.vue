@@ -1,13 +1,11 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
-
+import { useUiStore } from '../../stores/uiStore'
 import Multiselect from '@vueform/multiselect'
 import Item from './item.vue'
 import itemsData from '../../data/items.json'
 import { sendNui } from '../../utils/nui'
 import QuantityModal from './QuantityModal.vue'
-
-
 
 const props = defineProps({
     inventory: {
@@ -28,10 +26,9 @@ const items = ref(itemsData.items)
 const tags = ref(itemsData.tags)
 const JSONfilters = ref(itemsData.filters)
 
-
 const selectedFilter = ref('');
-const weightOrder = ref('asc');
-const quantityOrder = ref('asc');
+const weightOrder = ref('');
+const quantityOrder = ref('');
 const refreshKey = ref(0); // Clé de rafraîchissement pour forcer le rendu
 const isReordering = ref(false); // Pour bloquer temporairement les tooltips
 const searchValue = ref('');
@@ -40,10 +37,29 @@ const selectedItem = ref(null);
 
 // Copie locale de l'inventaire pour éviter de modifier le tableau original
 const localInventory = ref([]);
+const error = ref('')
+
+const uiStore = useUiStore()
 
 // Initialiser la copie locale
 onMounted(() => {
     localInventory.value = [...props.inventory];
+
+    if (props.type === 'player') {
+        console.log('player-inventory', props.inventory)
+        error.value = ''
+    }
+    if (props.type === 'bank') {
+        error.value = 'la quantiter est supérieure à la quantiter max'
+    }
+    if (props.type === 'vendor') {
+        error.value = 'la quantiter est supérieure à la quantiter max'
+    }
+
+    // Écouter les événements pour fermer le modal
+    window.addEventListener('close-inventory-modal', () => {
+        quantityModal.value = false;
+    });
 });
 
 // Mettre à jour la copie locale lorsque l'inventaire change
@@ -128,13 +144,6 @@ const forceHideTooltip = () => {
     }, 100)
 }
 
-// Fonction de filtrage
-const filter = (value) => {
-    forceHideTooltip()
-    console.log('filter', value)
-    selectedFilter.value = value;
-};
-
 const sortByWeight = (items) => {
     // Forcer la disparition du tooltip avant le tri
     forceHideTooltip()
@@ -217,18 +226,18 @@ function search() {
     refreshKey.value++
 }
 
-const clickItem = (item) => {
-    console.log('clickItem', item)
-    // si la quantité est supérieure à 1, oui
+const handleItemClick = (item) => {
     if (item.quantity > 1) {
-        // open menu quantity modal
         selectedItem.value = item;
         quantityModal.value = true;
+        // Utiliser le uiStore pour fermer le modal de la banque
+        uiStore.closeBankModal = true;
+        // Déclencher un événement pour fermer le modal de la banque
+        window.dispatchEvent(new Event('close-bank-modal'));
     } else {
-        // send item
-        sendItem(item, item.quantity)
+        sendItem(item, 1);
     }
-}
+};
 
 const handleQuantityConfirm = (quantity) => {
     if (selectedItem.value) {
@@ -242,7 +251,7 @@ const sendItem = (item, quantity) => {
     switch (props.type) {
         case 'bank':
             console.log('bank-stock-add-' + props.idEntity, item)
-            if (item.type === 'u') {    
+            if (item.type === 'u') {
                 sendNui('bank-stock-add-' + props.idEntity, { idBank: props.idEntity, complexId: item.complexId, idItem: item.id, quantity: quantity })
             } else {
                 sendNui('bank-stock-add-' + props.idEntity, { idBank: props.idEntity, idItem: item.id, quantity: quantity })
@@ -278,11 +287,11 @@ onUnmounted(() => {
     document.removeEventListener('click', handleGlobalClick)
 })
 
-</script>
+</script>   
 
 <template>
 
-    <div class="bag">
+<div class="bag">
         <div class="filter categories">
             <div class="filter-container">
                 <div class="filter-group">
@@ -297,27 +306,27 @@ onUnmounted(() => {
         </div>
         <!--
         <div class="filter1" v-if="false">
-            <div class="select-container">
+        <div class="select-container">
                 <Multiselect v-model="selectedFilter" :options="JSONfilters" :searchable="false" :close-on-select="true"
                     :preserve-search="false" placeholder="Catégorie" track-by="value" label="label" @change="filter">
-                    <template #option="{ option }">
-                        <div class="option-content">
+                <template #option="{ option }">
+                    <div class="option-content">
                             <img v-if="option.icon" :src="option.icon" :alt="option.label" class="option-icon">
-                            <span>{{ option.label }}</span>
-                        </div>
-                    </template>
-                </Multiselect>
-            </div>
+                        <span>{{ option.label }}</span>
+                    </div>
+                </template>
+            </Multiselect>
         </div>
-        -->
+    </div>
+-->
         <div class="filter sort">
-            <div class="filter-container">
+        <div class="filter-container">
                 <div class="filter-group" @click="sortByWeight(items)">
                     <div class="filter-label">
                         <img src="/images/player/player-inventory-weight.png" :class="{ 'active': weightOrder !== '' }"
                             alt="Poids" class="filter-icon">
                     </div>
-                    <div class="filter-buttons">
+                <div class="filter-buttons">
                         <button class="filter-button" v-if="weightOrder === 'asc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M7 10l5 5 5-5z" />
@@ -325,22 +334,22 @@ onUnmounted(() => {
                         </button>
                         <button class="filter-button" v-else-if="weightOrder === 'desc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7 14l5-5 5 5z" />
-                            </svg>
-                        </button>
+                            <path d="M7 14l5-5 5 5z" />
+                        </svg>
+                    </button>
                         <button class="filter-button" v-else>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <circle cx="12" cy="12" r="4" />
-                            </svg>
-                        </button>
-                    </div>
+                        </svg>
+                    </button>
                 </div>
+            </div>
                 <div class="filter-group" @click="sortByQuantity(items)">
                     <div class="filter-label">
                         <img src="/images/player/player-inventory-quantity.png"
                             :class="{ 'active': quantityOrder !== '' }" alt="Quantité" class="filter-icon">
                     </div>
-                    <div class="filter-buttons">
+                <div class="filter-buttons">
                         <button class="filter-button" v-if="quantityOrder === 'asc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M7 10l5 5 5-5z" />
@@ -348,41 +357,37 @@ onUnmounted(() => {
                         </button>
                         <button class="filter-button" v-else-if="quantityOrder === 'desc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7 14l5-5 5 5z" />
-                            </svg>
-                        </button>
+                            <path d="M7 14l5-5 5 5z" />
+                        </svg>
+                    </button>
                         <button class="filter-button" v-else>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <circle cx="12" cy="12" r="4" />
-                            </svg>
-                        </button>
-                    </div>
+                        </svg>
+                    </button>
                 </div>
             </div>
+        </div>
             <div class="filter-container search">
                 <input type="text" placeholder="Rechercher" class="search-input" @input="search" v-model="searchValue">
             </div>
-        </div>
-        <div class="inventory">
-            <PerfectScrollbar>
-                <ul>
-                    <li v-for="(item, index) in filteredInventory"
-                        :key="item.id + '-' + index + '-' + refreshKey" @click="clickItem(item)">
-                        <Item :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
-                    </li>
-                </ul>
-            </PerfectScrollbar>
-        </div>
     </div>
+    <div class="inventory">
+        <PerfectScrollbar>
+            <ul>
+                    <li v-for="(item, index) in filteredInventory" :key="item.id + '-' + index + '-' + refreshKey"
+                        @click="handleItemClick(item)">
+                        <Item :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
+                </li>
+            </ul>
+        </PerfectScrollbar>
+    </div>
+</div>
 
 
     <!-- quantity modal -->
-    <QuantityModal 
-        v-model="quantityModal"
-        :max-quantity="selectedItem?.quantity || 0"
-        @confirm="handleQuantityConfirm"
-        @cancel="quantityModal = false"
-    />
+    <QuantityModal v-model="quantityModal" :type="'inventory'" :error="error" title="Quantité à déposer"
+        :max-quantity="selectedItem?.quantity || 0" @confirm="handleQuantityConfirm" @cancel="quantityModal = false" />
 
 
 
@@ -431,7 +436,7 @@ onUnmounted(() => {
         </div>
     </div>
 
-</template>
+</template> 
 
 <style lang="scss" scoped>
 // Variables
@@ -682,7 +687,7 @@ $animation-timing: 0.6s ease-out;
             li {
                 width: 100%;
                 height: 100%;
-                background-image: url(/images/player/player-inventory-bg_item.png);
+                background-image: url(/images/player/inventory-bg_item.png);
                 background-size: cover;
                 background-repeat: no-repeat;
                 background-position: center;
@@ -735,7 +740,7 @@ $animation-timing: 0.6s ease-out;
         font-family: "Special Elite", serif;
         pointer-events: none;
         position: relative;
-        background-image: url(/images/player/player-inventory-bg_item.png);
+        background-image: url(/images/player/inventory-bg_item.png);
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;

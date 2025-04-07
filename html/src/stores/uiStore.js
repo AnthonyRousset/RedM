@@ -8,7 +8,9 @@ export const useUiStore = defineStore('ui', {
         visible: false, // hud visible
         menu: '',
         isClosing: false,
-        open: false
+        open: false,
+        closeBankModal: false, // Pour fermer le modal de la banque
+        closeInventoryModal: false // Pour fermer le modal de l'inventaire
     }),
     actions: {
         update(data) {
@@ -22,6 +24,10 @@ export const useUiStore = defineStore('ui', {
         closeMenu() {
             this.menu = ''
             this.open = false
+        },
+        resetModalFlags() {
+            this.closeBankModal = false
+            this.closeInventoryModal = false
         }
     }
 })  

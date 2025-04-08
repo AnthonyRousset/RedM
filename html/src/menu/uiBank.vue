@@ -110,7 +110,7 @@ const withdraw = () => {
 const close = () => {
     uiStore.isClosing = true;
     setTimeout(() => {
-        sendNui('bank-close-' + bankStore.id)
+        sendNui('bank-close-' + bankStore.id, { id: bankStore.id })
         uiStore.closeMenu()
         uiStore.isClosing = false;
     }, 600); // Attendre la fin de l'animation

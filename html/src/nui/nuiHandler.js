@@ -6,14 +6,6 @@ import { useAdminStore } from '../stores/adminStore' // est le store qui gère l
 import { useBankStore } from '../stores/bankStore' // est le store qui gère les actions bancaires (ex : dépot, retrait, coffre, assurance, etc.)  
 
 const handlers = {
-  'start:show': () => {
-    const ui = useUiStore()
-    ui.visible = true
-  },
-  'start:hide': () => {
-    const ui = useUiStore()
-    ui.visible = false
-  },
 
   // character
   'character:open': () => {
@@ -98,6 +90,14 @@ const handlers = {
   },
 
   // hud
+  'hud:show': () => {
+    const ui = useUiStore()
+    ui.visible = true
+  },
+  'hud:hide': () => {
+    const ui = useUiStore()
+    ui.visible = false
+  },
   'hud:update': (data) => {
     const hud = useHudStore()
     hud.update(data.info)

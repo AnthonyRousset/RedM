@@ -18,8 +18,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useCaracterStore } from '../stores/caracterStore.js'
-import { sendNui } from '../utils/nui'
-import { useUiStore } from '../stores/uiStore'
+import { sendNui } from '../utils/nui.js'
+import { useUiStore } from '../stores/uiStore.js'
 
 const firstName = ref('')
 const lastName = ref('')

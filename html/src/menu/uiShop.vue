@@ -1,10 +1,11 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue';
+
 import { sendNui } from '../utils/nui'
 import { useUiStore } from '../stores/uiStore'
 import { usePlayerStore } from '../stores/playerStore'
-import { useShopStore } from '../stores/shopStores'
-import '@vueform/multiselect/themes/default.css'
+import { useShopStore } from '../stores/shopStore'
+
 import Inventory from './components/inventory.vue'
 import QuantityModal from './components/QuantityModal.vue'
 import BubbleMessage from './components/BubbleMessage.vue'
@@ -14,7 +15,7 @@ const shopStore = useShopStore()
 const uiStore = useUiStore()
 
 const isLoading = ref(true)
-const shopView = ref('buy')
+const shopView = ref(shopStore.lastActiveTab || 'shop')
 const isSwitching = ref(false)
 const playerMessage = ref('')
 const vendorMessage = ref('')
@@ -39,20 +40,21 @@ const vendorPhrases = {
     },
     noMoney: "Par le ciel ! Vous n'avez pas assez de dollars, partenaire !",
     buySuccess: "Excellente acquisition, cowboy !",
-    sellSuccess: "Merci pour cette transaction, partenaire !"
+    sellSuccess: "Merci pour cette transaction, partenaire !",
+    adminSuccess: "Vous avez accès aux documents administratifs."
 }
 
 // Fermeture du menu
 const close = () => {
     uiStore.isClosing = true;
     setTimeout(() => {
-        sendNui('shop-close-' + shopStore.selectedShop.id)
+        sendNui('shop-close-' + shopStore.id, { id: shopStore.id })
         uiStore.closeMenu()
         uiStore.isClosing = false;
     }, 600); // Attendre la fin de l'animation
 };
 
-// Changement de vue (achat/vente)
+// Changement de vue (shop/admin)
 const switchView = (view) => {
     isSwitching.value = true;
     setTimeout(() => {
@@ -94,9 +96,9 @@ const processBuy = (item, quantity) => {
         return
     }
 
-    sendNui('shop-buy-' + shopStore.selectedShop.id, { 
-        shopId: shopStore.selectedShop.id, 
-        itemId: item.id, 
+    sendNui('shop-buy-' + shopStore.id, { 
+        shopid: shopStore.id, 
+        itemid: item.id, 
         quantity: quantity 
     })
     
@@ -105,9 +107,9 @@ const processBuy = (item, quantity) => {
 
 // Traitement de la vente avec la quantité
 const processSell = (item, quantity) => {
-    sendNui('shop-sell-' + shopStore.selectedShop.id, { 
-        shopId: shopStore.selectedShop.id, 
-        itemId: item.id, 
+    sendNui('shop-sell-' + shopStore.id, { 
+        shopid: shopStore.id, 
+        itemid: item.id, 
         quantity: quantity 
     })
     
@@ -133,11 +135,11 @@ const handleSellQuantityConfirm = (quantity) => {
 // Filtrage des articles en fonction de la recherche
 const filterItems = () => {
     if (!searchQuery.value) {
-        filteredItems.value = shopStore.inventory
+        filteredItems.value = shopStore.stock
         return
     }
 
-    filteredItems.value = shopStore.inventory.filter(item => 
+    filteredItems.value = shopStore.stock.filter(item => 
         item.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         (item.description && item.description.toLowerCase().includes(searchQuery.value.toLowerCase()))
     )
@@ -151,8 +153,8 @@ const extendChest = () => {
 
 // Observer les changements dans la recherche et l'inventaire
 watch(() => searchQuery.value, filterItems)
-watch(() => shopStore.inventory, () => {
-    filteredItems.value = shopStore.inventory
+watch(() => shopStore.stock, () => {
+    filteredItems.value = shopStore.stock
 })
 
 // Écouter les événements pour fermer le modal
@@ -162,7 +164,7 @@ onMounted(() => {
     })
     
     // Initialiser les articles filtrés
-    filteredItems.value = shopStore.inventory
+    filteredItems.value = shopStore.stock
     
     // Simuler un chargement (à remplacer par l'appel réel)
     setTimeout(() => {
@@ -180,21 +182,11 @@ onUnmounted(() => {
 <template>
     <div class="shop">
         <div class="shop-container" :class="{ '__closing': uiStore.isClosing || isSwitching }">
-            <!-- Écran de chargement -->
-            <div class="shop-loading" v-if="isLoading">
-                <div class="loading">
-                    <span class="one">.</span>
-                    <span class="two">.</span>
-                    <span class="three">.</span>
-                </div>
-                <button class="close" @click="close">X</button>
-            </div>
-            
             <!-- Contenu principal -->
-            <div class="container" v-else>
+            <div class="container">
                 <!-- En-tête avec le nom du magasin -->
                 <div class="shop-header">
-                    <h1>{{ shopStore.selectedShop?.name || 'Magasin' }}</h1>
+                    <h1>{{ shopStore.id || 'Magasin' }}</h1>
                     <div class="player-money">Votre argent: {{ playerStore.getWalletDollars }}$</div>
                 </div>
                 
@@ -208,21 +200,21 @@ onUnmounted(() => {
                     />
                     <BubbleMessage 
                         :message="vendorMessage"
-                        :person="shopStore.selectedShop?.name || 'Vendeur'"
+                            :person="shopStore.id || 'Vendeur'"
                         type="banker"
                         :active="!!vendorMessage"
                     />
                 </div>
                 
                 <!-- Vue d'achat -->
-                <div class="shop-buy" v-if="shopView === 'buy'">
+                <div class="shop-buy" v-if="shopView === 'admin'">
 
                     <button @click="extendChest">shop-extend-chest</button>
 
                 </div>
                 
                 <!-- Vue de vente -->
-                <div class="shop-sell" v-else-if="shopView === 'sell'">
+                <div class="shop-sell" v-else-if="shopView === 'shop'">
                     <div class="inventory-container">
                         <Inventory 
                             :type="'shop'" 
@@ -248,12 +240,14 @@ onUnmounted(() => {
         <!-- Vide pendant la fermeture -->
     </div>
     <div class="shop-conversation" v-else>
-        <div class="bubble" @click="switchView('buy')" v-if="shopView === 'sell'">
-            J'aimerais voir c'que vous avez à <span>vendre</span>, partenaire.
+        <div class="bubble" @click="switchView('admin')" v-if="shopStore.rank >= 1">
+            J'aimerais avoir voir les documents administratifs.
         </div>
-        <div class="bubble" @click="switchView('sell')" v-if="shopView === 'buy'">
-            J'ai quelques objets qui pourraient vous <span>intéresser</span>.
+
+        <div class="bubble" @click="switchView('shop')" v-if="shopStore.rank >= 1">
+            Voyons voir c'que nous avons à <span>vendre</span>.
         </div>
+
         <div class="bubble" @click="close">
             Au revoir, m'sieur !
         </div>
@@ -264,10 +258,10 @@ onUnmounted(() => {
         :type="'shop'" 
         v-model="quantityModal" 
         :max-quantity="selectedItem?.quantity || 0"
-        :person="shopStore.selectedShop?.name || 'Vendeur'"
+        :person="shopStore.id || 'Vendeur'"
         :error="'Par le ciel ! Vous n\'avez pas assez de dollars pour acheter autant, partenaire !'"
-        :title="shopView === 'buy' ? 'Quantité à acheter' : 'Quantité à vendre'"
-        @confirm="shopView === 'buy' ? handleBuyQuantityConfirm : handleSellQuantityConfirm"
+        :title="shopView === 'shop' ? 'Quantité à acheter' : 'Quantité à vendre'"
+        @confirm="shopView === 'shop' ? handleBuyQuantityConfirm : handleSellQuantityConfirm"
         @cancel="quantityModal = false"
     />
 </template>
@@ -341,34 +335,6 @@ $animation-timing: 0.6s ease-out;
     }
 }
 
-.loading {
-    position: absolute;
-    padding: 1.5vw;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    span {
-        font-size: 4vw;
-        font-weight: bold;
-        color: $color-gold;
-
-        &.one {
-            animation: blink 1.5s infinite;
-            animation-delay: 0.5s;
-        }
-
-        &.two {
-            animation: blink 1.5s infinite;
-            animation-delay: 1s;
-        }
-
-        &.three {
-            animation: blink 1.5s infinite;
-            animation-delay: 1.5s;
-        }
-    }
-}
 
 @keyframes blink {
     0% {
@@ -388,19 +354,7 @@ $animation-timing: 0.6s ease-out;
     }
 }
 
-.shop-loading {
-    position: absolute;
-    top: calc(50% - 10.5vw);
-    left: calc(50% - 14.25vw);
-    width: 25vw;
-    height: 18vw;
-    padding: 1.5vw;
-    border-radius: 0.25vw;
-    background-image: url('/images/shop/shop-loading.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-}
+
 
 .container {
     position: absolute;

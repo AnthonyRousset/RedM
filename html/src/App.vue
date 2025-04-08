@@ -1,17 +1,21 @@
 
 <script setup>
-import CharacterMenu from './menu/CharacterMenu.vue';
-import InventoryMenu from './menu/InventoryMenu.vue';
-import BankMenu from './menu/BankMenu.vue';
-import ShopMenu from './menu/ShopMenu.vue';
-import AdminMenu from './menu/AdminMenu.vue';
-import WheelMenu from './menu/WheelMenu.vue';
+import uiCharacter from './menu/uiCharacter.vue';
+import uiInventory from './menu/uiInventory.vue';
+import uiBank from './menu/uiBank.vue';
+import uiShop from './menu/uiShop.vue';
+import uiAdmin from './menu/uiAdmin.vue';
+import uiWheel from './menu/uiWheel.vue';
 import GameHud from './hud/Hud.vue';  
-import { useUiStore } from './stores/uiStore.js';
-import { usePlayerStore } from './stores/playerStore.js';
+
 import { sendNui } from './utils/nui.js';
+import { useUiStore } from './stores/uiStore.js';
+import { useBankStore } from './stores/bankStore.js';
+import { useShopStore } from './stores/shopStore.js';
+
 const uiStore = useUiStore()
-const playerStore = usePlayerStore()
+const bankStore = useBankStore()
+const shopStore = useShopStore()
 
 let timeout;
 let execute = true;
@@ -20,7 +24,17 @@ document.addEventListener('keydown', (e) => {
     if (execute && !uiStore.isClosing) {
       uiStore.isClosing = true;
       setTimeout(() => {
-        sendNui('ui-close')
+        switch (uiStore.menu) {
+          case 'bank':
+            sendNui('bank-close-' + bankStore.id, { id: bankStore.id })
+            break;
+          case 'shop':
+            sendNui('shop-close-' + shopStore.id, { id: shopStore.id })
+            break;
+          default:
+            sendNui('ui-close')
+            break;
+        }
         uiStore.closeMenu()
         uiStore.isClosing = false;
       }, 600);
@@ -36,14 +50,14 @@ document.addEventListener('keydown', (e) => {
 </script>
 
 <template>
-  <div class="background-image" v-if="playerStore.name === 'Player'"></div>
+  <div class="background-image" v-if="uiStore.visible === false"></div>
   <GameHud v-if="uiStore.visible" />
-  <AdminMenu v-if="uiStore.menu === 'admin'" />
-  <BankMenu v-else-if="uiStore.menu === 'bank'" />
-  <ShopMenu v-else-if="uiStore.menu === 'shop'" />
-  <CharacterMenu v-else-if="uiStore.menu === 'character'" />
-  <InventoryMenu v-else-if="uiStore.menu === 'inventory'" />
-  <WheelMenu v-else-if="uiStore.menu === 'roue'" />
+  <uiAdmin v-if="uiStore.menu === 'admin'" />
+  <uiBank v-else-if="uiStore.menu === 'bank'" />
+  <uiShop v-else-if="uiStore.menu === 'shop'" />
+  <uiCharacter v-else-if="uiStore.menu === 'character'" />
+  <uiInventory v-else-if="uiStore.menu === 'inventory'" />
+  <uiWheel v-else-if="uiStore.menu === 'roue'" />
   <div class="open-bank">
     <button @click="uiStore.openMenu('bank')">Open Bank</button>
     <button @click="uiStore.openMenu('shop')">Open Shop</button>

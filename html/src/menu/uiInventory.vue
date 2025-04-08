@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { usePlayerStore } from '../stores/playerStore.js'
-import { sendNui } from '../utils/nui'
-import { useUiStore } from '../stores/uiStore'
-import { useHudStore } from '../stores/hudStore'
+import { sendNui } from '../utils/nui.js'
+import { useUiStore } from '../stores/uiStore.js'
+import { useHudStore } from '../stores/hudStore.js'
 import itemsData from '../data/items.json'
 import draggable from 'vuedraggable'
 

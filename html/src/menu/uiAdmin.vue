@@ -1,46 +1,3 @@
-<template>
-    <div class="admin-menu-overlay">
-        <div class="admin-menu">
-            <h1>Menu Administrateur</h1>
-            <div class="button-group">
-
-                <!-- Obtenir la position -->
-                <button @click="getPosition">📍 Obtenir la position</button>
-                <div v-if="adminStore.positionVisible" class="modal">
-                    <div class="modal-content">
-
-                        <h2>Position</h2>
-                        <p> X {{ adminStore.position.x }} | Y {{ adminStore.position.y }} | Z {{ adminStore.position.z }}</p>
-                        <button @click="copyCoordsToClipboard">📋 Copier les coordonnées</button>
-                        <button class="close" @click="adminStore.positionVisible = false">✖ Fermer</button>
-                    </div>
-                </div>
-
-                <!-- etablisement du PNJ -->
-                <button @click="adminStore.locationVisible = !adminStore.locationVisible">📍 Etablissement du PNJ</button>
-                <div v-if="adminStore.locationVisible" class="modal">
-                    <div class="modal-content">
-                        <h2>Etablissement du PNJ</h2>
-                        <select v-model="modelForm">
-                            <option disabled value="">-- Sélectionner un établissement --</option>
-                            <option v-for="location in adminStore.locationList" :key="location.model" :value="location">
-                                {{ location.label }}
-                            </option>
-                        </select>
-                        <input type="text" v-model="idForm" placeholder="ID du PNJ" class="id-input">
-                        <div v-if="idFormError" class="id-input-error">Veuillez entrer un ID</div>
-                        <div class="modal-buttons"> 
-                            <button @click="setLocation">✅ Valider</button>
-                            <button class="close" @click="adminStore.locationVisible = false">❌ Annuler</button>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="close" @click="close">✖ Fermer</button>
-            </div>
-        </div>
-    </div>
-</template>
 
 <script setup>
 import { ref } from 'vue'
@@ -107,6 +64,52 @@ const close = async () => {
 
 
 </script>
+
+
+<template>
+    <div class="admin-menu-overlay">
+        <div class="admin-menu">
+            <h1>Menu Administrateur</h1>
+            <div class="button-group">
+
+                <!-- Obtenir la position -->
+                <button @click="getPosition">📍 Obtenir la position</button>
+                <div v-if="adminStore.positionVisible" class="modal">
+                    <div class="modal-content">
+
+                        <h2>Position</h2>
+                        <p> X {{ adminStore.position.x }} | Y {{ adminStore.position.y }} | Z {{ adminStore.position.z }}</p>
+                        <button @click="copyCoordsToClipboard">📋 Copier les coordonnées</button>
+                        <button class="close" @click="adminStore.positionVisible = false">✖ Fermer</button>
+                    </div>
+                </div>
+
+                <!-- etablisement du PNJ -->
+                <button @click="adminStore.locationVisible = !adminStore.locationVisible">📍 Etablissement du PNJ</button>
+                <div v-if="adminStore.locationVisible" class="modal">
+                    <div class="modal-content">
+                        <h2>Etablissement du PNJ</h2>
+                        <select v-model="modelForm">
+                            <option disabled value="">-- Sélectionner un établissement --</option>
+                            <option v-for="location in adminStore.locationList" :key="location.model" :value="location">
+                                {{ location.label }}
+                            </option>
+                        </select>
+                        <input type="text" v-model="idForm" placeholder="ID du PNJ" class="id-input">
+                        <div v-if="idFormError" class="id-input-error">Veuillez entrer un ID</div>
+                        <div class="modal-buttons"> 
+                            <button @click="setLocation">✅ Valider</button>
+                            <button class="close" @click="adminStore.locationVisible = false">❌ Annuler</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="close" @click="close">✖ Fermer</button>
+            </div>
+        </div>
+    </div>
+</template>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500&display=swap');

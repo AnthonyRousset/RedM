@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
+
 import { useUiStore } from '../../stores/uiStore'
-import Multiselect from '@vueform/multiselect'
+import { useBankStore } from '../../stores/bankStore'
+import { sendNui } from '../../utils/nui'
+
 import Item from './item.vue'
 import itemsData from '../../data/items.json'
-import { sendNui } from '../../utils/nui'
 import QuantityModal from './QuantityModal.vue'
 
 const props = defineProps({
@@ -40,7 +42,7 @@ const localInventory = ref([]);
 const error = ref('')
 
 const uiStore = useUiStore()
-
+const bankStore = useBankStore()
 // Initialiser la copie locale
 onMounted(() => {
     localInventory.value = [...props.inventory];
@@ -252,8 +254,20 @@ const sendItem = (item, quantity) => {
         case 'bank':
             console.log('bank-stock-add-' + props.idEntity, item)
             if (item.type === 'u') {
+                // la banque est limité a 3 emplacements max, donc on test si c'est plein 
+                if (bankStore.stock.length >= 3) {
+                    // on affiche un message d'erreur
+                    error.value = 'Sacré bleu ! Je ne peux pas stocker plus d\'objets dans ma banque !'
+                    return
+                }
                 sendNui('bank-stock-add-' + props.idEntity, { idBank: props.idEntity, complexId: item.complexId, idItem: item.id, quantity: quantity })
             } else {
+                // la banque est limité a 3 emplacements max, donc on test si c'est plein  sauf si c'est stackable et que l'objet est dans la liste 
+                if (bankStore.stock.length >= 3 && !bankStore.stock.find(stock => stock.id === item.id)) {
+                    // on affiche un message d'erreur
+                    error.value = 'Sacré bleu ! Je ne peux pas stocker plus d\'objets dans ma banque !'
+                    return
+                }
                 sendNui('bank-stock-add-' + props.idEntity, { idBank: props.idEntity, idItem: item.id, quantity: quantity })
             }
             break

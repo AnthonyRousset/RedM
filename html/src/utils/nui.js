@@ -17,9 +17,9 @@ export async function sendNui(event, data = {}) {
       },
       body: JSON.stringify(data)
     }).catch(error => {
-      console.error(`[NUI] Erreur lors de l'appel à "${event}"`, error)
+      
     })
   } catch (error) {
-    console.error(`[NUI] Exception JS lors de l'appel à "${event}"`, error)
+    
   }
 }

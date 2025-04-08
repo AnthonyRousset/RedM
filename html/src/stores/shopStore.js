@@ -17,19 +17,22 @@ export const useShopStore = defineStore('shop', {
     }),
     actions: { 
         update(data) {
-            console.log('update', data)
+            console.log('shopStore > update()', data)
             this.id = data.id || this.id    
             this.stock = data.stock || this.stock
             this.rank = data.rank || this.rank
             this.account = data.account || this.account
         }, 
         addItem(item) {
+            console.log('shopStore > addItem()', item)
             this.stock.push(item)
         },
         removeItem(item) {
+            console.log('shopStore > removeItem()', item)
             this.stock = this.stock.filter(i => i !== item)
         },
         updateItem(item, quantity) {
+            console.log('shopStore > updateItem()', item, quantity)
             const index = this.stock.findIndex(i => i.name === item.name)
             if (index !== -1) {
                 this.stock[index].quantity = quantity

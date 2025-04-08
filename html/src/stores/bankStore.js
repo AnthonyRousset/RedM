@@ -50,10 +50,18 @@ export const useBankStore = defineStore('bank', {
     }),
     actions: {
         update(data) {
-            console.log('update', data)
+            console.log('bankStore > update()', data)
+            this.id = data.id || this.id
             this.balance = data.balance || this.balance 
             this.stock = data.stock || this.stock
             this.entity = data.entity || this.entity
+            this.insurance = data.insurance || this.insurance
+            this.open = data.open || this.open
+            this.lastActiveTab = data.lastActiveTab || this.lastActiveTab
+            this.exist = data.exist || this.exist
+            this.account = data.account || this.account
+            this.isLoading = data.isLoading || this.isLoading
+                
 
             //this.insurance = data.insurance
             /*
@@ -68,7 +76,7 @@ export const useBankStore = defineStore('bank', {
             }*/
         },
         createSuccess(data) {
-            console.log('createSuccess', data)
+            console.log('bankStore > createSuccess()', data)
             if (this.id === data.id) {
                 this.exist = true
             }
@@ -82,6 +90,7 @@ export const useBankStore = defineStore('bank', {
             this.banks.push(bank)*/
         },
         setLastActiveTab(tab) {
+            console.log('bankStore > setLastActiveTab()', tab)
             this.lastActiveTab = tab
         }
     },

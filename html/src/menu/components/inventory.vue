@@ -616,7 +616,6 @@ $animation-timing: 0.6s ease-out;
 
             .filter-container.search {
                 border-radius: 500px;
-                border: 0.2vw solid #4b2d17;
                 padding: 0.65vw 0;
                 width: 100%;
                 overflow: auto;

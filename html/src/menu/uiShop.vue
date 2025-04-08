@@ -317,7 +317,7 @@ $animation-timing: 0.6s ease-out;
 @keyframes openShop {
     0% {
         opacity: 0;
-        transform: scale(0.8);
+        transform: scale(0);
     }
     100% {
         opacity: 1;
@@ -332,7 +332,7 @@ $animation-timing: 0.6s ease-out;
     }
     100% {
         opacity: 0;
-        transform: scale(0.8);
+        transform: scale(0);
     }
 }
 

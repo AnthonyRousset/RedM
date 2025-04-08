@@ -3,6 +3,7 @@
 import CharacterMenu from './menu/CharacterMenu.vue';
 import InventoryMenu from './menu/InventoryMenu.vue';
 import BankMenu from './menu/BankMenu.vue';
+import ShopMenu from './menu/ShopMenu.vue';
 import AdminMenu from './menu/AdminMenu.vue';
 import WheelMenu from './menu/WheelMenu.vue';
 import GameHud from './hud/Hud.vue';  
@@ -39,11 +40,13 @@ document.addEventListener('keydown', (e) => {
   <GameHud v-if="uiStore.visible" />
   <AdminMenu v-if="uiStore.menu === 'admin'" />
   <BankMenu v-else-if="uiStore.menu === 'bank'" />
+  <ShopMenu v-else-if="uiStore.menu === 'shop'" />
   <CharacterMenu v-else-if="uiStore.menu === 'character'" />
   <InventoryMenu v-else-if="uiStore.menu === 'inventory'" />
   <WheelMenu v-else-if="uiStore.menu === 'roue'" />
   <div class="open-bank">
     <button @click="uiStore.openMenu('bank')">Open Bank</button>
+    <button @click="uiStore.openMenu('shop')">Open Shop</button>
     <button @click="uiStore.openMenu('character')">Open Character</button>
     <button @click="uiStore.openMenu('inventory')">Open Inventory</button>
     <button @click="uiStore.openMenu('admin')">Open Admin</button>

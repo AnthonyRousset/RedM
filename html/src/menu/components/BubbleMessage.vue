@@ -11,7 +11,7 @@ const props = defineProps({
     type: {
         type: String,
         default: 'player', // 'player' ou 'banker' ou 'inventory' ou 'vendor'
-        validator: (value) => ['player', 'banker', 'inventory', 'vendor'].includes(value)
+        validator: (value) => ['player', 'banker', 'error', 'inventory', 'shop'].includes(value)
     },
     active: {
         type: Boolean,

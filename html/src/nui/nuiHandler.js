@@ -84,6 +84,19 @@ const handlers = {
     bank.createSuccess(data.info)
   },
 
+  // shop
+  'shop:open': (data) => {
+    const ui = useUiStore()
+    const shop = useShopStore()
+    shop.isLoading = true
+    ui.openMenu('shop')
+    shop.update(data.info)
+  },
+  'shop:info': (data) => {
+    const shop = useShopStore()
+    shop.update(data.info)
+  },
+
   // hud
   'hud:update': (data) => {
     const hud = useHudStore()

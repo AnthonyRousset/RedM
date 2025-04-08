@@ -7,8 +7,8 @@ export const useBankStore = defineStore('bank', {
     state: () => ({
         isLoading: true,
         id: 'nodata',
-        exist: false,
-        account: 9999, // cents (100 = 1$)
+        exist: false, // si le joueur a un compte ouvert
+        account: 9999, // cents en banque (100 = 1$)
         stock: [
             {
                 id: 'weapon_lancaster_rifle',
@@ -44,10 +44,7 @@ export const useBankStore = defineStore('bank', {
                 malus: 0
             }
         },
-        inventory: [],
         balance: 0,
-        stocks: [],
-        entity: 'nodata',
         open: false,
         lastActiveTab: 'account'
     }),
@@ -55,12 +52,10 @@ export const useBankStore = defineStore('bank', {
         update(data) {
             console.log('update', data)
             this.balance = data.balance || 0
-            this.inventory = data.items || []
-            this.stocks = data.stocks || []
-            this.id = data.id || 'nodata'
-            this.entity = data.entity || 'nodata'            //this.stock = data.stock
+            this.stock = data.stock || []
+            this.entity = data.entity || 'nodata'            
+
             //this.insurance = data.insurance
-            //this.stock = data.stock
             /*
             if (this.banks.length === 0) {
                 this.banks.push(data)

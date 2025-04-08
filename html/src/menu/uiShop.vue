@@ -147,7 +147,7 @@ const filterItems = () => {
 
 const extendChest = () => {
     sendNui('shop-extend-chest', {
-        shopid: shopStore.id
+        id: shopStore.id
     })
     close()
 }

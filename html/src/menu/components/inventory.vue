@@ -24,7 +24,7 @@ const props = defineProps({
 
 const items = ref(itemsData.items)
 const tags = ref(itemsData.tags)
-const JSONfilters = ref(itemsData.filters)
+const JSONfilters = ref(itemsData.filters.filter(filter => filter.activate)) // seulement les activate = true 
 
 const selectedFilter = ref('');
 const weightOrder = ref('');
@@ -291,7 +291,7 @@ onUnmounted(() => {
 
 <template>
 
-    <div class="bag">
+    <div class="inventory">
         <div class="filter categories">
             <div class="filter-container">
                 <div class="filter-group">
@@ -372,7 +372,7 @@ onUnmounted(() => {
                 <input type="text" placeholder="Rechercher" class="search-input" @input="search" v-model="searchValue">
             </div>
         </div>
-        <div class="inventory">
+        <div class="list-items">
             <PerfectScrollbar>
                 <ul>
                     <li v-for="(item, index) in filteredInventory" :key="item.id + '-' + index + '-' + refreshKey"
@@ -459,10 +459,10 @@ $animation-timing: 0.6s ease-out;
 }
 
 // Main Container
-.bag {
+.inventory {
     position: relative;
-    width: 26vw;
-    height: 34vw;
+    width: 23vw;
+    height: 30vw;
     background-image: url(/images/player/player-inventory.png);
     background-size: cover;
     background-repeat: no-repeat;
@@ -605,6 +605,7 @@ $animation-timing: 0.6s ease-out;
                 border: 0.2vw solid #4b2d17;
                 padding: 0.65vw 0;
                 width: 100%;
+                overflow: auto;
 
                 // Search Input
                 .search-input {
@@ -613,7 +614,8 @@ $animation-timing: 0.6s ease-out;
                     color: #d9bb74;
                     font-family: $font-family-primary;
                     font-size: 0.9vw;
-                    padding: 0.4vw 1vw 0;
+                    padding: 0.4vw 1vw 0;    
+                    width: -webkit-fill-available;
 
                     &::placeholder {
                         color: #a8854d;
@@ -657,7 +659,7 @@ $animation-timing: 0.6s ease-out;
     }
 
     // Inventory Grid
-    .inventory {
+    .list-items {
         position: absolute;
         top: 8vw;
         left: 1vw;
@@ -890,6 +892,7 @@ $animation-timing: 0.6s ease-out;
 }
 
 // Styles personnalisés pour Multiselect
+/*
 :deep(.multiselect) {
     width: 100%;
     background-color: #291b12;
@@ -1017,4 +1020,5 @@ $animation-timing: 0.6s ease-out;
         padding: 0.3vw;
     }
 }
+    */
 </style>

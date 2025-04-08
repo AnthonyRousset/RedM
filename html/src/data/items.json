@@ -325,56 +325,67 @@
   ],
   "filters": [  
     {
+      "activate": true,
       "value": "",
       "name": "Tous",
       "icon": "player-inventory-all"
     },
     {
+      "activate": true,
       "value": "weapon",
       "name": "Armes & Munitions",
       "icon": "player-inventory-weapons"
     },
     {
+      "activate": true,
       "value": "food",
       "name": "Nourriture",
       "icon": "player-inventory-food"
     },
     {
+      "activate": true,
       "value": "medical",
       "name": "Médical",
       "icon": "player-inventory-medic"
     },
     {
+      "activate": true,
       "value": "drug",
       "name": "Drogue",
       "icon": "player-inventory-drugs"
     },
     {
+      "activate": false,
       "value": "crafting",
       "name": "Artisanat",
       "icon": "player-inventory-craft"
     },
     {
+      "activate": true,
       "value": "animal",
       "name": "Animaux",
       "icon": "player-inventory-animal"
     },
     {
+      "activate": true,
       "value": "tool",
       "name": "Outils",
       "icon": "player-inventory-tool"
     },
     {
+      "activate": true,
       "value": "clothe",
       "name": "Vêtements",
       "icon": "player-inventory-clothes"
     },
     {
+      "activate": true,
       "value": "document",
       "name": "Documents",
       "icon": "player-inventory-documents"
     },
     {
+      "activate": true,
       "value": "quest",
       "name": "Quêtes",
       "icon": "player-inventory-quest"

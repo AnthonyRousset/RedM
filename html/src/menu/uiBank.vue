@@ -186,6 +186,10 @@ onUnmounted(() => {
     })
 })
 
+setTimeout(() => {
+    bankStore.isLoading = false;
+}, 1000);
+
 </script>
 
 <template>
@@ -789,9 +793,9 @@ h2 {
 .vault {
     position: absolute;
     top: calc(50% - 16vw);
-    right: 21vw;
-    width: 21.5vw;
-    height: 34vw;
+    right: 24vw;
+    width: 19vw;
+    height: 30vw;
     background-image: url(/images/bank/bank-vault.png);
     background-size: cover;
     background-repeat: no-repeat;
@@ -809,7 +813,7 @@ h2 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1vw;
-            width: 17vw;
+            width: calc(100% - 4vw);
 
             li {
                 background-color: rgba(0, 0, 0, 0.24);
@@ -821,6 +825,7 @@ h2 {
                 justify-content: center;
                 transition: all 0.2s ease;
                 aspect-ratio: 1;
+                
 
                 &:not(.empty) {
                     cursor: pointer;
@@ -867,6 +872,6 @@ h2 {
 .bag {
     position: absolute;
     top: calc(50% - 16vw);
-    left: 16vw;
+    left: 20vw;
 }
 </style>

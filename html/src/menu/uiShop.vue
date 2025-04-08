@@ -149,6 +149,7 @@ const extendChest = () => {
     sendNui('shop-extend-chest', {
         shopid: shopStore.id
     })
+    close()
 }
 
 // Observer les changements dans la recherche et l'inventaire

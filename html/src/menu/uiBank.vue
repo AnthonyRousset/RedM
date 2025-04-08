@@ -4,7 +4,6 @@ import { sendNui } from '../utils/nui'
 import { useUiStore } from '../stores/uiStore'
 import { usePlayerStore } from '../stores/playerStore'
 import { useBankStore } from '../stores/bankStore'
-import '@vueform/multiselect/themes/default.css'
 import Inventory from './components/inventory.vue'
 import QuantityModal from './components/QuantityModal.vue'
 
@@ -186,10 +185,6 @@ onUnmounted(() => {
         quantityModal.value = false
     })
 })
-
-setTimeout(() => {
-    bankStore.isLoading = false;
-}, 2000);
 
 </script>
 

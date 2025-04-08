@@ -4,6 +4,7 @@ import { useHudStore } from '../stores/hudStore' // est le store qui gère le hu
 import { usePlayerStore } from '../stores/playerStore' // est le store qui gère le joueur (ex : nom, vie, force, etc.)
 import { useAdminStore } from '../stores/adminStore' // est le store qui gère les actions admin (ex : spawn, location, etc.)
 import { useBankStore } from '../stores/bankStore' // est le store qui gère les actions bancaires (ex : dépot, retrait, coffre, assurance, etc.)  
+import { useShopStore } from '../stores/shopStore' // est le store qui gère les actions du magasin (ex : achat, vente, etc.)
 
 const handlers = {
 

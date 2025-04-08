@@ -312,6 +312,15 @@
       "weight": 2500,
       "tags": ["crafting", "food", "animal"],
       "description": "De la viande d'ours crue. À cuisiner avant consommation."
+    },
+    {
+      "name": "Viande de Sanglier",
+      "id": "animal_boar_meat_raw",
+      "category": 3,
+      "filter": "food",
+      "weight": 1000,
+      "tags": ["crafting", "food", "animal"],
+      "description": "De la viande de sanglier crue. À cuisiner avant consommation."
     }
   ],
   "filters": [  

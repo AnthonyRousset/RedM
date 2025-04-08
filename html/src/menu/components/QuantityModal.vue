@@ -201,7 +201,7 @@ const setMaxQuantity = () => {
             border-radius: 0.4vw;
             
             input {
-                width: 7vw;
+                width: 5vw;
                 background: none;
                 border: none;
                 color: #f5e6c9;

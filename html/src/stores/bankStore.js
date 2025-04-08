@@ -43,19 +43,24 @@ export const useBankStore = defineStore('bank', {
                 price: 0,
                 malus: 0
             }
-        }
+        },
+        inventory: [],
+        balance: 0,
+        stocks: [],
+        entity: 'nodata',
+        open: false,
+        lastActiveTab: 'account'
     }),
     actions: {
         update(data) {
             console.log('update', data)
-            this.id = data.id
-            this.exist = data.exist
-            this.account = data.account
-            this.isLoading = false
-            this.stock = data.stock
-            
-            //this.stock = data.stock
+            this.balance = data.balance || 0
+            this.inventory = data.items || []
+            this.stocks = data.stocks || []
+            this.id = data.id || 'nodata'
+            this.entity = data.entity || 'nodata'            //this.stock = data.stock
             //this.insurance = data.insurance
+            //this.stock = data.stock
             /*
             if (this.banks.length === 0) {
                 this.banks.push(data)
@@ -80,6 +85,9 @@ export const useBankStore = defineStore('bank', {
                 stock: data.stock   
             }
             this.banks.push(bank)*/
+        },
+        setLastActiveTab(tab) {
+            this.lastActiveTab = tab
         }
     },
     getters: {

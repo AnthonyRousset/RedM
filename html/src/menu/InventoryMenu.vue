@@ -695,7 +695,7 @@ function simulationPost() {
   padding-bottom: 8px;
   font-family: 'IM Fell English SC', 'Special Elite', 'Oswald', sans-serif;
   /* background line img*/
-  background-image: url(/images/line.png);
+  background-image: url(/images/mi-line.png);
   background-repeat: no-repeat;
   background-position: -9px 27px;
 }

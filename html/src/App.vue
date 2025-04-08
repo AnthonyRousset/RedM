@@ -7,8 +7,10 @@ import AdminMenu from './menu/AdminMenu.vue';
 import WheelMenu from './menu/WheelMenu.vue';
 import GameHud from './hud/Hud.vue';  
 import { useUiStore } from './stores/uiStore.js';
+import { usePlayerStore } from './stores/playerStore.js';
 import { sendNui } from './utils/nui.js';
 const uiStore = useUiStore()
+const playerStore = usePlayerStore()
 
 let timeout;
 let execute = true;
@@ -33,6 +35,7 @@ document.addEventListener('keydown', (e) => {
 </script>
 
 <template>
+  <div class="background-image" v-if="playerStore.name === 'Player'"></div>
   <GameHud v-if="uiStore.visible" />
   <AdminMenu v-if="uiStore.menu === 'admin'" />
   <BankMenu v-else-if="uiStore.menu === 'bank'" />
@@ -114,5 +117,19 @@ ul{
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.background-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  background-image: url('/images/background-image.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
 }
 </style>

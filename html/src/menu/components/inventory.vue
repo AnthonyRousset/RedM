@@ -508,7 +508,6 @@ $animation-timing: 0.6s ease-out;
                             .tooltip-text {
                                 visibility: visible;
                                 opacity: 1;
-                                transform: translateY(0);
                             }
                         }
 
@@ -713,7 +712,7 @@ $animation-timing: 0.6s ease-out;
 
 
 .global-tooltip {
-    position: absolute;
+    position: fixed;
     z-index: 100000;
 
     &:before {

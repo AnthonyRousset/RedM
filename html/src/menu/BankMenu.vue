@@ -17,7 +17,7 @@ const showPlaceholder = ref(true);
 const editableSpan = ref(null);
 const playerMessage = ref('');
 const bankMessage = ref('');
-const bankView = ref('account');
+const bankView = ref(bankStore.lastActiveTab || 'account');
 const isSwitching = ref(false);
 const quantityModal = ref(false)
 const selectedItem = ref(null)
@@ -148,6 +148,8 @@ const switchBank = (bank) => {
     isSwitching.value = true;
     setTimeout(() => {
         bankView.value = bank;
+        // Sauvegarder le dernier onglet actif dans le store
+        bankStore.setLastActiveTab(bank);
         isSwitching.value = false;
     }, 100);
 }
@@ -193,6 +195,7 @@ setTimeout(() => {
 
 <template>
 
+      
     <div class="bank">
         <div class="bank-container" :class="{ '__closing': uiStore.isClosing || isSwitching }">
             <div class="bank-loading" v-if="bankStore.isLoading">
@@ -262,6 +265,7 @@ setTimeout(() => {
                             Seulement 3 objets sont stockables dans le coffre-fort.
                         </div>
                     </div>
+                    <img src="/images/circle-arrows-left-right.png" alt="" class="circle-arrows-left-right">
                     <div class="bag">
                         <Inventory :type="'bank'" :idEntity="bankStore.id" :inventory="playerStore.inventory" />
                     </div>
@@ -280,10 +284,10 @@ setTimeout(() => {
     </div>
     <div class="bank-conversation" v-else>
         <div class="bubble" @click="switchBank('account')" v-if="bankView === 'vault'">
-            Hé là, m'sieur le banquier ! J'viens voir mes économies !
+            Hé là, m'sieur le banquier ! J'viens voir mes <span>économies</span> !
         </div>
         <div class="bubble" @click="switchBank('vault')" v-if="bankView === 'account'">
-            J'aimerais jeter un œil à mon coffre, si vous l'permettez.
+            J'aimerais jeter un œil à mon <span>coffre</span>, si vous l'permettez.
         </div>
         <div class="bubble" @click="close">
             Au revoir, m'sieur le banquier !
@@ -342,6 +346,18 @@ $animation-timing: 0.6s ease-out;
     height: 100%;
     width: 100%;
 
+    .container {
+        .bank-vault {
+            .circle-arrows-left-right {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            
+        }
+        
+    }
     &.__closing {
         animation: closeVault $animation-timing forwards !important;
     }
@@ -426,6 +442,8 @@ $animation-timing: 0.6s ease-out;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+
+ 
 }
 
 .bank-account {
@@ -578,16 +596,28 @@ h2 {
     align-items: center;
 
     .bubble {
-        background-color: #00000096;
-        color: #ffffff;
+        color: #1d1d1d;
         font-family: $font-family-primary;
-        font-size: 1vw;
+        font-size: 1.2vw;
         text-align: center;
-        padding: 1vw;
-        border-radius: 2.5vw;
+        padding: 1.5vw 4vw;
         cursor: pointer;
         font-style: italic;
         margin-top: 0.5vw;
+        background-image: url('/images/ton-brush-western.png');
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.8;
+
+        span {
+            color: #000000;
+            font-weight: bold;
+        }
+        
+        &:hover {
+            opacity: 1;
+        }
     }
 }
 

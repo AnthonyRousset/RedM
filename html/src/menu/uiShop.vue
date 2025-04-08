@@ -240,11 +240,11 @@ onUnmounted(() => {
         <!-- Vide pendant la fermeture -->
     </div>
     <div class="shop-conversation" v-else>
-        <div class="bubble" @click="switchView('admin')" v-if="shopStore.rank >= 1">
+        <div class="bubble" @click="switchView('admin')" v-if="shopStore.rank >= 0">
             J'aimerais avoir voir les documents administratifs.
         </div>
 
-        <div class="bubble" @click="switchView('shop')" v-if="shopStore.rank >= 1">
+        <div class="bubble" @click="switchView('shop')" v-if="shopStore.rank >= 0">
             Voyons voir c'que nous avons à <span>vendre</span>.
         </div>
 

@@ -18,10 +18,10 @@ export const useShopStore = defineStore('shop', {
     actions: { 
         update(data) {
             console.log('update', data)
-            this.id = data.id || 'nodata'
-            this.stock = data.stock || []
-            this.rank = data.rank || 0
-            this.account = data.account || 0
+            this.id = data.id || this.id    
+            this.stock = data.stock || this.stock
+            this.rank = data.rank || this.rank
+            this.account = data.account || this.account
         }, 
         addItem(item) {
             this.stock.push(item)

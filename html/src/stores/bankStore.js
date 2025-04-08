@@ -51,9 +51,9 @@ export const useBankStore = defineStore('bank', {
     actions: {
         update(data) {
             console.log('update', data)
-            this.balance = data.balance || 0
-            this.stock = data.stock || []
-            this.entity = data.entity || 'nodata'            
+            this.balance = data.balance || this.balance 
+            this.stock = data.stock || this.stock
+            this.entity = data.entity || this.entity
 
             //this.insurance = data.insurance
             /*

@@ -341,6 +341,259 @@ function simulationPost() {
   }, '*')
 }
 
+// simulation stock
+function simulationStock() {
+  window.postMessage({
+    action: 'shop:info',
+    info: [
+      {
+        id: 'weapon_lancaster_rifle',
+        quantity: 2000,
+        quality: 100,
+        weight: 3000,
+        stock: [
+            
+            {
+                id: 'weapon_lancaster_rifle',
+                quantity: 2000,
+                quality: 100,
+                weight: 3000,
+                tags: [0],
+                category: 1,
+                durability: 12
+              },
+              {
+                id: 'plant_seeds_coca',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 1012120,
+                weight: 10,
+                tags: [],
+                category: 0
+              },
+              {
+                id: 'drug_cocaine',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 104450,
+                weight: 200,
+                tags: [2],
+                category: 0
+              },
+              {
+                id: 'food_bread',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 500,
+                category: 0
+              },
+              {
+                id: 'animal_deer_skin',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 1045450,
+                weight: 500,
+                tags: [],
+                category: 0
+              },
+              {
+                id: 'animal_deer_meat_cooked',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 1000,
+                tags: [],
+                category: 0
+              },
+              {
+                id: 'tool_pickaxe',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 1045450,
+                weight: 2000,
+                tags: [],
+                category: 4,
+                durability: 75
+              },
+              {
+                id: 'tool_rake',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 1454500,
+                weight: 1500,
+                tags: [],
+                category: 4,
+                durability: 45
+              },
+              {
+                id: 'tool_axe',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 25,
+                weight: 2000,
+                tags: [],
+                category: 4,
+                durability: 100
+              },
+              {
+                id: 'weapon_bow',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 2000,
+                tags: [],
+                category: 1,
+                durability: 80
+              },
+              {
+                id: 'tool_watering_can',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 1000,
+                tags: [],
+                category: 8,
+                durability: 100
+              },
+              {
+                id: 'plant_seeds_hemp',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 10,
+                category: 0
+              },
+              {
+                id: 'plant_seeds_sugarcane',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 100,
+                tags: [],
+                category: 0
+              },
+              {
+                id: 'plant_seeds_coca',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 10,
+                tags: [2],
+                category: 0
+              },
+              {
+                id: 'plant_fertilizer',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 500,
+                tags: [],
+                category: 0
+              },
+              {
+                id: 'animal_deer_meat_cooked',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 1000,
+                tags: []
+              },
+              {
+                id: 'weapon_lancaster_rifle',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 3000,
+                tags: [],
+                category: 1,
+                durability: 100
+              },
+              {
+                id: 'tool_shovel',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 2000,
+                category: 4,
+                tags: [0],
+                durability: 100
+              },
+              {
+                id: 'item_water_bottle',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 1000,
+                category: 8,
+                tags: []
+              },
+              {
+                id: 'weapon_lancaster_rifle',
+                quantity: Math.floor(Math.random() * 1000),
+                quality: 100,
+                weight: 3000,
+                tags: [],
+                category: 1,
+                durability: 100
+              },
+        ], 
+        catalogue: [
+            {
+                id: 'weapon_lancaster_rifle',
+                buyPrice: Math.floor(Math.random() * 10000), // prix d'achat par la boutique
+                sellPrice: Math.floor(Math.random() * 10000), // prix de vente
+                buyAmount: Math.floor(Math.random() * 100) // quantité max racheté par la boutique
+            },
+            {
+                id: 'plant_seeds_coca',
+                buyPrice: Math.floor(Math.random() * 10000),
+                sellPrice: Math.floor(Math.random() * 10000),
+                buyAmount: Math.floor(Math.random() * 100)
+            },
+            {
+                id: 'food_bread',
+                buyPrice: Math.floor(Math.random() * 10000),
+                sellPrice: Math.floor(Math.random() * 10000),
+                buyAmount: Math.floor(Math.random() * 100)
+            },
+            {
+                id: 'animal_deer_skin',
+                buyPrice: Math.floor(Math.random() * 10000),
+                sellPrice: Math.floor(Math.random() * 10000),
+                buyAmount: Math.floor(Math.random() * 100)
+            },
+            {
+                id: 'animal_deer_meat_cooked',
+                buyPrice: Math.floor(Math.random() * 10000),
+                sellPrice: Math.floor(Math.random() * 10000),
+                buyAmount: Math.floor(Math.random() * 100)
+            },
+            {
+                id: 'tool_pickaxe',
+                buyPrice: Math.floor(Math.random() * 10000),
+                sellPrice: Math.floor(Math.random() * 10000),
+                buyAmount: Math.floor(Math.random() * 100)
+            },
+            {
+                id: 'tool_rake',
+                buyPrice: Math.floor(Math.random() * 10000),
+                sellPrice: Math.floor(Math.random() * 10000),
+                buyAmount: Math.floor(Math.random() * 100)
+            },
+            {
+                id: 'tool_axe',
+                buyPrice: Math.floor(Math.random() * 10000),
+                sellPrice: Math.floor(Math.random() * 10000),
+                buyAmount: Math.floor(Math.random() * 100)
+            },
+            {
+                id: 'weapon_bow',
+                buyPrice: Math.floor(Math.random() * 10000),
+                sellPrice: Math.floor(Math.random() * 10000),
+                buyAmount: Math.floor(Math.random() * 100)
+            },
+            {
+                id: 'tool_watering_can',
+                buyPrice: Math.floor(Math.random() * 10000),
+                sellPrice: Math.floor(Math.random() * 10000),
+                buyAmount: Math.floor(Math.random() * 100)
+            },
+            {
+                id: 'plant_seeds_hemp',
+                buyPrice: Math.floor(Math.random() * 10000),
+                sellPrice: Math.floor(Math.random() * 10000),
+                buyAmount: Math.floor(Math.random() * 100)
+            },
+
+        ],
+      }
+    ]
+  }, '*')
+}
+
 </script>
 
 
@@ -357,7 +610,8 @@ function simulationPost() {
     </div>
     <div class="container">
 
-      <button @click="simulationPost()">Simulation</button>
+      <button @click="simulationPost()">Simulation Post</button> 
+      <button @click="simulationStock()">Simulation Stock</button>
 
       <div class="menu-vertical">
         <ul>

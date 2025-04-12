@@ -627,7 +627,7 @@ $animation-timing: 0.6s ease-out;
                     color: #d9bb74;
                     font-family: $font-family-primary;
                     font-size: 0.9vw;
-                    padding: 0.4vw 1vw 0;    
+                    padding: 0.4vw 1vw 0;
                     width: -webkit-fill-available;
 
                     &::placeholder {

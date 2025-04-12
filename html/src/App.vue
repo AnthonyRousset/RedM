@@ -1,4 +1,3 @@
-
 <script setup>
 import uiCharacter from './menu/uiCharacter.vue';
 import uiInventory from './menu/uiInventory.vue';
@@ -69,7 +68,23 @@ document.addEventListener('keydown', (e) => {
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Oswald:wght@200..700&family=Special+Elite&display=swap');
+/* Bevan: Western, IM Fell English SC: , Oswald: , Special Elite:   */
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=IM+Fell+English+SC&family=Special+Elite&display=swap');
+
+/* Wantedo.ttf , Wantedo.otf */
+@font-face {
+  font-family: 'Wantedo';
+  src: url('./fonts/Wantedo.ttf') format('truetype'),
+       url('./fonts/Wantedo.otf') format('opentype');
+}
+
+/* Rustler.ttf */
+@font-face {
+  font-family: 'Rustler';
+  src: url('./fonts/RUSTLER_.TTF') format('truetype');
+}
+
+
 * {
   /*font-family: 'IM Fell English SC', 'Special Elite', 'Oswald',  sans-serif;*/
 }
@@ -143,7 +158,7 @@ ul{
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  background-image: url('/images/background-image.png');
+  background-image: url('/images/background-gameplay.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -9,6 +9,9 @@ import { useShopStore } from '../stores/shopStore'
 import Inventory from './components/inventory.vue'
 import QuantityModal from './components/QuantityModal.vue'
 import BubbleMessage from './components/BubbleMessage.vue'
+import Gestion from './uiShop/Gestion.vue'
+import Magasin from './uiShop/Magasin.vue'
+import Stock from './uiShop/Stock.vue'  
 
 const playerStore = usePlayerStore()
 const shopStore = useShopStore()
@@ -23,6 +26,8 @@ const selectedItem = ref(null)
 const quantityModal = ref(false)
 const searchQuery = ref('')
 const filteredItems = ref([])
+const currentPage = ref(1)
+const totalPages = ref(5)
 
 // Phrases de vendeur typiques du western
 const vendorPhrases = {
@@ -56,6 +61,9 @@ const close = () => {
 
 // Changement de vue (shop/admin)
 const switchView = (view) => {
+    if (view === shopView.value) {
+        return;
+    }
     isSwitching.value = true;
     setTimeout(() => {
         shopView.value = view;
@@ -63,29 +71,7 @@ const switchView = (view) => {
     }, 100);
 }
 
-// Achat d'un article
-const buyItem = (item) => {
-    if (item.quantity > 1) {
-        selectedItem.value = item
-        quantityModal.value = true
-        uiStore.closeInventoryModal = true
-        window.dispatchEvent(new Event('close-inventory-modal'))
-    } else {
-        processBuy(item, 1)
-    }
-}
 
-// Vente d'un article
-const sellItem = (item) => {
-    if (item.quantity > 1) {
-        selectedItem.value = item
-        quantityModal.value = true
-        uiStore.closeInventoryModal = true
-        window.dispatchEvent(new Event('close-inventory-modal'))
-    } else {
-        processSell(item, 1)
-    }
-}
 
 // Traitement de l'achat avec la quantité
 const processBuy = (item, quantity) => {
@@ -96,23 +82,23 @@ const processBuy = (item, quantity) => {
         return
     }
 
-    sendNui('shop-buy-' + shopStore.id, { 
-        shopid: shopStore.id, 
-        itemid: item.id, 
-        quantity: quantity 
+    sendNui('shop-buy-' + shopStore.id, {
+        shopid: shopStore.id,
+        itemid: item.id,
+        quantity: quantity
     })
-    
+
     playerMessage.value = shopPhrases.buySuccess
 }
 
 // Traitement de la vente avec la quantité
 const processSell = (item, quantity) => {
-    sendNui('shop-sell-' + shopStore.id, { 
-        shopid: shopStore.id, 
-        itemid: item.id, 
-        quantity: quantity 
+    sendNui('shop-sell-' + shopStore.id, {
+        shopid: shopStore.id,
+        itemid: item.id,
+        quantity: quantity
     })
-    
+
     playerMessage.value = shopPhrases.sellSuccess
 }
 
@@ -139,7 +125,7 @@ const filterItems = () => {
         return
     }
 
-    filteredItems.value = shopStore.stock.filter(item => 
+    filteredItems.value = shopStore.stock.filter(item =>
         item.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         (item.description && item.description.toLowerCase().includes(searchQuery.value.toLowerCase()))
     )
@@ -163,10 +149,10 @@ onMounted(() => {
     window.addEventListener('close-shop-modal', () => {
         quantityModal.value = false
     })
-    
+
     // Initialiser les articles filtrés
     filteredItems.value = shopStore.stock
-    
+
     // Simuler un chargement (à remplacer par l'appel réel)
     setTimeout(() => {
         isLoading.value = false
@@ -181,64 +167,62 @@ onUnmounted(() => {
 </script>
 
 <template>
+
+    <!-- menu shop -->
+    <div class="menu">
+        <ul>
+            <li v-if="shopStore.rank >= 0">
+                <button @click="switchView('shop')" :class="{ 'active': shopView === 'shop' }">
+                    <span>Magasin</span>
+                </button>
+            </li>
+            <li v-if="shopStore.rank >= 0">
+                <button @click="switchView('admin')" :class="{ 'active': shopView === 'admin' }">
+                    <span>Gestion</span>
+                </button>
+            </li>
+            <li v-if="shopStore.rank >= 0">
+                <button @click="switchView('stock')" :class="{ 'active': shopView === 'stock' }">
+                    <span>Stock</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- menu shop -->
     <div class="shop">
         <div class="shop-container" :class="{ '__closing': uiStore.isClosing || isSwitching }">
+
             <!-- Contenu principal -->
             <div class="container">
-                <!-- En-tête avec le nom du magasin -->
-                <div class="shop-header">
-                    <h1>{{ shopStore.id || 'Magasin' }}</h1>
-                    <div class="player-money">Votre argent: {{ playerStore.getWalletDollars }}$</div>
-                </div>
-                
+
                 <!-- Zone des messages -->
                 <div class="shop-messages">
-                    <BubbleMessage 
-                        :message="playerMessage"
-                        person="Moi"
-                        type="player"
-                        :active="!!playerMessage"
-                    />
-                    <BubbleMessage 
-                        :message="vendorMessage"
-                            :person="shopStore.id || 'Vendeur'"
-                        type="banker"
-                        :active="!!vendorMessage"
-                    />
+                    <BubbleMessage :message="playerMessage" person="Moi" type="player" :active="!!playerMessage" />
+                    <BubbleMessage :message="vendorMessage" :person="shopStore.id || 'Vendeur'" type="banker"
+                        :active="!!vendorMessage" />
                 </div>
-                
-                <!-- Vue d'achat -->
-                <div class="shop-buy" v-if="shopView === 'admin'">
 
-                    <button @click="extendChest">shop-extend-chest</button>
+                <!-- Vue de gestion -->
+                <Gestion v-if="shopView === 'admin'" />     
 
-                </div>
-                
-                <!-- Vue de vente -->
-                <div class="shop-sell" v-else-if="shopView === 'shop'">
-                    <div class="inventory-container">
-                        <Inventory 
-                            :type="'shop'" 
-                            :idEntity="shopStore.selectedShop?.id" 
-                            :inventory="playerStore.inventory"
-                            @itemClick="sellItem"
-                        />
-                    </div>
-                </div>
-                
-                <button class="close" @click="close">X</button>
+                <!-- Vue de achat/ vente -->
+                <Magasin v-if="shopView === 'shop'" />
+
+                <!-- Vue de stock -->
+                <Stock v-if="shopView === 'stock'" />
+
             </div>
         </div>
     </div>
 
-    <!-- Conversation avec le vendeur -->
+    <!-- Conversation avec le vendeur 
     <div class="shop-conversation" v-if="isLoading">
         <div class="bubble">
             Bien l'bonjour, m'sieur !
         </div>
     </div>
     <div class="shop-conversation" v-else-if="uiStore.isClosing">
-        <!-- Vide pendant la fermeture -->
     </div>
     <div class="shop-conversation" v-else>
         <div class="bubble" @click="switchView('admin')" v-if="shopStore.rank >= 0">
@@ -253,18 +237,15 @@ onUnmounted(() => {
             Au revoir, m'sieur !
         </div>
     </div>
+    -->
 
     <!-- Modal pour la quantité -->
-    <QuantityModal 
-        :type="'shop'" 
-        v-model="quantityModal" 
-        :max-quantity="selectedItem?.quantity || 0"
+    <QuantityModal :type="'shop'" v-model="quantityModal" :max-quantity="selectedItem?.quantity || 0"
         :person="shopStore.id || 'Vendeur'"
         :error="'Par le ciel ! Vous n\'avez pas assez de dollars pour acheter autant, partenaire !'"
         :title="shopView === 'shop' ? 'Quantité à acheter' : 'Quantité à vendre'"
         @confirm="shopView === 'shop' ? handleBuyQuantityConfirm : handleSellQuantityConfirm"
-        @cancel="quantityModal = false"
-    />
+        @cancel="quantityModal = false" />
 </template>
 
 <style lang="scss" scoped>
@@ -295,6 +276,69 @@ $animation-timing: 0.6s ease-out;
     display: none !important;
 }
 
+
+/* menu shop */
+.menu {
+    position: absolute;
+    top: 3vw;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+
+
+    &::after {
+        content: '';
+        display: block;
+        height: 10px;
+        right: -8vw;
+        left: -8vw;
+        position: absolute;
+        background-image: url('/images/line2.png');
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        li {
+            button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1.5vw;
+                font-family: $font-family-primary;
+                color: #ffffff;
+                padding: 0.5vw 1vw;
+                border-radius: 0.5vw;
+                transition: all 0.2s ease-in-out;
+                cursor: pointer;
+
+                &:hover {
+                    /*color: $color-text-light;   */
+                    text-shadow: 0 0 2vw #ffffff, 0 0 3vw #ffffff, 0 0 3vw #ffffff, 0 0 2vw #ffffff, 0 0 2vw #ffffff;
+
+                }
+
+                &.active {
+                    color: $color-text-light;
+                    /*text-shadow:0 0 2vw #ffffff,0 0 3vw #ffffff,0 0 3vw #ffffff,0 0 2vw #ffffff,0 0 2vw #ffffff;
+                    */
+                }
+            }
+        }
+    }
+}
+
+
+
 .shop {
     position: absolute;
     top: 0;
@@ -319,6 +363,7 @@ $animation-timing: 0.6s ease-out;
         opacity: 0;
         transform: scale(0);
     }
+
     100% {
         opacity: 1;
         transform: scale(1);
@@ -330,6 +375,7 @@ $animation-timing: 0.6s ease-out;
         opacity: 1;
         transform: scale(1);
     }
+
     100% {
         opacity: 0;
         transform: scale(0);
@@ -341,15 +387,19 @@ $animation-timing: 0.6s ease-out;
     0% {
         opacity: 0;
     }
+
     20% {
         opacity: 1;
     }
+
     50% {
         opacity: 1;
     }
+
     80% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
     }
@@ -374,27 +424,13 @@ $animation-timing: 0.6s ease-out;
     display: flex;
     flex-direction: column;
     padding: 2vw;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+
+
 }
 
-.shop-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1vw;
-    
-    h1 {
-        color: $color-gold;
-        font-size: 2vw;
-        margin: 0;
-        text-shadow: 0.1vw 0.1vw 0.1vw rgba(0, 0, 0, 0.5);
-    }
-    
-    .player-money {
-        color: $color-gold;
-        font-size: 1.5vw;
-        font-weight: bold;
-    }
-}
 
 .shop-messages {
     margin-bottom: 1vw;
@@ -406,6 +442,10 @@ $animation-timing: 0.6s ease-out;
 .inventory-container {
     width: 100%;
     height: 65vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 .close {
@@ -435,6 +475,7 @@ $animation-timing: 0.6s ease-out;
     }
 }
 
+
 .shop-conversation {
     position: absolute;
     bottom: 1.5vw;
@@ -463,10 +504,11 @@ $animation-timing: 0.6s ease-out;
             color: #000000;
             font-weight: bold;
         }
-        
+
         &:hover {
             opacity: 1;
         }
     }
 }
-</style> 
+
+</style>

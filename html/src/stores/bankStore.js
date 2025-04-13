@@ -1,7 +1,16 @@
 // gérer les actions bancaires sur plusieurs banques (ex : dépot, retrait, coffre, assurance, etc.)
 // vault items : { name: 'item', amount: 0 }
 // insurance service ( assurance armes, assurances cheval, assurances santé) 
+
+// bank-deposit-{ID}	{ id: string , amount: int }
+// bank-withdraw-{ID}	{ id: string , amount: int }
+// bank-createAccount-{ID}	{ id: string }
+// bank-close-{ID}	{ id: string }
+// bank-stock-add-{ID}	{ idBank: string,complexId:string, idItem: string,quantity: int}
+// bank-stock-remove-{ID}	{ idBank: string,complexId:string, idItem: string,quantity: int}
+
 import { defineStore } from 'pinia'
+import { sendNui } from '../utils/nui'
 
 export const useBankStore = defineStore('bank', {
     state: () => ({
@@ -16,6 +25,7 @@ export const useBankStore = defineStore('bank', {
                 quality: 100,
                 weight: 1,
                 tags: [0],
+                type: 's',
                 category: 0
             },
             {
@@ -24,6 +34,7 @@ export const useBankStore = defineStore('bank', {
                 quality: 100,
                 weight: 1,
                 tags: [2],
+                type: 's',
                 category: 0
             }
         ],
@@ -92,6 +103,30 @@ export const useBankStore = defineStore('bank', {
         setLastActiveTab(tab) {
             console.log('bankStore > setLastActiveTab()', tab)
             this.lastActiveTab = tab
+        },
+        sendNuiAddStock(data) {
+            console.log('bankStore > sendNuiAddStock()', data)
+            sendNui('bank-stock-add-' + this.id, data)
+        },
+        sendNuiRemoveStock(data) {
+            console.log('bankStore > sendNuiRemoveStock()', data)
+            sendNui('bank-stock-remove-' + this.id, data)
+        },
+        sendNuiCreateAccount() {
+            console.log('bankStore > sendNuiCreateAccount()')
+            sendNui('bank-createAccount-' + this.id, { id: this.id })
+        },
+        sendNuiClose() {
+            console.log('bankStore > sendNuiClose()')
+            sendNui('bank-close-' + this.id, { id: this.id })
+        },
+        sendNuiDeposit(data) {
+            console.log('bankStore > sendNuiDeposit()', data)
+            sendNui('bank-deposit-' + this.id, { id: this.id, amount: data.amount })
+        },
+        sendNuiWithdraw(data) {
+            console.log('bankStore > sendNuiWithdraw()', data)
+            sendNui('bank-withdraw-' + this.id, { id: this.id, amount: data.amount })
         }
     },
     getters: {

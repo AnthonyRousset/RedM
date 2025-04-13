@@ -249,7 +249,7 @@ export const useShopStore = defineStore('shop', {
         ],
         rank: 0, // rang du joueur (0 = joueur, 1 = interimaire, 2 = employé, 3 = contremaitre, 5 = Propriétaire(s))
         account: 0, // Argent restant du vendeur
-        lastActiveTab: 'shop', // dernier onglet actif
+        lastActiveTab: 'magasin', // dernier onglet actif
 
     }),
     actions: { 

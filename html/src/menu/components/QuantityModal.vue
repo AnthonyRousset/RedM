@@ -1,28 +1,29 @@
 <script setup>
-import { ref, watch, nextTick } from 'vue'
-import BubbleMessage from './BubbleMessage.vue'
+import { ref, watch, nextTick, onMounted } from 'vue'
 import { useUiStore } from '../../stores/uiStore'
+import { useBankStore } from '../../stores/bankStore'
+import { useShopStore } from '../../stores/shopStore'
+
+const bankStore = useBankStore()
+const shopStore = useShopStore()
 
 const props = defineProps({
     modelValue: {
         type: Boolean,
         required: true
     },
-    maxQuantity: {
-        type: Number,
+    item: {
+        type: Object,
         required: true
     },
     title: {
         type: String,
-        default: 'Quantité'
+        default: 'Quantité à déposer'
     },
-    type: {
+    to: {
         type: String,
-        default: 'inventory'
-    },
-    error: {
-        type: String,
-        default: ''
+        default: 'inventory',
+        validator: (value) => ['inventory', 'bank', 'player'].includes(value)
     },
     person: {
         type: String,
@@ -35,8 +36,22 @@ const emit = defineEmits(['update:modelValue', 'confirm', 'cancel'])
 const quantity = ref(1)
 const quantityInput = ref(null)
 const error = ref('')
-
 const uiStore = useUiStore()
+const maxQuantity = ref(1)
+
+onMounted(() => {
+    if (props.item) {
+        maxQuantity.value = props.item.quantity
+    }
+})
+
+// Surveiller les changements de props.item
+watch(() => props.item, (newItem) => {
+    if (newItem) {
+        maxQuantity.value = newItem.quantity
+        quantity.value = 1 // Réinitialiser la quantité à 1
+    }
+}, { immediate: true })
 
 // Reset quantity when modal opens
 watch(() => props.modelValue, (newValue) => {
@@ -51,34 +66,76 @@ watch(() => props.modelValue, (newValue) => {
 
 // Écouter les changements dans le uiStore
 watch(() => uiStore.closeBankModal, (newValue) => {
-    if (newValue && props.type === 'bank') {
+    if (newValue && props.to === 'bank') {
         emit('update:modelValue', false)
         uiStore.resetModalFlags()
     }
 })
 
 watch(() => uiStore.closeInventoryModal, (newValue) => {
-    if (newValue && props.type === 'inventory') {
+    if (newValue && props.to === 'inventory') {
         emit('update:modelValue', false)
         uiStore.resetModalFlags()
     }
 })
 
 const validateQuantity = () => {
+    if (!props.item) return;
+    
     let val = parseInt(quantity.value)
     if (isNaN(val) || val < 1) {
         quantity.value = 1
+    } else if (val > maxQuantity.value) {
+        quantity.value = maxQuantity.value
+    }
+
+    // Mettre à jour maxQuantity si nécessaire
+    if (props.item.quantity !== maxQuantity.value) {
+        maxQuantity.value = props.item.quantity
+    }
+
+    switch (props.to) {
+        case 'bank':
+            if (props.item.type === 'u') {
+                // la banque est limité a 3 emplacements max, donc on test si c'est plein 
+                if (bankStore.stock.length >= 3) {
+// on affiche un message d'erreur
+                    error.value = 'Sacré bleu ! Je ne peux pas stocker plus d\'objets dans ma banque !'
+                    return
+                }
+            } else {
+                // la banque est limité a 3 emplacements max, donc on test si c'est plein  sauf si c'est stackable et que l'objet est dans la liste 
+                if (bankStore.stock.length >= 3 && !bankStore.stock.find(stock => stock.id === props.item.id)) {
+                    // on affiche un message d'erreur
+                    error.value = 'Sacré bleu ! Je ne peux pas stocker plus d\'objets dans ma banque !'
+                    return
+                }
+            }
+            break
+        case 'vendor':
+        if (props.item.type === 'u') {
+                // la banque est limité a 3 emplacements max, donc on test si c'est plein 
+                if (shopStore.stock.length >= 25) {
+                    // on affiche un message d'erreur
+                    error.value = 'Sacré bleu ! Je ne peux pas stocker plus d\'objets dans mon magasin !'
+                    return
+                }
+            } else {
+                // la banque est limité a 3 emplacements max, donc on test si c'est plein  sauf si c'est stackable et que l'objet est dans la liste 
+                if (shopStore.stock.length >= 25 && !shopStore.stock.find(stock => stock.id === props.item.id)) {
+                    // on affiche un message d'erreur
+                    error.value = 'Sacré bleu ! Je ne peux pas stocker plus d\'objets dans mon magasin !'
+                    return
+                }
+            }
+            break
+        default:
+            break
     }
 }
 
 const confirm = () => {
     validateQuantity()
-    // si la quantité est supérieure à la quantité max, on ne peut pas envoyer
-    if (quantity.value > props.maxQuantity) {
-        error.value = props.error
-        return
-    }
-    error.value = ''
     emit('confirm', quantity.value)
     emit('update:modelValue', false)
 }
@@ -96,23 +153,20 @@ const handleKeyDown = (event) => {
 }
 
 const setMaxQuantity = () => {
-    quantity.value = props.maxQuantity
+    quantity.value = maxQuantity.value  
 }
 </script>
 
 <template>
-    <div class="quantity-modal" v-if="modelValue" :class="{ 'qt-inventory': type === 'inventory', 'qt-bank': type === 'bank' }">
+
+    <div class="quantity-modal" v-if="modelValue"
+        :class="{ 'qt-inventory': to === 'inventory', 'qt-bank': to === 'bank' }">
         <div class="quantity-modal-content">
             <div class="quantity-modal-title">{{ title }}</div>
             <div class="quantity-modal-input">
-                <input 
-                    type="number" 
-                    v-model="quantity" 
-                    min="1"
-                    @input="validateQuantity"
-                    @keydown="handleKeyDown"
-                    ref="quantityInput"
-                />
+                <input type="number" v-model="quantity" min="1" @input="validateQuantity" @keydown="handleKeyDown"
+                    ref="quantityInput" />
+
                 <div class="quantity-max">/ {{ maxQuantity }}</div>
                 <button class="quantity-max-button" @click="setMaxQuantity">Max</button>
             </div>
@@ -123,14 +177,8 @@ const setMaxQuantity = () => {
         </div>
 
         <!-- bubble error -->
-        <BubbleMessage 
-            :active="!!error"
-            :message="error"
-            :person="person"
-            type="message"
-            :positionLeft="13"
-            :positionTop="-9"
-        />
+        <BubbleMessage :active="!!error" :message="error" :person="person" type="message" :positionLeft="13"
+            :positionTop="-9" />
     </div>
 </template>
 
@@ -177,7 +225,7 @@ const setMaxQuantity = () => {
             text-align: center;
             text-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.8);
             letter-spacing: 0.1vw;
-            
+
             &:after {
                 content: '';
                 display: block;
@@ -199,7 +247,7 @@ const setMaxQuantity = () => {
             background: rgba(0, 0, 0, 0.4);
             border: 0.1vw solid #805f07;
             border-radius: 0.4vw;
-            
+
             input {
                 width: 5vw;
                 background: none;
@@ -215,7 +263,7 @@ const setMaxQuantity = () => {
                     -webkit-appearance: none;
                     margin: 0;
                 }
-                
+
                 &[type=number] {
                     -moz-appearance: textfield;
                 }
@@ -277,4 +325,5 @@ const setMaxQuantity = () => {
             }
         }
     }
-}</style> 
+}
+</style>

@@ -138,7 +138,7 @@ $color-text-dark: #442c1a;
     transform: translate(-50%, -50%);
     width: 20vw;
     height: 31.3vw;
-    background-image: url(../../../public/images/shop/shop-bg-sellbuy-item.png);
+    background-image: url(/images/shop/shop-bg-sellbuy-item.png);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -159,9 +159,7 @@ $color-text-dark: #442c1a;
         span {
             display: inline-block;
             max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: clamp(1.2vw, 2.5vw, 3vw);
+            font-size: clamp(1.2vw, 2.5vw, 3vw); // clamp est une fonction qui permet de limiter la taille de la police 
         }
     }
 
@@ -219,7 +217,7 @@ $color-text-dark: #442c1a;
 
     .prix-total {
         position: absolute;
-        top: 23vw;
+        top: 24vw;
         left: 0;
         font-size: 1.2vw;
         color: #442c1a;

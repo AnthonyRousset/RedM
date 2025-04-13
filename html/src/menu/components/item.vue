@@ -138,6 +138,7 @@ const handleMouseLeave = () => {
                 color: #ffffff;
                 position: relative;
                 padding-right: 0.6vw;
+                font-size: 0.7vw;
 
                 .value {
                     color: #c3ac55;
@@ -163,6 +164,7 @@ const handleMouseLeave = () => {
                 color: #ffffff;
                 position: relative;
                 padding-right: 0.6vw;
+                font-size: 0.7vw;
 
                 .value {
                     color: #c3ac55;

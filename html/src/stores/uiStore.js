@@ -20,10 +20,12 @@ export const useUiStore = defineStore('ui', {
             console.log('openMenu', menu)
             this.menu = menu
             this.open = true
+            this.isClosing = false
         },
         closeMenu() {
             this.menu = ''
             this.open = false
+            this.isClosing = true
         },
         resetModalFlags() {
             this.closeBankModal = false

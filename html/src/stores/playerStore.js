@@ -22,7 +22,7 @@ export const usePlayerStore = defineStore('player', {
                 quality: 100,
                 weight: 100, // 100g
                 tags: [2], // Damage = 0, Stolen = 1, Illegal = 2, Hidden = 3
-                type: 'u', // s = stackable, u = unique
+                type: 's', // s = stackable, u = unique
                 category: 1 // weapon
             },
             {

@@ -18,7 +18,7 @@ const shopStore = useShopStore()
 const uiStore = useUiStore()
 
 const isLoading = ref(true)
-const shopView = ref(shopStore.lastActiveTab || 'shop')
+const shopView = ref(shopStore.lastActiveTab || 'magasin')
 const isSwitching = ref(false)
 const playerMessage = ref('')
 const vendorMessage = ref('')
@@ -169,51 +169,51 @@ onUnmounted(() => {
 <template>
 
     <!-- menu shop -->
-    <div class="menu">
+    <div class="menu" v-if="!uiStore.isClosing">
         <ul>
-            <li v-if="shopStore.rank >= 0">
-                <button @click="switchView('shop')" :class="{ 'active': shopView === 'shop' }">
+            <li v-if="shopStore.rank >= 0"> <!-- TODO : shopStore.rank >= 0-->
+                <button @click="switchView('magasin')" :class="{ 'active': shopView === 'magasin' }">
                     <span>Magasin</span>
                 </button>
             </li>
-            <li v-if="shopStore.rank >= 0">
-                <button @click="switchView('admin')" :class="{ 'active': shopView === 'admin' }">
+            <li v-if="shopStore.rank >= 0"> <!-- TODO : shopStore.rank >= 0-->
+                <button @click="switchView('gestion')" :class="{ 'active': shopView === 'gestion' }">
                     <span>Gestion</span>
                 </button>
             </li>
-            <li v-if="shopStore.rank >= 0">
+            <li v-if="shopStore.rank >= 0"> <!-- TODO : shopStore.rank >= 0 -->
                 <button @click="switchView('stock')" :class="{ 'active': shopView === 'stock' }">
                     <span>Stock</span>
+                </button>
+            </li>
+            <li>
+                <button @click="close" class="close">
+                    <span>Fermer</span>
                 </button>
             </li>
         </ul>
     </div>
 
     <!-- menu shop -->
-    <div class="shop">
-        <div class="shop-container" :class="{ '__closing': uiStore.isClosing || isSwitching }">
+    <div class="shop" :class="{ '__closing': uiStore.isClosing || isSwitching }">
 
-            <!-- Contenu principal -->
-            <div class="container">
-
-                <!-- Zone des messages -->
-                <div class="shop-messages">
-                    <BubbleMessage :message="playerMessage" person="Moi" type="player" :active="!!playerMessage" />
-                    <BubbleMessage :message="vendorMessage" :person="shopStore.id || 'Vendeur'" type="banker"
-                        :active="!!vendorMessage" />
-                </div>
-
-                <!-- Vue de gestion -->
-                <Gestion v-if="shopView === 'admin'" />     
-
-                <!-- Vue de achat/ vente -->
-                <Magasin v-if="shopView === 'shop'" />
-
-                <!-- Vue de stock -->
-                <Stock v-if="shopView === 'stock'" />
-
-            </div>
+        <!-- Zone des messages 
+        <div class="shop-messages">
+            <BubbleMessage :message="playerMessage" person="Moi" type="player" :active="!!playerMessage" />
+            <BubbleMessage :message="vendorMessage" :person="shopStore.id || 'Vendeur'" type="banker"
+                :active="!!vendorMessage" />
         </div>
+        -->
+
+        <!-- Vue de gestion -->
+        <Gestion v-if="shopView === 'gestion'" />     
+
+        <!-- Vue de achat/ vente -->
+        <Magasin v-if="shopView === 'magasin'" />
+
+        <!-- Vue de stock -->
+        <Stock v-if="shopView === 'stock'" />
+
     </div>
 
     <!-- Conversation avec le vendeur 
@@ -332,6 +332,10 @@ $animation-timing: 0.6s ease-out;
                     /*text-shadow:0 0 2vw #ffffff,0 0 3vw #ffffff,0 0 3vw #ffffff,0 0 2vw #ffffff,0 0 2vw #ffffff;
                     */
                 }
+
+                &.close {
+                    color: $color-red-hover
+                }
             }
         }
     }
@@ -343,20 +347,20 @@ $animation-timing: 0.6s ease-out;
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
     height: 100%;
+    animation: openShop-8b9c9eec 0.6s ease-out forwards;
     width: 100%;
-}
-
-.shop-container {
-    animation: openShop $animation-timing forwards;
-    position: absolute;
-    height: 100%;
-    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
 
     &.__closing {
         animation: closeShop $animation-timing forwards !important;
     }
 }
+
 
 @keyframes openShop {
     0% {
@@ -407,31 +411,6 @@ $animation-timing: 0.6s ease-out;
 
 
 
-.container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80vw;
-    height: 80vh;
-    background-image: url('/images/shop/shop-background.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    border-radius: 0.5vw;
-    color: $color-text-dark;
-    font-family: $font-family-primary;
-    display: flex;
-    flex-direction: column;
-    padding: 2vw;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
-
-
-}
-
-
 .shop-messages {
     margin-bottom: 1vw;
 }
@@ -446,33 +425,6 @@ $animation-timing: 0.6s ease-out;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-}
-
-.close {
-    background: $color-red;
-    color: $color-text-light;
-    font-weight: bold;
-    padding: 0.5vw;
-    font-family: $font-family-primary;
-    cursor: pointer;
-    position: absolute;
-    top: 1vw;
-    right: 1vw;
-    width: 2.5vw;
-    height: 2.5vw;
-    border-radius: 2.5vw;
-    border: none;
-    font-size: 1.5vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 0.5vw rgba(0, 0, 0, 0.5);
-    transition: all 0.2s ease-in-out;
-    z-index: 1000;
-
-    &:hover {
-        background: $color-red-hover;
-    }
 }
 
 
@@ -510,5 +462,8 @@ $animation-timing: 0.6s ease-out;
         }
     }
 }
+
+
+
 
 </style>

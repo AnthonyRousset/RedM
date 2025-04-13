@@ -147,14 +147,13 @@ const goToPage = (page) => {
 <style scoped>
 .shop-admin {
     width: 73vw;
-    height: 60vw;
+    height: 45vw;
     background-image: url('/images/shop/shop-bg-gestion.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     position: relative;
 }
-
 
 .shop-admin-container {
     top: 2vw;
@@ -173,7 +172,8 @@ const goToPage = (page) => {
         .page {
             flex: 0 0 100%;
             display: flex;
-
+            font-size: 1vw;
+            
             .left {
                 left: 0vw;
                 position: absolute;
@@ -192,18 +192,17 @@ const goToPage = (page) => {
                 padding: 1vw;
             }
         }
-        
     }
 
     .shop-admin-pagination {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin-top: 10px;
+        gap: 0.5vw;
+        margin-top: 0.5vw;
 
         button {
-            padding: 5px 10px;
-            border: 1px solid #8B4513;
+            padding: 0.25vw 0.5vw;
+            border: 0.05vw solid #8B4513;
             background: transparent;
             color: #8B4513;
             cursor: pointer;
@@ -226,11 +225,11 @@ const goToPage = (page) => {
     .shop-admin-clients,
     .shop-admin-orders,
     .shop-admin-cotton {
-
         h3 {
             color: #8B4513;
-            margin-bottom: 15px;
+            margin-bottom: 0.75vw;
             text-align: center;
+            font-size: 1.2vw;
         }
     }
 
@@ -238,10 +237,10 @@ const goToPage = (page) => {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 1vw;
 
         .amount {
-            font-size: 24px;
+            font-size: 1.2vw;
             color: #8B4513;
             font-weight: bold;
         }
@@ -249,16 +248,17 @@ const goToPage = (page) => {
 
     .balance-actions {
         display: flex;
-        gap: 10px;
+        gap: 0.5vw;
 
         button {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #8B4513;
+            padding: 0.5vw;
+            border: 0.05vw solid #8B4513;
             background: transparent;
             color: #8B4513;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 0.8vw;
 
             &:hover {
                 background: #8B4513;
@@ -272,8 +272,8 @@ const goToPage = (page) => {
     .orders-list {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        max-height: 400px;
+        gap: 0.5vw;
+        max-height: 20vw;
         overflow-y: auto;
     }
 
@@ -281,23 +281,25 @@ const goToPage = (page) => {
     .client-card,
     .order-card {
         background: rgba(139, 69, 19, 0.1);
-        padding: 15px;
-        border-radius: 4px;
+        padding: 0.75vw;
+        border-radius: 0.2vw;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        font-size: 0.8vw;
 
         .actions {
             display: flex;
-            gap: 5px;
+            gap: 0.25vw;
 
             button {
-                padding: 5px 10px;
-                border: 1px solid #8B4513;
+                padding: 0.25vw 0.5vw;
+                border: 0.05vw solid #8B4513;
                 background: transparent;
                 color: #8B4513;
                 cursor: pointer;
                 transition: all 0.3s ease;
+                font-size: 0.7vw;
 
                 &:hover {
                     background: #8B4513;
@@ -310,16 +312,17 @@ const goToPage = (page) => {
     .cotton-stats {
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        margin-bottom: 20px;
+        gap: 0.75vw;
+        margin-bottom: 1vw;
 
         .stat {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
+            padding: 0.5vw;
             background: rgba(139, 69, 19, 0.1);
-            border-radius: 4px;
+            border-radius: 0.2vw;
+            font-size: 0.8vw;
 
             .value {
                 color: #8B4513;
@@ -331,15 +334,16 @@ const goToPage = (page) => {
     .cotton-actions {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 0.5vw;
 
         button {
-            padding: 10px;
-            border: 1px solid #8B4513;
+            padding: 0.5vw;
+            border: 0.05vw solid #8B4513;
             background: transparent;
             color: #8B4513;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 0.8vw;
 
             &:hover {
                 background: #8B4513;
@@ -351,12 +355,13 @@ const goToPage = (page) => {
     .turn-left,
     .turn-right {
         position: absolute;
-        bottom: 20px;
-        padding: 10px 20px;
+        bottom: 1vw;
+        padding: 0.5vw 1vw;
         background: rgba(139, 69, 19, 0.7);
         color: #FFF;
         cursor: pointer;
         transition: all 0.3s ease;
+        font-size: 0.8vw;
 
         &:hover {
             background: #8B4513;

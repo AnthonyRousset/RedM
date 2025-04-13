@@ -18,7 +18,7 @@ const playerMessage = ref('');
 const bankMessage = ref('');
 const bankView = ref(bankStore.lastActiveTab || 'account');
 const isSwitching = ref(false);
-const quantityModal = ref(false)
+const quantityModalIsOpen = ref(false)
 const selectedItem = ref(null)
 
 const handleKeyDown = (event) => {
@@ -80,7 +80,7 @@ const deposit = () => {
             playerMessage.value = 'Sacré tonnerre ! Je n\'ai pas assez de dollars sur moi, partenaire...';
             return;
         }
-        sendNui('bank-deposit-' + bankStore.id, { id: bankStore.id, amount: dollarForm.value * 100 })
+        bankStore.sendNuiDeposit({ amount: dollarForm.value * 100 })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
@@ -99,7 +99,7 @@ const withdraw = () => {
             bankMessage.value = 'Par le ciel ! Votre compte est plus sec que le désert, cow-boy !';
             return;
         }
-        sendNui('bank-withdraw-' + bankStore.id, { id: bankStore.id, amount: dollarForm.value * 100 })
+        bankStore.sendNuiWithdraw({ amount: dollarForm.value * 100 })
         dollarForm.value = '';
         editableSpan.value.innerText = '';
         showPlaceholder.value = true;
@@ -109,7 +109,7 @@ const withdraw = () => {
 const close = () => {
     uiStore.isClosing = true;
     setTimeout(() => {
-        sendNui('bank-close-' + bankStore.id, { id: bankStore.id })
+        bankStore.sendNuiClose()
         uiStore.closeMenu()
         uiStore.isClosing = false;
     }, 600); // Attendre la fin de l'animation
@@ -129,21 +129,16 @@ const createBank = () => {
     }
     bankStore.exist = true;
     console.log('bank-createAccount', bankStore.id)
-    sendNui('bank-createAccount-' + bankStore.id, { id: bankStore.id })
+    bankStore.sendNuiCreateAccount()
 }
 
-const stockRemove = (bankId, item, quantity) => {
-    console.log('bank-stock-remove-' + bankId, item)
-    // if type is unique, we need to remove the item    
-    if (item.type === 'u') {
-        sendNui('bank-stock-remove-' + bankId, { idBank: bankId, complexId: item.complexId, idItem: item.id, quantity: quantity })
-    } else {
-        sendNui('bank-stock-remove-' + bankId, { idBank: bankId, idItem: item.id, quantity: quantity })
-    }
-}
 
-const switchBank = (bank) => {
+const switchView = (bank) => {
     // switch the bank view 
+    if (bankView.value === bank) {
+        return;
+    }
+
     isSwitching.value = true;
     setTimeout(() => {
         bankView.value = bank;
@@ -153,36 +148,55 @@ const switchBank = (bank) => {
     }, 100);
 }
 
-const handleItemClick = (item) => {
+const checkStock = (item) => {
     if (item.quantity > 1) {
         selectedItem.value = item
-        quantityModal.value = true
+        quantityModalIsOpen.value = true
         // Utiliser le uiStore pour fermer le modal de l'inventaire
         uiStore.closeInventoryModal = true
         // Déclencher un événement pour fermer le modal de l'inventaire
         window.dispatchEvent(new Event('close-inventory-modal'))
     } else {
-        stockRemove(bankStore.id, item, 1)
+        bankToInventory(bankStore.id, item, 1)
     }
 }
 
+
 const handleQuantityConfirm = (quantity) => {
     if (selectedItem.value) {
-        stockRemove(bankStore.id, selectedItem.value, quantity)
+        bankToInventory(bankStore.id, selectedItem.value, quantity)
         selectedItem.value = null
+    }
+}
+
+const inventoryToBank = (item, quantity) => {
+    console.log('inventoryToBank', item, quantity)
+    if (item.type === 'u') {
+        bankStore.sendNuiAddStock({ idBank: bankStore.id, complexId: item.complexId, idItem: item.id, quantity: quantity })
+    } else {
+        bankStore.sendNuiAddStock({ idBank: bankStore.id, idItem: item.id, quantity: quantity })
+    }
+}
+
+const bankToInventory = (bankId, item, quantity) => {
+    console.log('bank-stock-remove-' + bankId, item)
+    if (item.type === 'u') {
+        bankStore.sendNuiRemoveStock({ idBank: bankId, complexId: item.complexId, idItem: item.id, quantity: quantity }) 
+    } else {
+        bankStore.sendNuiRemoveStock({ idBank: bankId, idItem: item.id, quantity: quantity })
     }
 }
 
 // Écouter les événements pour fermer le modal
 onMounted(() => {
     window.addEventListener('close-bank-modal', () => {
-        quantityModal.value = false
+        quantityModalIsOpen.value = false
     })
 })
 
 onUnmounted(() => {
     window.removeEventListener('close-bank-modal', () => {
-        quantityModal.value = false
+        quantityModalIsOpen.value = false
     })
 })
 
@@ -193,8 +207,27 @@ setTimeout(() => {
 </script>
 
 <template>
+    <!-- menu shop -->
+    <div class="menu" v-if="!uiStore.isClosing">
+        <ul>
+            <li>
+                <button @click="switchView('account')" :class="{ 'active': bankView === 'account' }">
+                    <span>Compte</span>
+                </button>
+            </li>
+            <li v-if="bankStore.getBankAccountIsCreated">
+                <button @click="switchView('vault')" :class="{ 'active': bankView === 'vault' }">
+                    <span>Coffre-fort</span>
+                </button>
+            </li>
+            <li>
+                <button @click="close" class="close">
+                    <span>Fermer</span>
+                </button>
+            </li>
+        </ul>
+    </div>
 
-      
     <div class="bank">
         <div class="bank-container" :class="{ '__closing': uiStore.isClosing || isSwitching }">
             <div class="bank-loading" v-if="bankStore.isLoading">
@@ -203,7 +236,6 @@ setTimeout(() => {
                     <span class="two">.</span>
                     <span class="three">.</span>
                 </div>
-                <button class="close" @click="close">X</button>
             </div>
             <div class="bank-open" v-else-if="!bankStore.getBankAccountIsCreated">
                 <!-- Voulez vous ouvrir une banque ? -->
@@ -212,7 +244,7 @@ setTimeout(() => {
                 <div class="form">
                     <button class="btn-western bank-price" @click="createBank">Ouvrir un coffre-fort</button>
                 </div>
-                <button class="close" @click="close">X</button>
+                <button class="close-btn" @click="close">X</button>
             </div>
             <div class="container" v-else>
                 <div class="bank-account" v-if="bankView === 'account'">
@@ -244,19 +276,17 @@ setTimeout(() => {
                         <button class="btn-western deposit" @click="deposit">Déposer</button>
                         <button class="btn-western withdraw" @click="withdraw">Retirer</button>
                     </div>
-
-                    <button class="close" @click="close">X</button>
                 </div>
                 <div class="bank-vault" v-else-if="bankView === 'vault'">
                     <div class="vault">
                         <div class="emplacements">
                             <ul>
-                                <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }">
+                                <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }"
+                                    @click="checkStock(bankStore.stock[index - 1])">
                                     <img v-if="bankStore.stock && bankStore.stock[index - 1]"
-                                        @click="handleItemClick(bankStore.stock[index - 1])"
                                         :src="'/images/items/' + bankStore.stock[index - 1].id + '.png'" alt="">
                                     <div v-if="bankStore.stock && bankStore.stock[index - 1]" class="quantity">{{
-                                        bankStore.stock[index - 1]?.quantity}}</div>
+                                        bankStore.stock[index - 1]?.quantity }}</div>
                                 </li>
                             </ul>
                         </div>
@@ -266,13 +296,19 @@ setTimeout(() => {
                     </div>
                     <img src="/images/circle-arrows-left-right.png" alt="" class="circle-arrows-left-right">
                     <div class="bag">
-                        <Inventory :type="'bank'" :idEntity="bankStore.id" :inventory="playerStore.inventory" />
+                        <Inventory 
+                            :inventory="playerStore.inventory" 
+                            :idEntity="bankStore.id" 
+                            @itemSelected="inventoryToBank"
+                            to="bank" 
+                        />
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 
     <div class="bank-conversation" v-if="bankStore.isLoading || !bankStore.getBankAccountIsCreated">
         <div class="bubble">
             Bien l'bonjour, m'sieur le banquier !
@@ -282,20 +318,27 @@ setTimeout(() => {
 
     </div>
     <div class="bank-conversation" v-else>
-        <div class="bubble" @click="switchBank('account')" v-if="bankView === 'vault'">
+        <div class="bubble" @click="switchView('account')" v-if="bankView === 'vault'">
             Hé là, m'sieur le banquier ! J'viens voir mes <span>économies</span> !
         </div>
-        <div class="bubble" @click="switchBank('vault')" v-if="bankView === 'account'">
+        <div class="bubble" @click="switchView('vault')" v-if="bankView === 'account'">
             J'aimerais jeter un œil à mon <span>coffre</span>, si vous l'permettez.
         </div>
         <div class="bubble" @click="close">
             Au revoir, m'sieur le banquier !
         </div>
     </div>
-
-    <QuantityModal :type="'bank'" v-model="quantityModal" :max-quantity="selectedItem?.quantity || 0"
-        :person="'Banquier'" :error="'Sacré tonnerre ! Vous demandez plus que ce que vous possédez, partenaire !'"
-        title="Quantité à retirer" @confirm="handleQuantityConfirm" @cancel="quantityModal = false" />
+    -->
+    
+    <QuantityModal
+        v-model="quantityModalIsOpen"
+        to="bank" 
+        person="Banquier" 
+        title="Quantité à retirer" 
+        :item="selectedItem"
+        @confirm="handleQuantityConfirm" 
+        @cancel="quantityModalIsOpen = false" 
+    />
 
 </template>
 
@@ -331,6 +374,72 @@ $animation-timing: 0.6s ease-out;
     display: none !important;
 }
 
+
+/* menu shop */
+.menu {
+    position: absolute;
+    top: 3vw;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+
+
+    &::after {
+        content: '';
+        display: block;
+        height: 10px;
+        right: -8vw;
+        left: -8vw;
+        position: absolute;
+        background-image: url('/images/line2.png');
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        li {
+            button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1.5vw;
+                font-family: $font-family-primary;
+                color: #ffffff;
+                padding: 0.5vw 1vw;
+                border-radius: 0.5vw;
+                transition: all 0.2s ease-in-out;
+                cursor: pointer;
+
+                &:hover {
+                    /*color: $color-text-light;   */
+                    text-shadow: 0 0 2vw #ffffff, 0 0 3vw #ffffff, 0 0 3vw #ffffff, 0 0 2vw #ffffff, 0 0 2vw #ffffff;
+
+                }
+
+                &.active {
+                    color: $color-text-light;
+                    /*text-shadow:0 0 2vw #ffffff,0 0 3vw #ffffff,0 0 3vw #ffffff,0 0 2vw #ffffff,0 0 2vw #ffffff;
+                    */
+                }
+
+                &.close {
+                    color: #e10000
+                }
+            }
+        }
+    }
+}
+
+
 .bank {
     position: absolute;
     top: 0;
@@ -353,10 +462,11 @@ $animation-timing: 0.6s ease-out;
                 left: 50%;
                 transform: translate(-50%, -50%);
             }
-            
+
         }
-        
+
     }
+
     &.__closing {
         animation: closeVault $animation-timing forwards !important;
     }
@@ -435,14 +545,14 @@ $animation-timing: 0.6s ease-out;
     left: calc(50% - 14.25vw);
     width: 25vw;
     height: 18vw;
-    padding: 1.5vw;
+    padding: 1vw;
     border-radius: 0.25vw;
     background-image: url('/images/bank/bank-account-empty.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
 
- 
+
 }
 
 .bank-account {
@@ -464,11 +574,11 @@ $animation-timing: 0.6s ease-out;
 
 .bank-title {
     position: absolute;
-    top: 9.65vw;
+    top: 9vw;
     right: 2.5vw;
     left: 2.5vw;
     text-align: center;
-    font-size: 2vw;
+    font-size: 1.5vw;
     font-weight: bold;
 
     span {
@@ -613,7 +723,7 @@ h2 {
             color: #000000;
             font-weight: bold;
         }
-        
+
         &:hover {
             opacity: 1;
         }
@@ -703,7 +813,8 @@ h2 {
     right: 5%;
 }
 
-.close {
+/*
+.close-btn {
     background: $color-red;
     color: $color-text-light;
     font-weight: bold;
@@ -729,6 +840,7 @@ h2 {
         background: $color-red-hover;
     }
 }
+*/
 
 .btn-western {
     flex: 1;
@@ -825,7 +937,7 @@ h2 {
                 justify-content: center;
                 transition: all 0.2s ease;
                 aspect-ratio: 1;
-                
+
 
                 &:not(.empty) {
                     cursor: pointer;

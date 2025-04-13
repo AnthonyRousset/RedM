@@ -18,11 +18,13 @@ const props = defineProps({
         type: String,
         required: true
     },
-    type: {
+    to: {
         type: String,
         required: true
     }
 })
+
+const emit = defineEmits(['itemSelected'])
 
 const items = ref(itemsData.items)
 const tags = ref(itemsData.tags)
@@ -47,14 +49,14 @@ const bankStore = useBankStore()
 onMounted(() => {
     localInventory.value = [...props.inventory];
 
-    if (props.type === 'player') {
+    if (props.to === 'player') {
         console.log('player-inventory', props.inventory)
         error.value = ''
     }
-    if (props.type === 'bank') {
+    if (props.to === 'bank') {
         error.value = 'Pardi ! J\'ai pas assez de ces objets pour faire cette transaction !'
     }
-    if (props.type === 'vendor') {
+    if (props.to === 'shop') {
         error.value = 'la quantiter est supérieure à la quantiter max'
     }
 
@@ -229,6 +231,7 @@ function search() {
 }
 
 const handleItemClick = (item) => {
+    console.log('handleItemClick', item)
     if (item.quantity > 1) {
         selectedItem.value = item;
         quantityModal.value = true;
@@ -237,56 +240,26 @@ const handleItemClick = (item) => {
         // Déclencher un événement pour fermer le modal de la banque
         window.dispatchEvent(new Event('close-bank-modal'));
     } else {
-        sendItem(item, 1);
+        emitItem(item, 1);
     }
 };
 
 const handleQuantityConfirm = (quantity) => {
+    console.log('handleQuantityConfirm', selectedItem.value, quantity)
     if (selectedItem.value) {
-        sendItem(selectedItem.value, quantity);
+        emitItem(selectedItem.value, quantity);
         selectedItem.value = null;
     }
 }
 
-const sendItem = (item, quantity) => {
-    console.log('sendItem', item, quantity)
-    switch (props.type) {
-        case 'bank':
-            console.log('bank-stock-add-' + props.idEntity, item)
-            if (item.type === 'u') {
-                // la banque est limité a 3 emplacements max, donc on test si c'est plein 
-                if (bankStore.stock.length >= 3) {
-                    // on affiche un message d'erreur
-                    error.value = 'Sacré bleu ! Je ne peux pas stocker plus d\'objets dans ma banque !'
-                    return
-                }
-                sendNui('bank-stock-add-' + props.idEntity, { idBank: props.idEntity, complexId: item.complexId, idItem: item.id, quantity: quantity })
-            } else {
-                // la banque est limité a 3 emplacements max, donc on test si c'est plein  sauf si c'est stackable et que l'objet est dans la liste 
-                if (bankStore.stock.length >= 3 && !bankStore.stock.find(stock => stock.id === item.id)) {
-                    // on affiche un message d'erreur
-                    error.value = 'Sacré bleu ! Je ne peux pas stocker plus d\'objets dans ma banque !'
-                    return
-                }
-                sendNui('bank-stock-add-' + props.idEntity, { idBank: props.idEntity, idItem: item.id, quantity: quantity })
-            }
-            break
-        case 'vendor':
-            console.log('vendor-stock-add-' + props.idEntity, item)
-            if (item.type === 'u') {
-                sendNui('vendor-stock-add-' + props.idEntity, { idVendor: props.idEntity, complexId: item.complexId, idItem: item.id, quantity: quantity })
-            } else {
-                sendNui('vendor-stock-add-' + props.idEntity, { idVendor: props.idEntity, idItem: item.id, quantity: quantity })
-            }
-            break
-        case 'player':
-            console.log('player-stock-add-' + props.idEntity, item)
-            break
-    }
+const emitItem = (item, quantity) => {
+    console.log('emitItem', item, quantity)
+    emit('itemSelected', item, quantity)    
 }
 
 // Gestionnaire de clic global pour masquer le tooltip
 const handleGlobalClick = () => {
+    console.log('handleGlobalClick')
     if (tooltipData.value) {
         forceHideTooltip()
     }
@@ -301,7 +274,7 @@ onUnmounted(() => {
     document.removeEventListener('click', handleGlobalClick)
 })
 
-</script>
+</script>   
 
 <template>
 
@@ -329,18 +302,18 @@ onUnmounted(() => {
                         <span>{{ option.label }}</span>
                     </div>
                 </template>
-</Multiselect>
-</div>
-</div>
+            </Multiselect>
+        </div>
+    </div>
 -->
         <div class="filter sort">
-            <div class="filter-container">
+        <div class="filter-container">
                 <div class="filter-group" @click="sortByWeight(items)">
                     <div class="filter-label">
                         <img src="/images/player/player-inventory-weight.png" :class="{ 'active': weightOrder !== '' }"
                             alt="Poids" class="filter-icon">
                     </div>
-                    <div class="filter-buttons">
+                <div class="filter-buttons">
                         <button class="filter-button" v-if="weightOrder === 'asc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M7 10l5 5 5-5z" />
@@ -348,22 +321,22 @@ onUnmounted(() => {
                         </button>
                         <button class="filter-button" v-else-if="weightOrder === 'desc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7 14l5-5 5 5z" />
-                            </svg>
-                        </button>
+                            <path d="M7 14l5-5 5 5z" />
+                        </svg>
+                    </button>
                         <button class="filter-button" v-else>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <circle cx="12" cy="12" r="4" />
-                            </svg>
-                        </button>
-                    </div>
+                        </svg>
+                    </button>
                 </div>
+            </div>
                 <div class="filter-group" @click="sortByQuantity(items)">
                     <div class="filter-label">
                         <img src="/images/player/player-inventory-quantity.png"
                             :class="{ 'active': quantityOrder !== '' }" alt="Quantité" class="filter-icon">
                     </div>
-                    <div class="filter-buttons">
+                <div class="filter-buttons">
                         <button class="filter-button" v-if="quantityOrder === 'asc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M7 10l5 5 5-5z" />
@@ -371,37 +344,41 @@ onUnmounted(() => {
                         </button>
                         <button class="filter-button" v-else-if="quantityOrder === 'desc'">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7 14l5-5 5 5z" />
-                            </svg>
-                        </button>
+                            <path d="M7 14l5-5 5 5z" />
+                        </svg>
+                    </button>
                         <button class="filter-button" v-else>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <circle cx="12" cy="12" r="4" />
-                            </svg>
-                        </button>
-                    </div>
+                        </svg>
+                    </button>
                 </div>
             </div>
+        </div>
             <div class="filter-container search">
                 <input type="text" placeholder="Rechercher" class="search-input" @input="search" v-model="searchValue">
             </div>
         </div>
         <div class="list-items">
-            <PerfectScrollbar>
-                <ul>
+        <PerfectScrollbar>
+            <ul>
                     <li v-for="(item, index) in filteredInventory" :key="item.id + '-' + index + '-' + refreshKey"
                         @click="handleItemClick(item)">
                         <Item :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
-                    </li>
-                </ul>
-            </PerfectScrollbar>
-        </div>
+                </li>
+            </ul>
+        </PerfectScrollbar>
     </div>
+</div>
 
 
     <!-- quantity modal -->
-    <QuantityModal v-model="quantityModal" :type="'inventory'" :error="error" title="Quantité à déposer"
-        :max-quantity="selectedItem?.quantity || 0" @confirm="handleQuantityConfirm" @cancel="quantityModal = false" />
+    <QuantityModal 
+        v-model="quantityModal" 
+        :item="selectedItem"
+        @confirm="handleQuantityConfirm" 
+        @cancel="quantityModal = false" 
+    />
 
 
 
@@ -447,10 +424,10 @@ onUnmounted(() => {
                     {{ tags[tagId]?.name }}
                 </div>
             </div>
-        </div>
     </div>
+</div>
 
-</template>
+</template> 
 
 <style lang="scss" scoped>
 // Variables
@@ -627,7 +604,7 @@ $animation-timing: 0.6s ease-out;
                     color: #d9bb74;
                     font-family: $font-family-primary;
                     font-size: 0.9vw;
-                    padding: 0.4vw 1vw 0;
+                    padding: 0.4vw 1vw 0;    
                     width: -webkit-fill-available;
 
                     &::placeholder {

@@ -5,39 +5,81 @@ shop-stock-add-stack-{ID}	{ id: string, amount: int, shopId: string }
 shop-stock-remove-uniq-{ID}	{ id: string, complexId: string, shopId: string }
 shop-stock-remove-stack-{ID}	{ id: string, amount: int, shopId: string }
 */
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import Inventory from '../components/inventory.vue';
-
-
+import QuantityModal from '../components/QuantityModal.vue';
 import { useShopStore } from '../../stores/shopStore';
 import { usePlayerStore } from '../../stores/playerStore';
+import { useUiStore } from '../../stores/uiStore';
 
 const shopStore = useShopStore();
 const playerStore = usePlayerStore();
+const uiStore = useUiStore();
 
+const quantityModalIsOpen = ref(false);
+const selectedItem = ref(null);
 
-const removeItem = (item) => {
-    console.log('removeItem', item);
-    // open modal of quantity   
-    quantityModal.value = true;
-    selectedItem.value = item;
-}
+const checkStock = (item) => {
+    if (item.quantity > 1) {
+        selectedItem.value = item;
+        quantityModalIsOpen.value = true;
+        // Utiliser le uiStore pour fermer le modal de l'inventaire
+        uiStore.closeInventoryModal = true;
+        // Déclencher un événement pour fermer le modal de l'inventaire
+        window.dispatchEvent(new Event('close-inventory-modal'));
+    } else {
+        shopstockToInventory(item, 1);
+    }
+};
 
-const addItem = (item) => {
-    console.log('addItem', item);
-    // open modal of quantity
-    quantityModal.value = true;
-    selectedItem.value = item;
-}  
+const handleQuantityConfirm = (quantity) => {
+    if (selectedItem.value) {
+        shopstockToInventory(selectedItem.value, quantity);
+        selectedItem.value = null;
+    }
+};
 
+const inventoryToShopstock = (item, quantity) => {
+    console.log('inventoryToShopstock', item, quantity);
+    if (item.type === 'u') {
+        shopStore.sendNuiAddStockUniq({ complexId: item.complexId });
+    } else {
+        shopStore.sendNuiAddStockStack({ idItem: item.id, quantity: quantity });
+    }
+};
 
+const shopstockToInventory = (item, quantity) => {
+    console.log('shopstockToInventory', item, quantity);
+    if (item.type === 'u') {
+        shopStore.sendNuiRemoveStockUniq({ complexId: item.complexId });
+    } else {
+        shopStore.sendNuiRemoveStockStack({ idItem: item.id, quantity: quantity });
+    }
+};
 
+// Écouter les événements pour fermer le modal
+onMounted(() => {
+    window.addEventListener('close-shop-modal', () => {
+        quantityModalIsOpen.value = false;
+    });
+});
+
+onUnmounted(() => {
+    window.removeEventListener('close-shop-modal', () => {
+        quantityModalIsOpen.value = false;
+    });
+});
 </script>
 
 <template>
     <div class="shop-stock">
         <div class="bag">
-            <Inventory :idEntity="shopStore.id" :inventory="playerStore.inventory" @item-selected="addItem" />
+            <Inventory 
+                :idEntity="shopStore.id" 
+                :inventory="playerStore.inventory" 
+                @itemSelected="inventoryToShopstock"
+                to="shop" 
+            />
         </div>
         <img src="/images/circle-arrows-left-right.png" alt="" class="circle-arrows-left-right">
         <div class="stock">
@@ -45,13 +87,14 @@ const addItem = (item) => {
                 <PerfectScrollbar>
                     <ul>
                         <li v-for="index in 25" :key="index" 
-                        :class="{ 'empty': !shopStore.stock[index - 1] }"
-                        @click="removeItem(shopStore.stock[index - 1])"
+                            :class="{ 'empty': !shopStore.stock[index - 1] }"
+                            @click="checkStock(shopStore.stock[index - 1])"
                         >
                             <img v-if="shopStore.stock && shopStore.stock[index - 1]"
                                 :src="'/images/items/' + shopStore.stock[index - 1].id + '.png'" alt="">
-                            <div v-if="shopStore.stock && shopStore.stock[index - 1]" class="quantity">{{
-                                shopStore.stock[index - 1]?.quantity }}</div>
+                            <div v-if="shopStore.stock && shopStore.stock[index - 1]" class="quantity">
+                                {{ shopStore.stock[index - 1]?.quantity }}
+                            </div>
                         </li>
                     </ul>
                 </PerfectScrollbar>
@@ -61,6 +104,16 @@ const addItem = (item) => {
             </div>
         </div>
     </div>
+
+    <QuantityModal
+        v-model="quantityModalIsOpen"
+        to="shop" 
+        person="Marchand" 
+        title="Quantité à retirer" 
+        :item="selectedItem"
+        @confirm="handleQuantityConfirm" 
+        @cancel="quantityModalIsOpen = false" 
+    />
 </template>
 
 <style scoped>

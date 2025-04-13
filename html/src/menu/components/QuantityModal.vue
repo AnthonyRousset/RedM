@@ -3,6 +3,7 @@ import { ref, watch, nextTick, onMounted } from 'vue'
 import { useUiStore } from '../../stores/uiStore'
 import { useBankStore } from '../../stores/bankStore'
 import { useShopStore } from '../../stores/shopStore'
+import BubbleMessage from './BubbleMessage.vue'
 
 const bankStore = useBankStore()
 const shopStore = useShopStore()
@@ -13,7 +14,7 @@ const props = defineProps({
         required: true
     },
     item: {
-        type: Object,
+        type: [Object, null],
         required: true
     },
     title: {
@@ -23,7 +24,7 @@ const props = defineProps({
     to: {
         type: String,
         default: 'inventory',
-        validator: (value) => ['inventory', 'bank', 'player'].includes(value)
+        validator: (value) => ['inventory', 'bank', 'player', 'shop'].includes(value)
     },
     person: {
         type: String,
@@ -112,16 +113,16 @@ const validateQuantity = () => {
                 }
             }
             break
-        case 'vendor':
+        case 'shop':
         if (props.item.type === 'u') {
-                // la banque est limité a 3 emplacements max, donc on test si c'est plein 
+                // la banque est limité a 25 emplacements max, donc on test si c'est plein 
                 if (shopStore.stock.length >= 25) {
                     // on affiche un message d'erreur
                     error.value = 'Sacré bleu ! Je ne peux pas stocker plus d\'objets dans mon magasin !'
                     return
                 }
             } else {
-                // la banque est limité a 3 emplacements max, donc on test si c'est plein  sauf si c'est stackable et que l'objet est dans la liste 
+                // la banque est limité a 25 emplacements max, donc on test si c'est plein  sauf si c'est stackable et que l'objet est dans la liste 
                 if (shopStore.stock.length >= 25 && !shopStore.stock.find(stock => stock.id === props.item.id)) {
                     // on affiche un message d'erreur
                     error.value = 'Sacré bleu ! Je ne peux pas stocker plus d\'objets dans mon magasin !'
@@ -209,6 +210,10 @@ const setMaxQuantity = () => {
                 background: #0000008c !important;
             }
         }
+    }
+
+    &.qt-shop {
+        background-image: url(/images/shop/shop-bg_item.png);
     }
 
     .quantity-modal-content {

@@ -1,5 +1,6 @@
 // gérer l'inventaire (ex : ajouter, retirer, modifier, etc.) 
 
+
 import { defineStore } from 'pinia'
 
 export const usePlayerStore = defineStore('player', {

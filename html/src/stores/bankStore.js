@@ -105,27 +105,21 @@ export const useBankStore = defineStore('bank', {
             this.lastActiveTab = tab
         },
         sendNuiAddStock(data) {
-            console.log('bankStore > sendNuiAddStock()', data)
             sendNui('bank-stock-add-' + this.id, data)
         },
         sendNuiRemoveStock(data) {
-            console.log('bankStore > sendNuiRemoveStock()', data)
             sendNui('bank-stock-remove-' + this.id, data)
         },
         sendNuiCreateAccount() {
-            console.log('bankStore > sendNuiCreateAccount()')
             sendNui('bank-createAccount-' + this.id, { id: this.id })
         },
         sendNuiClose() {
-            console.log('bankStore > sendNuiClose()')
             sendNui('bank-close-' + this.id, { id: this.id })
         },
         sendNuiDeposit(data) {
-            console.log('bankStore > sendNuiDeposit()', data)
             sendNui('bank-deposit-' + this.id, { id: this.id, amount: data.amount })
         },
         sendNuiWithdraw(data) {
-            console.log('bankStore > sendNuiWithdraw()', data)
             sendNui('bank-withdraw-' + this.id, { id: this.id, amount: data.amount })
         }
     },

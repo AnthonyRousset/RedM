@@ -2,8 +2,26 @@
 // BuyPrice : prix achat par la boutique
 // SellPrice : prix vente par la boutique
 // BuyAmount : montant max racheté par la boutique
+// shop-money-withdraw-{ID}	{ amount: int, shopId: string }
+// shop-money-deposit-{ID}	{ amount: int, shopId: string }
+// shop-catalogue-add-{ID}	{ shopId: string, itemId: string, buyPrice: int, buyAmount: int, sellPrice: int }
+// shop-catalogue-update-{ID}	{ shopId: string,  itemId: string, buyPrice: int, buyAmount: int, sellPrice: int }
+// shop-catalogue-remove-{ID}	{ shopId: string,itemId: string  }
+// shop-catalogue-clear-{ID}	{ shopId: string,itemId: string }
+// shop-employee-add-{ID}	{ shopId: string, name: string, playerId: int , rank: int }
+// shop-employee-remove-{ID}	{ shopId: string, name: string, rank: int }
+// shop-employee-update-{ID}	{ shopId: string, name: string , rank: int }
+// shop-employee-list-{ID}	{ shopId: 515454 }
+// shop-stock-add-uniq-{ID}	{ complexId: string, shopId: string }
+// shop-stock-add-stack-{ID}	{ idItem: string, quantity: int, shopId: string }
+// shop-stock-remove-uniq-{ID}	{complexId: string, shopId: string }
+// shop-stock-remove-stack-{ID}	{ idItem: string, quantity: int, shopId: string }
+// shop-buy-{ID}	{ idItem: string, quantity: int, shopId: string}
+// shop-sell-{ID}	{ idItem: string, quantity: int, shopId: string}
+// shop-close-{ID}	{ id: 515454}
 
 import { defineStore } from 'pinia'
+import { sendNui } from '../utils/nui'
 
 export const useShopStore = defineStore('shop', {
     state: () => ({
@@ -275,7 +293,64 @@ export const useShopStore = defineStore('shop', {
             if (index !== -1) {
                 this.stock[index].quantity = quantity
             }
-        }
+        },
+        sendNuiBuy(data) {
+            sendNui('shop-buy-'+this.id, { idItem: data.idItem, quantity: data.quantity, shopId: this.id })
+        },
+        sendNuiSell(data) {
+            sendNui('shop-sell-'+this.id, { idItem: data.idItem, quantity: data.quantity, shopId: this.id })
+        },
+        sendNuiClose(data) {
+            sendNui('shop-close-'+this.id, { id: this.id })
+        },
+        
+        sendNuiAddCatalogue(data) {
+            sendNui('shop-catalogue-add-'+this.id, { shopId: this.id, itemId: data.idItem, buyPrice: data.buyPrice, buyAmount: data.buyAmount, sellPrice: data.sellPrice })
+        },
+        sendNuiUpdateCatalogue(data) {
+            sendNui('shop-catalogue-update-'+this.id, { shopId: this.id, itemId: data.idItem, buyPrice: data.buyPrice, buyAmount: data.buyAmount, sellPrice: data.sellPrice })
+        },  
+        sendNuiRemoveCatalogue(data) {  
+            sendNui('shop-catalogue-remove-'+this.id, { shopId: this.id, itemId: data.idItem })
+        },
+        sendNuiClearCatalogue(data) {
+            sendNui('shop-catalogue-clear-'+this.id, { shopId: this.id, itemId: data.idItem })
+        },  
+
+        sendNuiAddEmployee(data) {
+            sendNui('shop-employee-add-'+this.id, { shopId: this.id, name: data.name, playerId: data.playerId, rank: data.rank })
+        },
+        sendNuiRemoveEmployee(data) {    
+            sendNui('shop-employee-remove-'+this.id, { shopId: this.id, name: data.name, rank: data.rank })
+        },
+        sendNuiUpdateEmployee(data) {
+            sendNui('shop-employee-update-'+this.id, { shopId: this.id, name: data.name, rank: data.rank })
+        },  
+        sendNuiListEmployee(data) {
+            sendNui('shop-employee-list-'+this.id, { shopId: this.id })
+        },  
+
+        sendNuiMoneyWithdraw(data) {
+            sendNui('shop-money-withdraw-'+this.id, { shopId: this.id, amount: data.amount })
+        },
+        sendNuiMoneyDeposit(data) {  
+            sendNui('shop-money-deposit-'+this.id, { shopId: this.id, amount: data.amount })
+        },
+
+        sendNuiAddStockUniq(data) {
+            sendNui('shop-stock-add-uniq-'+this.id, { shopId: this.id, complexId: data.complexId })
+        },
+        sendNuiRemoveStockUniq(data) {
+            sendNui('shop-stock-remove-uniq-'+this.id, { shopId: this.id, complexId: data.complexId })
+        },
+        sendNuiAddStockStack(data) {
+            sendNui('shop-stock-add-stack-'+this.id, { shopId: this.id, idItem: data.idItem, quantity: data.quantity })
+        },  
+        sendNuiRemoveStockStack(data) {
+            sendNui('shop-stock-remove-stack-'+this.id, { shopId: this.id, idItem: data.idItem, quantity: data.quantity })
+        },
+        
+
     },
     getters: {
         getStock: (state) => state.stock,

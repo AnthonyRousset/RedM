@@ -240,11 +240,14 @@ onUnmounted(() => {
     -->
 
     <!-- Modal pour la quantité -->
-    <QuantityModal :type="'shop'" v-model="quantityModal" :max-quantity="selectedItem?.quantity || 0"
-        :person="shopStore.id || 'Vendeur'"
+    <QuantityModal 
+        v-model="quantityModal" 
+        :item="selectedItem"
+        to="shop" 
+        person="Vendeur"
+        title="Quantité à acheter" 
         :error="'Par le ciel ! Vous n\'avez pas assez de dollars pour acheter autant, partenaire !'"
-        :title="shopView === 'shop' ? 'Quantité à acheter' : 'Quantité à vendre'"
-        @confirm="shopView === 'shop' ? handleBuyQuantityConfirm : handleSellQuantityConfirm"
+        @confirm="handleBuyQuantityConfirm"
         @cancel="quantityModal = false" />
 </template>
 

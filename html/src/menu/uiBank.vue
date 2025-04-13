@@ -284,7 +284,7 @@ setTimeout(() => {
                                 <li v-for="index in 3" :key="index" :class="{ 'empty': !bankStore.stock[index - 1] }"
                                     @click="checkStock(bankStore.stock[index - 1])">
                                     <img v-if="bankStore.stock && bankStore.stock[index - 1]"
-                                        :src="'/images/items/' + bankStore.stock[index - 1].id + '.png'" alt="">
+                                        :src="'./images/items/' + bankStore.stock[index - 1].id + '.png'" alt="">
                                     <div v-if="bankStore.stock && bankStore.stock[index - 1]" class="quantity">{{
                                         bankStore.stock[index - 1]?.quantity }}</div>
                                 </li>

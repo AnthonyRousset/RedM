@@ -91,7 +91,7 @@ onUnmounted(() => {
                             @click="checkStock(shopStore.stock[index - 1])"
                         >
                             <img v-if="shopStore.stock && shopStore.stock[index - 1]"
-                                :src="'/images/items/' + shopStore.stock[index - 1].id + '.png'" alt="">
+                                :src="'./images/items/' + shopStore.stock[index - 1].id + '.png'" alt="">
                             <div v-if="shopStore.stock && shopStore.stock[index - 1]" class="quantity">
                                 {{ shopStore.stock[index - 1]?.quantity }}
                             </div>
@@ -178,7 +178,7 @@ onUnmounted(() => {
                     justify-content: center;
                     transition: all 0.2s ease;
                     aspect-ratio: 1;
-
+                    min-width: 5.6vw;
 
                     &:not(.empty) {
                         cursor: pointer;

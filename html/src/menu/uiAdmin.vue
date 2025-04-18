@@ -91,11 +91,10 @@ const close = async () => {
                         <h2>Etablissement du PNJ</h2>
                         <select v-model="modelForm">
                             <option disabled value="">-- Sélectionner un établissement --</option>
-                            <option v-for="location in adminStore.locationList" :key="location.model" :value="location">
+                            <option v-for="location in adminStore.classList" :key="location.model" :value="location">
                                 {{ location.label }}
                             </option>
                         </select>
-                        <
                         <input type="text" v-model="idForm" placeholder="ID du PNJ" class="id-input">
                         <div v-if="idFormError" class="id-input-error">Veuillez entrer un ID</div>
                         <div class="modal-buttons"> 

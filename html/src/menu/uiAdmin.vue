@@ -95,6 +95,7 @@ const close = async () => {
                                 {{ location.label }}
                             </option>
                         </select>
+                        <
                         <input type="text" v-model="idForm" placeholder="ID du PNJ" class="id-input">
                         <div v-if="idFormError" class="id-input-error">Veuillez entrer un ID</div>
                         <div class="modal-buttons"> 

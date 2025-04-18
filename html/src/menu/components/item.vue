@@ -63,7 +63,6 @@ const handleMouseLeave = () => {
             <div class="image">
                 <img :src="'./images/items/' + item.id + '.png'" alt="Item">
             </div>
-            <div class="quantity" v-if="type === 'inventory' && item.quantity > 1">{{ item.quantity }}</div>
             <div v-if="type === 'shop'" class="details">
                 <div class="price" v-if="buyPrice > 0">
                     <div>
@@ -103,6 +102,7 @@ const handleMouseLeave = () => {
                 </div>
             </div>
         </div>
+        <div class="quantity" v-if="type === 'inventory' && item.quantity > 1">{{ item.quantity }}</div>
         <div class="status" v-for="tag in item.tags" :key="tag" v-if="type === 'inventory'">
             <img v-if="tags[tag]" :src="'./images/items/_' + tags[tag]?.image + '.png'" alt="Tag">
         </div>
@@ -128,6 +128,7 @@ const handleMouseLeave = () => {
 
         .details {
             width: 90%;
+            background: #0000008c;
 
             .quantity {
                 display: flex;
@@ -184,8 +185,9 @@ const handleMouseLeave = () => {
 
         img {
             width: 100%;
-            height: 5vw;
+            height: 100%;
             object-fit: contain;
+            display: block;
         }
     }
 
@@ -214,13 +216,16 @@ const handleMouseLeave = () => {
     &.inventory-item {
         .quantity {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgb(0 0 0 / 33%);
-            color: #ffffff;
-            font-size: 0.7vw;
-            text-align: center;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        font-size: 0.7vw;
+                        color: #d9bb74;
+                        background: #0000008c;
+                        border-radius: 0.25vw;
+                        text-align: center;
+                        padding: 0.1vw 0 0;
+                        font-family: 'Wantedo', sans-serif;
         }
     }
 }

@@ -1,15 +1,23 @@
-
 <script setup>
 import { ref } from 'vue'
 import { sendNui } from '../utils/nui'
 import { useAdminStore } from '../stores/adminStore'
 import { useUiStore } from '../stores/uiStore'
-
+import JSONressources from '../data/ressources.json'
+import JSONregions from '../data/regions.json'
 const adminStore = useAdminStore()
-const uiStore = useUiStore()   
+const uiStore = useUiStore()
 const modelForm = ref('')
 const idForm = ref('')
 const idFormError = ref(false)
+const ressources = JSONressources.type
+const regions = JSONregions.regions
+const lootZone = ref('')
+const lootRegion = ref('')
+
+
+
+
 
 const copyCoordsToClipboard = () => {
     const text = `${adminStore.position.x.toFixed(1)}f, ${adminStore.position.y.toFixed(1)}f, ${adminStore.position.z.toFixed(1)}f`
@@ -45,7 +53,7 @@ const setLocation = async () => {
 
     sendNui('admin-location', {
         type: modelForm.value.model,
-        id: idForm.value    
+        id: idForm.value
     });
 
     adminStore.locationVisible = false;
@@ -53,13 +61,30 @@ const setLocation = async () => {
     idForm.value = '';
 }
 
+
+const setLootZone = async () => {
+    if (!lootZone.value) return lootZoneError.value = true;
+    if (!lootRegion.value) return lootRegionError.value = true;
+    console.log('zone de butin selectionnée : ', lootZone.value);
+    console.log('region de butin selectionnée : ', lootRegion.value);
+
+    sendNui('admin-loot-zone', {
+        type: lootZone.value.id,
+        id: lootRegion.value.id
+    });
+    
+    lootZone.value = '';
+    lootRegion.value = '';  
+}
+
+
 const getPosition = async () => {
     sendNui('admin-getpos');
 }
 
 const close = async () => {
-    sendNui('ui-close'); 
-    uiStore.closeMenu()  
+    sendNui('ui-close');
+    uiStore.closeMenu()
 }
 
 
@@ -78,14 +103,16 @@ const close = async () => {
                     <div class="modal-content">
 
                         <h2>Position</h2>
-                        <p> X {{ adminStore.position.x }} | Y {{ adminStore.position.y }} | Z {{ adminStore.position.z }}</p>
+                        <p> X {{ adminStore.position.x }} | Y {{ adminStore.position.y }} | Z {{ adminStore.position.z
+                            }}</p>
                         <button @click="copyCoordsToClipboard">📋 Copier les coordonnées</button>
                         <button class="close" @click="adminStore.positionVisible = false">✖ Fermer</button>
                     </div>
                 </div>
 
                 <!-- etablisement du PNJ -->
-                <button @click="adminStore.locationVisible = !adminStore.locationVisible">📍 Etablissement du PNJ</button>
+                <button @click="adminStore.locationVisible = !adminStore.locationVisible">📍 Etablissement du
+                    PNJ</button>
                 <div v-if="adminStore.locationVisible" class="modal">
                     <div class="modal-content">
                         <h2>Etablissement du PNJ</h2>
@@ -97,9 +124,33 @@ const close = async () => {
                         </select>
                         <input type="text" v-model="idForm" placeholder="ID du PNJ" class="id-input">
                         <div v-if="idFormError" class="id-input-error">Veuillez entrer un ID</div>
-                        <div class="modal-buttons"> 
+                        <div class="modal-buttons">
                             <button @click="setLocation">✅ Valider</button>
                             <button class="close" @click="adminStore.locationVisible = false">❌ Annuler</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- admin-loot-zone	{ type: string, id: string} -->
+                <button @click="adminStore.lootZoneVisible = !adminStore.lootZoneVisible">📍 Zone de butin</button>
+                <div v-if="adminStore.lootZoneVisible" class="modal">
+                    <div class="modal-content">
+                        <h2>Zone de butin</h2>
+                        <select v-model="lootZone">
+                            <option disabled value="">-- Sélectionner une zone --</option>
+                            <option v-for="ressource in ressources" :key="ressource.id" :value="ressource">
+                                {{ ressource.name }}
+                            </option>
+                        </select>
+                        <select v-model="lootRegion">
+                            <option disabled value="">-- Sélectionner une region --   </option>
+                            <option v-for="region in regions" :key="region.id" :value="region">
+                                {{ region.name }}
+                            </option>
+                        </select>
+                        <div class="modal-buttons">
+                            <button @click="setLootZone">✅ Valider</button>
+                            <button class="close" @click="adminStore.lootZoneVisible = false">❌ Annuler</button>
                         </div>
                     </div>
                 </div>
@@ -221,6 +272,4 @@ select {
     padding: 1%;
     font-size: 1rem;
 }
-
-
 </style>

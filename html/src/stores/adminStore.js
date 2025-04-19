@@ -8,6 +8,10 @@ export const useAdminStore = defineStore('admin', {
         positionVisible: false,
         location: null,
         locationVisible: false,
+        lootZone: null,
+        lootZoneVisible: false,
+        lootRegion: null,
+        lootRegionVisible: false,
         locationList: [
             { label: "Valentine", value: "valentine" },
             { label: "Saint Denis", value: "st_denis" },

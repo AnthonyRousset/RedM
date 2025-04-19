@@ -199,14 +199,14 @@ export const useShopStore = defineStore('shop', {
         catalogue: [
             {
                 id: 'weapon_lancaster_rifle',
-                buyPrice: Math.floor(Math.random() * 10000), // prix d'achat par la boutique
+                buyPrice: 0, // prix d'achat par la boutique
                 sellPrice: Math.floor(Math.random() * 10000), // prix de vente
-                buyAmount: Math.floor(Math.random() * 100) // quantité max racheté par la boutique
+                buyAmount: 0 // quantité max racheté par la boutique
             },
             {
                 id: 'plant_seeds_coca',
                 buyPrice: Math.floor(Math.random() * 10000),
-                sellPrice: Math.floor(Math.random() * 10000),
+                sellPrice: 0,
                 buyAmount: Math.floor(Math.random() * 100)
             },
             {
@@ -265,6 +265,8 @@ export const useShopStore = defineStore('shop', {
             },
 
         ],
+        itemToSell: [], // en vente par la boutique
+        itemToBuy: [], // racheté par la boutique
         rank: 0, // rang du joueur (0 = joueur, 1 = interimaire, 2 = employé, 3 = contremaitre, 5 = Propriétaire(s))
         account: 0, // Argent restant du vendeur
         lastActiveTab: 'magasin', // dernier onglet actif
@@ -274,10 +276,12 @@ export const useShopStore = defineStore('shop', {
         update(data) {
             console.log('shopStore > update()', data)
             this.id = data.id || this.id    
-            //this.stock = data.stock || this.stock
+            this.stock = data.stock || this.stock
             this.rank = data.rank || this.rank
             this.account = data.account || this.account
-            //this.catalogue = data.catalogue || this.catalogue
+            this.catalogue = data.catalogue || this.catalogue
+            this.itemToSell = this.itemToSell(data.catalogue)
+            this.itemToBuy = this.itemToBuy(data.catalogue)
         }, 
         addItem(item) {
             console.log('shopStore > addItem()', item)
@@ -359,23 +363,45 @@ export const useShopStore = defineStore('shop', {
 
         },
         getAccount: (state) => state.account,
+        /*
         getBuyPrice: (state) => (item) => {
+            console.log('shopStore > getBuyPrice()', item)
             let id = item.id
-            let buyPrice = state.catalogue.find(i => i.id === id).buyPrice
+            let catalogue = state.catalogue.find(i => i.id === id)
+            console.log('shopStore > catalogue()', catalogue)
+            let buyPrice = catalogue.buyPrice
+            if (!buyPrice) { return 0 }
             return buyPrice
         },
         getBuyQuantity: (state) => (item) => {
+            console.log('shopStore > item()', item)
             let id = item.id
-            let buyQuantity = state.catalogue.find(i => i.id === id).buyQuantity
+            console.log('shopStore >  state.catalogue()',  state.catalogue)
+            let catalogue = state.catalogue.find(i => i.id === id)
+            console.log('shopStore > catalogue()', catalogue)
+            let buyQuantity = catalogue.buyAmount
+            if (!buyQuantity) { return 0 }
             return buyQuantity
+        },*/
+        itemToSell: (state) => {
+            let items = []            
+            state.catalogue.forEach(item => {
+                let stockItem = state.stock.find(i => i.id === item.id).quantity
+                item.sellAmount = stockItem
+                if (item.sellPrice > 0) {
+                    items.push(item)
+                }
+            })
+            return items
         },
-        inItemCatalogue: (state) => (item) => {
-            console.log('shopStore > inItemCatalogue()', item)
-            let id = item.id
-            console.log('shopStore > inItemCatalogue()', id)
-            let inCatalogue = state.catalogue.find(i => i.id === id)
-            console.log('shopStore > inItemCatalogue()', id, inCatalogue)
-            return inCatalogue ? true : false
+        itemToBuy: (state) => {
+            let items = []
+            state.catalogue.forEach(item => {
+                if (item.buyAmount > 0 && item.buyPrice > 0) {
+                    items.push(item)
+                }
+            })
+            return items
         }
     }   
 })

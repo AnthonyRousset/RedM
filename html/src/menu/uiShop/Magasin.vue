@@ -30,28 +30,35 @@ const selectedItem = ref(null);
 const switchShop = ref('buy');
 
 // Copie locale de l'inventaire pour éviter de modifier le tableau original
-const localStock = ref([]);
+const localItemToSell = ref([]);
+const localItemToBuy = ref([]);
 const error = ref('')
     
 
 // Initialiser la copie locale
 onMounted(() => {
-    localStock.value = [...shopStore.stock]
-
+    localItemToSell.value = [...shopStore.itemToSell]
+    localItemToBuy.value = [...shopStore.itemToBuy]
     // Écouter les événements pour fermer le modal
     window.addEventListener('close-inventory-modal', () => {
         quantitySell.value = false;
         quantityBuy.value = false;
     });
 });
+
 // Mettre à jour la copie locale lorsque l'inventaire change
-watch(() => shopStore.stock, (newStock) => {
-    localStock.value = [...newStock];
+watch(() => shopStore.itemToSell, (newItemToSell) => {
+    localItemToSell.value = [...newItemToSell];
 }, { deep: true });
 
+watch(() => shopStore.itemToBuy, (newItemToBuy) => {
+    localItemToBuy.value = [...newItemToBuy];
+}, { deep: true });
+
+
 // Inventaire filtré
-const filteredStock = computed(() => {
-    return localStock.value.filter(item => {
+const filteredItemToSell = computed(() => {
+    return localItemToSell.value.filter(item => {
 
         // Vérifier le filtre
         const itemData = items.value.find(i => i.id === item.id);
@@ -69,6 +76,26 @@ const filteredStock = computed(() => {
         return filterMatch && searchMatch;
     });
 });
+
+const filteredItemToBuy = computed(() => {
+    return localItemToBuy.value.filter(item => {
+
+
+        const itemData = items.value.find(i => i.id === item.id);
+        const itemFilter = itemData?.tags;
+
+        const filterMatch = selectedFilter.value === '' ||
+            (Array.isArray(itemFilter)
+                ? itemFilter.includes(selectedFilter.value)
+                : itemFilter === selectedFilter.value);
+
+        const searchMatch = searchValue.value === '' ||
+            (itemData?.name.toLowerCase().includes(searchValue.value.toLowerCase()));
+
+        return filterMatch && searchMatch;
+
+    })
+})
 
 // Ouvre le modal d'achat pour un article
 const buyItem = (item) => {
@@ -143,10 +170,9 @@ function search() {
         <div class="items">
             <PerfectScrollbar>
                 <ul>
-                    <li v-for="(item, index) in filteredStock" :key="item.id + '-' + index + '-' + refreshKey"
-                        @click="buyItem(item)"
-                        v-show="shopStore.inItemCatalogue(item)">
-                        <Item type="shop" :sellQuantity="item.quantity" :sellPrice="item.sellPrice" :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
+                    <li v-for="(item, index) in filteredItemToSell" :key="item.id + '-achat-' + index + '-' + refreshKey"
+                        @click="buyItem(item)" >
+                        <Item type="shop" :Quantity="item.sellAmount" :Price="item.sellPrice" :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
                     </li>
                 </ul>
             </PerfectScrollbar>
@@ -155,6 +181,7 @@ function search() {
             <span>Vendre</span>
         </div>
     </div>
+    
     <div class="shop-magasin" v-if="switchShop === 'sell'">
         <div class="title">
             <span>General store</span>
@@ -179,10 +206,9 @@ function search() {
         <div class="items">
             <PerfectScrollbar>
                 <ul>
-                    <li v-for="(item, index) in filteredStock" :key="item.id + '-' + index + '-' + refreshKey"
-                        @click="sellItem(item)" 
-                        v-show="shopStore.inItemCatalogue(item)">
-                        <Item type="shop" :buyQuantity="shopStore.getBuyQuantity(item)" :buyPrice="shopStore.getBuyPrice(item)" :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
+                    <li v-for="(item, index) in filteredItemToBuy" :key="item.id + '-rachat-' + index + '-' + refreshKey"
+                        @click="sellItem(item)" >
+                        <Item type="shop" :Quantity="item.buyAmount" :Price="item.buyPrice" :item="item" @showTooltip="showTooltip" @hideTooltip="hideTooltip" />
                     </li>
                 </ul>
             </PerfectScrollbar>
@@ -438,5 +464,18 @@ $animation-timing: 0.6s ease-out;
             }
         }
     }
+
+        .gotosell {
+            position: absolute;
+            bottom: 51%;
+            right: -12%;
+            background-color: rgba(0, 0, 0, 0.4235294118);
+            color: white;
+            font-family: "Special Elite", serif;
+            font-size: 1.5vw;
+            text-align: center;
+            padding-top: 0.5vw;
+            
+        }
 }
 </style>

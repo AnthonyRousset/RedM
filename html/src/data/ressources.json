@@ -1,0 +1,79 @@
+{
+  "type": [
+    {
+      "type": 0,
+      "id": "salt",
+      "name": "Mines de sel"
+    },
+    {
+      "type": 1,
+      "id": "coal",
+      "name": "Mines de charbon"
+    },
+    {
+      "type": 2,
+      "id": "iron",
+      "name": "Mines de fer"
+    },
+    {
+      "type": 3,
+      "id": "copper",
+      "name": "Mines de cuivre"
+    },
+    {
+      "type": 4,
+      "id": "gold",
+      "name": "Mines de or"
+    },
+    {
+      "type": 5,
+      "id": "silver",
+      "name": "Mines de argent"
+    },
+    {
+      "type": 6,
+      "id": "lead",
+      "name": "Mines de plomb"
+    },
+    {
+      "type": 7,
+      "id": "zinc",
+      "name": "Mines de zinc"
+    },
+    {
+      "type": 8,
+      "id": "nickel",
+      "name": "Mines de nickel"
+    },
+    {
+      "type": 9,
+      "id": "manganese",
+      "name": "Mines de manganèse"
+    },  
+    {
+      "type": 10,
+      "id": "oak",
+      "name": "bois de chêne"
+    },
+    {
+      "type": 11, 
+      "id": "maple",
+      "name": "bois de hêtre"
+    },
+    {
+      "type": 12, 
+      "id": "birch",
+      "name": "bois de bouleau"
+    },
+    {
+      "type": 13,
+      "id": "pine",
+      "name": "bois de pin"
+    },
+    {
+      "type": 14,
+      "id": "cedar",
+      "name": "bois de cèdre"
+    }
+  ]
+}

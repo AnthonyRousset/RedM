@@ -1,0 +1,124 @@
+{
+  "regions": [
+    {
+      "id": "new_austin",
+      "name": "New Austin",
+      "type": "desert",
+      "cities": ["Armadillo", "Tumbleweed"],
+      "climate": "aride",
+      "description": "Vaste région désertique du sud-ouest"
+    },
+    {
+      "id": "west_elizabeth",
+      "name": "West Elizabeth",
+      "type": "plains",
+      "cities": ["Blackwater", "Strawberry"],
+      "climate": "tempéré",
+      "description": "Région de plaines et de forêts"
+    },
+    {
+      "id": "ambarino",
+      "name": "Ambarino",
+      "type": "mountain",
+      "cities": ["Colter"],
+      "climate": "froid",
+      "description": "Région montagneuse et enneigée"
+    },
+    {
+      "id": "new_hannover",
+      "name": "New Hannover",
+      "type": "plains",
+      "cities": ["Valentine", "Annesburg", "Van Horn"],
+      "climate": "tempéré",
+      "description": "Région de plaines et de collines"
+    },
+    {
+      "id": "lemoyne",
+      "name": "Lemoyne",
+      "type": "swamp",
+      "cities": ["Saint Denis", "Rhodes"],
+      "climate": "humide",
+      "description": "Région marécageuse et urbaine"
+    },
+    {
+      "id": "roanoke_ridge",
+      "name": "Roanoke Ridge",
+      "type": "forest",
+      "cities": ["Van Horn"],
+      "climate": "tempéré",
+      "description": "Région forestière accidentée"
+    },
+    {
+      "id": "heartlands",
+      "name": "Heartlands",
+      "type": "plains",
+      "cities": ["Valentine"],
+      "climate": "tempéré",
+      "description": "Vastes plaines centrales"
+    },
+    {
+      "id": "scarlett_meadows",
+      "name": "Scarlett Meadows",
+      "type": "plains",
+      "cities": ["Rhodes"],
+      "climate": "tempéré",
+      "description": "Prairies fertiles du sud"
+    },
+    {
+      "id": "bayou_nwa",
+      "name": "Bayou Nwa",
+      "type": "swamp",
+      "cities": ["Saint Denis"],
+      "climate": "humide",
+      "description": "Marécages du sud-est"
+    },
+    {
+      "id": "grizzlies",
+      "name": "Grizzlies",
+      "type": "mountain",
+      "cities": [],
+      "climate": "froid",
+      "description": "Montagnes enneigées du nord"
+    },
+    {
+      "id": "great_plains",
+      "name": "Great Plains",
+      "type": "plains",
+      "cities": ["Blackwater"],
+      "climate": "tempéré",
+      "description": "Vastes plaines de l'ouest"
+    },
+    {
+      "id": "cholla_springs",
+      "name": "Cholla Springs",
+      "type": "desert",
+      "cities": ["Armadillo"],
+      "climate": "aride",
+      "description": "Désert du sud-ouest"
+    },
+    {
+      "id": "rio_bravo",
+      "name": "Rio Bravo",
+      "type": "desert",
+      "cities": ["Tumbleweed"],
+      "climate": "aride",
+      "description": "Désert du sud"
+    },
+    {
+      "id": "gaptooth_ridge",
+      "name": "Gaptooth Ridge",
+      "type": "desert",
+      "cities": ["Tumbleweed"],
+      "climate": "aride",
+      "description": "Chaîne de montagnes désertiques"
+    },
+    {
+      "id": "hennigans_stead",
+      "name": "Hennigan's Stead",
+      "type": "plains",
+      "cities": ["MacFarlane's Ranch"],
+      "climate": "tempéré",
+      "description": "Plaines du sud-ouest"
+    }
+  ]
+}

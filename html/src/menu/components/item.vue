@@ -13,21 +13,13 @@ const props = defineProps({
         type: String,
         default: 'inventory' // shop, inventory
     },
-    sellQuantity: {
+    Quantity: {
         type: Number,
         default: 0
     },
-    buyQuantity: {
+    Price: {
         type: Number,
         default: 0
-    },
-    buyPrice: {
-        type: Number,
-        default: 0
-    },
-    sellPrice: {
-        type: Number,
-        default: 10
     }
 })
 
@@ -64,45 +56,27 @@ const handleMouseLeave = () => {
                 <img :src="'./images/items/' + item.id + '.png'" alt="Item">
             </div>
             <div v-if="type === 'shop'" class="details">
-                <div class="price" v-if="buyPrice > 0">
+                <div class="price" v-if="Price > 0">
                     <div>
                         <span>Prix </span>
                     </div>
                     <div>
-                        <span class="value"> {{ buyPrice }} </span>
+                        <span class="value"> {{ (Price / 100).toLocaleString() }} </span>
                         <img :src="'./images/player/player-inventory-dollar.png'" alt="player">
                     </div>
                 </div>
-                <div class="price" v-if="sellPrice > 0">
-                    <div>
-                        <span>Prix </span>
-                    </div>
-                    <div>
-                        <span class="value"> {{ sellPrice }} </span>
-                        <img :src="'./images/player/player-inventory-dollar.png'" alt="player">
-                    </div>
-                </div>
-                <div class="quantity" v-if="buyQuantity > 0">
-                    <div> 
-                        quantité
-                    </div>
-                    <div>
-                        <span class="value"> {{ buyQuantity }}</span>
-                        <img :src="'./images/player/player-inventory-quantity.png'" alt="player">
-                    </div>
-                </div>
-                <div class="quantity" v-if="sellQuantity > 0">
+                <div class="quantity" v-if="Quantity > 0">
                     <div>
                         quantité
                     </div>
                     <div>
-                        <span class="value"> {{ sellQuantity }}</span>
-                        <img :src="'./images/player/player-inventory-quantity.png'" alt="player">
+                        <span class="value"> {{ Quantity.toLocaleString() }}</span>
+                        <!--<img :src="'./images/player/player-inventory-quantity.png'" alt="player">-->
                     </div>
                 </div>
             </div>
         </div>
-        <div class="quantity" v-if="type === 'inventory' && item.quantity > 1">{{ item.quantity }}</div>
+        <div class="quantity" v-if="type === 'inventory' && item.quantity > 0">{{ item.quantity }}</div>
         <div class="status" v-for="tag in item.tags" :key="tag" v-if="type === 'inventory'">
             <img v-if="tags[tag]" :src="'./images/items/_' + tags[tag]?.image + '.png'" alt="Tag">
         </div>
@@ -127,32 +101,40 @@ const handleMouseLeave = () => {
         flex-direction: column;
 
         .details {
-            width: 90%;
+            width: 110%;
             background: #0000008c;
+            position: absolute;
+            bottom: -5%;
+            left: -5%;
+            right: -5%;
+            border-radius: 0vw 0vw 0.4vw 0.4vw;
+            padding-bottom: 0.4vw;
+            
 
             .quantity {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                width: calc(100% - 0.5vw);
-                height: 1vw;
-                color: #ffffff;
+                width: calc(100% - 1vw);
+                    color: #c3ac55;
                 position: relative;
-                padding-right: 0.6vw;
+                padding: 0 0.5vw 0 0.5vw; 
                 font-size: 0.7vw;
+                font-family: 'Wantedo', 'Oswald',  sans-serif;
 
                 .value {
-                    color: #c3ac55;
-                    font-weight: bold;
+                    color: #ffffff;
+                    font-family: 'Special Elite', 'Oswald',  sans-serif;
+
                 }
 
                 img {
-                    width: 1.2vw;
-                    height: 1.2vw;
+                    width: 1vw;
+                    height: 1vw;
                     object-fit: contain;
                     position: absolute;
-                    top: -0.2vw;
-                    right: -0.5vw;
+                    top: -0.3vw;
+                    right: 0vw;
                 }
             }
 
@@ -160,25 +142,29 @@ const handleMouseLeave = () => {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                width: calc(100% - 0.5vw);
+                width: calc(100% - 1.5vw);
                 height: 1.2vw;
-                color: #ffffff;
+                color: #c3ac55;
                 position: relative;
-                padding-right: 0.6vw;
+                padding: 0 1vw 0 0.5vw;
                 font-size: 0.7vw;
 
+                font-family: "Wantedo", sans-serif;
+
                 .value {
-                    color: #c3ac55;
-                    font-weight: bold;
+                    
+                    color: #ffffff;                 
+                    font-family: 'Special Elite', 'Oswald',  sans-serif;
+
                 }
 
                 img {
-                    width: 1.2vw;
-                    height: 1.2vw;
+                    width: 1vw;
+                    height: 1vw;
                     object-fit: contain;
                     position: absolute;    
-                    top: -0.1vw;
-                    right: -0.5vw;
+                    top: 0.05vw;
+                    right: 0.2vw;
                 }
             }
         }

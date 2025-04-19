@@ -100,9 +100,9 @@ const filteredItemToBuy = computed(() => {
 // Ouvre le modal d'achat pour un article
 const buyItem = (item) => {
     console.log('Achat', item)
-    if (item.quantity > 1) {
+    if (item.sellAmount > 1) {/*
         window.dispatchEvent(new Event('close-inventory-modal'))
-        uiStore.closeInventoryModal = true
+        uiStore.closeInventoryModal = true*/
         selectedItem.value = item
         quantityBuy.value = true
         console.log('quantityBuy', quantityBuy.value)
@@ -116,16 +116,17 @@ const processBuy = (item, quantity) => {
     // Logique d'achat
     console.log('Achat de', quantity, 'unité(s) de', item.name)
     // Ici, vous pouvez ajouter la logique pour envoyer l'achat au serveur
+    shopStore.sendNuiBuy({ idItem: item.id, quantity: quantity })
 }
 
 // Ouvre le modal de vente pour un article
 const sellItem = (item) => {
     console.log('Vendre', item)
-    if (item.quantity > 1) {
+    if (item.buyAmount > 1) {
         selectedItem.value = item
-        quantitySell.value = true
+        quantitySell.value = true/*
         uiStore.closeInventoryModal = true
-        window.dispatchEvent(new Event('close-inventory-modal'))
+        window.dispatchEvent(new Event('close-inventory-modal'))*/
         console.log('quantitySell', quantitySell.value)
     } else {
         processSell(item, 1)
@@ -137,10 +138,19 @@ const processSell = (item, quantity) => {
     // Logique de vente
     console.log('Vente de', quantity, 'unité(s) de', item.name)
     // Ici, vous pouvez ajouter la logique pour envoyer la vente au serveur
+    shopStore.sendNuiSell({ idItem: item.id, quantity: quantity })
 }
 
 function search() {
     refreshKey.value++
+}
+
+function hideTooltip() {
+    console.log('hideTooltip')
+}
+
+function showTooltip() {
+    console.log('showTooltip')
 }
 
 </script>
@@ -219,6 +229,7 @@ function search() {
     </div>
 
     <!-- Modal de vente -->
+    
     <ModalSell v-if="quantitySell" :item="selectedItem" @close="quantitySell = false" @confirm="processSell" />
 
     <!-- Modal d'achat -->

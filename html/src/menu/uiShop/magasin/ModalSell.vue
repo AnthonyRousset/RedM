@@ -31,11 +31,18 @@ const validateInput = (event) => {
         editableSpan.value.innerText = '1';
     }
     
+    // Limiter la valeur maximale à item.buyAmount
+    if (value > props.item.buyAmount) {
+        value = props.item.buyAmount;
+        editableSpan.value.innerText = props.item.buyAmount.toString();
+    }
+    
     quantite.value = value;
 }
 
-const prix = computed(() => {
-    return (shopStore.getSellPrice(props.item) / 100) * quantite.value
+const priceTotal = computed(() => {
+    let price = (props.item.buyPrice / 100) * quantite.value
+    return price.toLocaleString()
 })
 
 const handleKeyDown = (event) => {
@@ -67,6 +74,14 @@ const handleKeyDown = (event) => {
     const afterCursor = currentText.slice(cursorPosition);
     const nextText = beforeCursor + event.key + afterCursor;
 
+    // Si le nombre est supérieur à item.buyAmount, mettre directement la valeur maximale
+    if (parseInt(nextText) > props.item.buyAmount) {
+        event.preventDefault();
+        editableSpan.value.innerText = props.item.buyAmount.toString();
+        quantite.value = props.item.buyAmount;
+        return;
+    }
+
     // Empêcher les nombres commençant par 0 et les nombres trop grands
     if (/^0\d+/.test(nextText) || nextText.length > 6) {
         event.preventDefault();
@@ -97,10 +112,10 @@ const handleConfirm = () => {
             <span>{{ JSONitems.find(i => i.id === item.id).name }}</span>
         </div>
         <div class="prix">
-            <span>Prix: {{ (shopStore.getSellPrice(item) / 100).toLocaleString() }} $ / unité</span>
+            <span>Prix: {{ (item.buyPrice / 100).toLocaleString() }} $ / unité</span>
         </div>
         <div class="quantite">
-            <span>En possession: {{ item.quantity || 0 }}</span>
+            <span>En possession: {{ item.buyAmount || 0 }}</span>
         </div>  
         <div class="input-quantite">
             <span 
@@ -116,13 +131,13 @@ const handleConfirm = () => {
             <span>Vous allez vendre {{ quantite }} unité(s)</span>
         </div>
         <div class="prix-total">
-            <span>Pour un total de {{ prix.toLocaleString() }} $</span>
+            <span>Pour un total de {{ priceTotal }} $</span>
         </div>
-        <div class="button-sell">
-            <button @click="handleConfirm">Vendre</button>
+        <div class="button-sell" @click="handleConfirm">
+            <button>Vendre</button>
         </div>
-        <div class="button-cancel">
-            <button @click="handleClose">Annuler</button>
+        <div class="button-cancel" @click="handleClose">
+            <button>Annuler</button>
         </div>
     </div>
 </template> 
@@ -159,8 +174,6 @@ $color-text-dark: #442c1a;
         span {
             display: inline-block;
             max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
             font-size: clamp(1.2vw, 2.5vw, 3vw);
         }
     }
@@ -168,7 +181,7 @@ $color-text-dark: #442c1a;
     .prix {
         padding-top: 2vw;
         font-size: 1.2vw;
-            color: $color-text-dark;
+        color: $color-text-dark;
         text-align: center;
     }
 
@@ -205,7 +218,6 @@ $color-text-dark: #442c1a;
         }
     }
 
-
     .resume {
         position: absolute;
         top: 21vw;
@@ -228,12 +240,13 @@ $color-text-dark: #442c1a;
         padding: 0 10%;
     }
     
-    .button-buy, .button-cancel {
+    .button-sell, .button-cancel {
         position: absolute;
         bottom: 1.5vw;
         width: 7.5vw;
         text-align: center;
         padding-top: 4vw;
+        cursor: pointer;
 
         button {
             width: 1;
@@ -245,10 +258,10 @@ $color-text-dark: #442c1a;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Wantedo', serif;
-
-            &:hover {
-                text-shadow: 0 0 15px #ffffffbe,0 0 25px #ffffffbe;
-            }
+        }           
+        
+        &:hover button {
+            text-shadow: 0 0 15px #ffffffbe,0 0 25px #ffffffbe;
         }
     }
 
@@ -263,7 +276,6 @@ $color-text-dark: #442c1a;
             color: #a72518;
         }
     }
-
 }
 
 </style>

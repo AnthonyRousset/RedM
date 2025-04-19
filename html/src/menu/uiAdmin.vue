@@ -69,7 +69,7 @@ const setLootZone = async () => {
     console.log('region de butin selectionnée : ', lootRegion.value);
 
     sendNui('admin-loot-zone', {
-        type: lootZone.value.id,
+        type: lootZone.value.type,
         id: lootRegion.value.id
     });
     

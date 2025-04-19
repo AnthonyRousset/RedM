@@ -31,11 +31,18 @@ const validateInput = (event) => {
         editableSpan.value.innerText = '1';
     }
     
+    // Limiter la valeur maximale à item.sellAmount
+    if (value > props.item.sellAmount) {
+        value = props.item.sellAmount;
+        editableSpan.value.innerText = props.item.sellAmount.toString();
+    }
+    
     quantite.value = value;
 }
 
-const prix = computed(() => {
-    return (shopStore.getBuyPrice(props.item) / 100) * quantite.value
+const priceTotal = computed(() => {
+    let price = (props.item.sellPrice / 100) * quantite.value
+    return price.toLocaleString()
 })
 
 const handleKeyDown = (event) => {
@@ -67,6 +74,14 @@ const handleKeyDown = (event) => {
     const afterCursor = currentText.slice(cursorPosition);
     const nextText = beforeCursor + event.key + afterCursor;
 
+    // Si le nombre est supérieur à item.sellAmount, mettre directement la valeur maximale
+    if (parseInt(nextText) > props.item.sellAmount) {
+        event.preventDefault();
+        editableSpan.value.innerText = props.item.sellAmount.toString();
+        quantite.value = props.item.sellAmount;
+        return;
+    }
+
     // Empêcher les nombres commençant par 0 et les nombres trop grands
     if (/^0\d+/.test(nextText) || nextText.length > 6) {
         event.preventDefault();
@@ -76,6 +91,7 @@ const handleKeyDown = (event) => {
 // Initialiser avec la valeur 1
 onMounted(() => {
     editableSpan.value.innerText = '1';
+    quantite.value = 1;
 });
 
 const handleClose = () => {
@@ -97,10 +113,10 @@ const handleConfirm = () => {
             <span>{{ JSONitems.find(i => i.id === item.id).name }}</span>
         </div>
         <div class="prix">
-            <span>Prix: {{ (shopStore.getBuyPrice(item) / 100).toLocaleString() }} $ / unité</span>
+            <span>Prix: {{ (item.sellPrice / 100).toLocaleString() }} $ / unité</span>
         </div>
         <div class="quantite">
-            <span>En possession: {{ item.quantity || 0 }}</span>
+            <span>En possession: {{ item.sellAmount || 0 }}</span>
         </div>  
         <div class="input-quantite">
             <span 
@@ -116,13 +132,13 @@ const handleConfirm = () => {
             <span>Vous allez acheter {{ quantite }} unité(s)</span>
         </div>
         <div class="prix-total">
-            <span>Pour un total de {{ prix.toLocaleString() }} $</span>
+            <span>Pour un total de {{ priceTotal }} $</span>
         </div>
-        <div class="button-buy">
-            <button @click="handleConfirm">Acheter</button>
+        <div class="button-buy" @click="handleConfirm">
+            <button>Acheter</button>
         </div>
-        <div class="button-cancel">
-            <button @click="handleClose">Annuler</button>
+        <div class="button-cancel" @click="handleClose">
+            <button>Annuler</button>
         </div>
     </div>
 </template> 
@@ -232,6 +248,7 @@ $color-text-dark: #442c1a;
         width: 7.5vw;
         text-align: center;
         padding-top: 4vw;
+        cursor: pointer;
 
         button {
             width: 1;
@@ -244,10 +261,11 @@ $color-text-dark: #442c1a;
             transition: all 0.3s ease;
             font-family: 'Wantedo', serif;
 
-            &:hover {
+
+        }           
+        &:hover button{
                 text-shadow: 0 0 15px #ffffffbe,0 0 25px #ffffffbe;
             }
-        }
     }
 
     .button-buy {

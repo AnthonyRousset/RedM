@@ -15,6 +15,13 @@ const regions = JSONregions.regions
 const lootZone = ref('')
 const lootRegion = ref('')
 
+const lootZoneError = ref(false)
+const lootRegionError = ref(false)
+
+
+
+
+
 
 
 
@@ -144,7 +151,7 @@ const close = async () => {
                         </select>
                         <select v-model="lootRegion">
                             <option disabled value="">-- Sélectionner une region --   </option>
-                            <option v-for="region in regions" :key="region.id" :value="region">
+                            <option v-for="region in regions" :key="region.id" :value="region.id">
                                 {{ region.name }}
                             </option>
                         </select>

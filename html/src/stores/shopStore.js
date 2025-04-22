@@ -318,7 +318,7 @@ export const useShopStore = defineStore('shop', {
             sendNui('shop-catalogue-remove-'+this.id, { shopId: this.id, itemId: data.idItem })
         },
         sendNuiClearCatalogue(data) {
-            sendNui('shop-catalogue-clear-'+this.id, { shopId: this.id, itemId: data.idItem })
+            sendNui('shop-catalogue-clear-'+this.id, { shopId: this.id })
         },  
 
         sendNuiAddEmployee(data) {

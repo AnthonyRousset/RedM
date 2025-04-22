@@ -80,8 +80,12 @@ function doAction(action) {
       break
     case 'give':
       // Open window with target list (player, npc, ...) 
-      giveWindow.value = true
+      //giveWindow.value = true
       sendNui('inventory-near-users')
+
+      // close inventory menu
+      uiStore.closeMenu()
+
       break
     case 'drop':
       // Open window with quantity input

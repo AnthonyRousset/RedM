@@ -70,10 +70,10 @@ const setLocation = async () => {
 
 
 const setLootZone = async () => {
-    if (!lootZone.value) return lootZoneError.value = true;
-    if (!lootRegion.value) return lootRegionError.value = true;
-    console.log('zone de butin selectionnée : ', lootZone.value);
-    console.log('region de butin selectionnée : ', lootRegion.value);
+    console.log('zone de butin selectionnée : ', lootZone);
+    console.log('region de butin selectionnée : ', lootRegion);
+    //if (!lootZone.value) return lootZoneError.value = true;
+    //if (!lootRegion.value) return lootRegionError.value = true;
 
     sendNui('admin-loot-zone', {
         type: lootZone.value.type,

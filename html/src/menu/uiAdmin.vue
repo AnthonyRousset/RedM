@@ -145,13 +145,13 @@ const close = async () => {
                         <h2>Zone de butin</h2>
                         <select v-model="lootZone">
                             <option disabled value="">-- Sélectionner une zone --</option>
-                            <option v-for="ressource in ressources" :key="ressource.id" :value="ressource.type">
+                            <option v-for="ressource in ressources" :key="ressource.id" :value="ressource">
                                 {{ ressource.type }} - {{ ressource.name }}
                             </option>
                         </select>
                         <select v-model="lootRegion">
                             <option disabled value="">-- Sélectionner une region --   </option>
-                            <option v-for="region in regions" :key="region.id" :value="region.id">
+                            <option v-for="region in regions" :key="region.id" :value="region">
                                 {{ region.name }}
                             </option>
                         </select>
